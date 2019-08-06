@@ -1,0 +1,13 @@
+push.sh
+.idea/*
+reference/*
+data/*
+**/.vs/*
+**/ConsoleApplication1/*
+
+**/coding/*
+!**/coding/*.Cpp
+!**/coding/*.md
+
+/À¢Ã‚/*
+

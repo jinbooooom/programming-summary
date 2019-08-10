@@ -6,5 +6,5 @@
 - python 学习手册
 - C/C++ 学习
 
-### [Python官方文档](https://docs.python.org/zh-cn/3/library/index.html)
+### [Python官方文档](https://docs.python.org/zh-cn/3.7/)
 

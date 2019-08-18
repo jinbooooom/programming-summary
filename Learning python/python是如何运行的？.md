@@ -21,8 +21,8 @@ PVM是Python运行时的引擎，它时常表现为Python系统的一部分，�
 
 ## python性能
 与C/C++这类完全编译语音不同的是，python工作中通常没有构建或“make”的步骤：
-代码写好后立即运行，另外一个就是 python 字节码不是机器的二进制代码，字节码是特定于 python 的一种表现形式。
-*这就是python代码无法像C/C++一样快的原因。*PVM循环仍然需要解释字节码。  
+代码写好后立即运行，另外一个就是 python 字节码不是机器的二进制代码，字节码是特定于 python 的一种表现形式。  
+**这就是python代码无法像C/C++一样快的原因**。 PVM循环仍然需要解释字节码。  
 
 ## Cython
 大多数使用的python都是Cython，是标准的实现，也是《Python学习手册》（*Learning Python*）这本们将要使用的。

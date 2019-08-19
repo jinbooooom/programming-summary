@@ -127,12 +127,143 @@ sys模块负责程序与Python解释器的交互，提供了一系列的函数�
 ### 24.什么是lambda表达式？它有什么好处？
 简单来说，lambda表达式通常是当你需要使用一个函数，但是又不想去命名一个函数的时候使用，也就是通常所说的匿名函数。  
 lambda表达式一般的形式是：关键词lambda后面紧接一个或多个参数，紧接一个冒号“：”，紧接一个表达式。lambda表达式是一个表达式不是一个语句。  
-### 25.[那表达式与语句有什么区别？](https://blog.csdn.net/qq_37566910/article/details/84563438)  
+```python
+L = {'add':(lambda x,y:x+y),
+     'pow':(lambda x,y:x**y)}
+print(L['add'](2,3))  # 5
+print(L['pow'](2,3))  # 8
+```
+### 25.[表达式与语句有什么区别？](https://blog.csdn.net/qq_37566910/article/details/84563438)  
 Python代码由表达式和语句组成，并由Python解释器负责执行。  
 它们的主要区别是“表达式”是一个值，它的结果一定是一个Python对象。当Python解释器计算它时结果可以是任何对象。例如42，1+2，int(‘123’)，range(10)等。  
-结果不是对象的代码则成为‘语句’。它们表示的是一个动作而不是生成或者返回一个值。常见的Python语句有print,if/else,def等
+结果不是对象的代码则成为‘语句’。它们表示的是一个动作而不是生成或者返回一个值。常见的Python语句有print，if/else，def等
 
-   
+### 26.\__new\__和\__init\__的区别。
+\__init\__为初始化方法，创建对象后，就立刻被默认调用了，可接收参数。  
+\__new\__方法是真正的构造函数。\__new\__是实例创建之前被调用，它的任务是创建并返回该实例。  
+\__init\__有一个参数self，就是\__new\__返回的实例，\__init\__在\__new\__的基础上可以完成一些其它初始化的动作，\__init\__不需要返回值\__init\__是实例创建之后被调用的，然后设置对象属性的初始值。  
+总结：\__new\__方法在\__init\__方法之前被调用，并且\__new\__方法的返回值将传递给\__init_\_方法作为第一个参数，最后\__init\__给这个实例设置一些参数。  
+[Python中的__new__及其用法](https://my.oschina.net/kinegratii/blog/334968)
+
+### 27.Python中单下划线和双下划线分别是什么？
+- \__name\__：一种约定，Python内部的名字，用来与用户自定义的名字区分开，防止冲突  
+- \_name：一种约定，用来指定变量私有  
+- \__name：解释器用\_classname\__name来代替这个名字用以区别和其他类相同的命名
+[python中的下划线](https://segmentfault.com/a/1190000002611411)
+
+### 28.说一说Python自省。
+自省就是面向对象的语言所写的程序在运行时，所能知道对象的类型。简单一句话就是运行时能够获得对象的类型。比如：type()、dir()、getattr()、hasattr()、isinstance()   
+[Python自省（反射）指南](https://kb.cnblogs.com/page/87128/)
+
+### 29.如何在一个函数内部修改全局变量
+比如：
+```python
+a = 5
+def foo():
+	a = 3
+foo()
+print(a)  # 5
+```
+输出 5  
+```python
+a = 5
+def foo():
+	"""
+	利用global在函数内部声明该变量，修改其为全局变量
+	"""
+	global a
+	a = 3
+foo()
+print(a)  # 3
+```
+输出 3  
+
+### 30.列出你知道的python标准库
+os, sys, re, math, datetime, string, random等
+
+### 31.如何删除字典的键以及如何合并两个字典
+```
+>>> d = {'name':'Lux','age':18}
+>>> d
+{'age': 18, 'name': 'Lux'}
+>>> del d['age']
+>>> d
+{'name': 'Lux'}
+>>> d2 = {'game':'LOL'}
+>>> d.update(d2)
+>>> d2
+{'game': 'LOL'}
+>>> d
+{'game': 'LOL', 'name': 'Lux'}
+```
+
+### 32.python2和python3的range（100）的区别
+python2返回列表，python3返回迭代器，节约内存.
+
+### 33.简述with方法打开处理文件帮我我们做了什么？
+```python
+f = open("./t.txt", "w+")
+try:
+	f.write("hello world")
+except:
+	pass
+finally:
+	f.close()
+```
+打开文件在进行读写的时候可能会出现一些异常状况，如果按照常规的f.open  
+写法，我们需要try,except,finally，做异常判断，并且文件最终不管遇到什么情况，都要执行finally f.close()关闭文件，with方法帮我们实现了finally中f.close
+
+### 34.列表[1,2,3,4,5],请使用map()函数输出[1,4,9,16,25]，并使用列表推导式提取出大于10的数，最终输出[16,25]
+```python
+arr = [1, 2, 3, 4, 5]
+def f(x):
+	return x**2
+res = list(map(f, arr))
+print(res)  # [1, 4, 9, 16, 25]
+
+res = [x**2 for x in arr if x**2 > 10]
+print(res)  # [16, 25]
+```
+
+### 35.python中生成随机整数、随机小数、0--1之间小数方法
+```python
+import random
+import numpy as np
+ 
+a = random.randint(10,20)
+res = np.random.randn(5)
+ret = random.random()
+print("正整数:"+str(a))
+print("5个随机小数:"+str(res))
+print("0-1随机小数:"+str(ret))
+"""
+正整数:14
+5个随机小数:[ 2.28309587 -0.17086874 -1.51438665  1.13570107 -0.09369251]
+0-1随机小数:0.6803547742221879
+"""
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -140,10 +271,11 @@ Python代码由表达式和语句组成，并由Python解释器负责执行。
 ### 99.Python多线程（multi-threading）。这是个好主意吗？
 Python并不支持真正意义上的多线程，Python提供了多线程包。Python中有一个叫Global Interpreter Lock（GIL）的东西，它能确保你的代码中永远只有一个线程在执行。经过GIL的处理，会增加执行的开销。这就意味着如果你先要提高代码执行效率，使用threading不是一个明智的选择，当然如果你的代码是IO密集型，多线程可以明显提高效率，相反如果你的代码是CPU密集型的这种情况下多线程大部分是鸡肋。  
 [详解Python中的多线程编程](https://www.jb51.net/article/63784.htm)  
-[CPU-bound(计算密集型) 和I/O bound(I/O密集型)](https://blog.csdn.net/q_l_s/article/details/51538039)
+[CPU-bound(计算密集型) 和I/O bound(I/O密集型)](https://blog.csdn.net/q_l_s/article/details/51538039)  
 
 ## 推荐/参考链接
 - [Python工程师面试必备25条Python知识点](https://zhuanlan.zhihu.com/p/32818342)
+- [常见面试题整理--Python概念篇](https://zhuanlan.zhihu.com/p/23526961)
 
 
 

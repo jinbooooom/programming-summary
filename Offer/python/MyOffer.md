@@ -131,7 +131,7 @@ Python中文档字符串被称为docstring，它在Python中的作用是为函�
 copy浅拷贝（copy.copy()），没有拷贝子对象，所以原始数据改变，子对象会改变;  
 深copy(copy.deepcopy())，递归的复制它所包含的对象，所以原始对象的改变不会造成深拷贝里任何子元素的改变;  
 它们的相同之处是，父对象都没有改变.  
-[Python里面如何拷贝一个对象·时间带着假象流淌](https://www.cnblogs.com/ConnorShip/p/10009573.html)
+[Python里面如何拷贝一个对象·时间带着假象流淌](https://www.cnblogs.com/ConnorShip/p/10009573.html)  
 [Python中的赋值(复制)、浅拷贝、深拷贝之间的区别·碧水幽幽泉](https://www.cnblogs.com/huangbiquan/p/7795152.html)
 
 ### 17.Python中的负索引是什么？
@@ -360,7 +360,7 @@ new_a = list(filter(foo, a))
 print(new_a)
 ```
 
-### 41.正则表达式匹配中，（.*）和（.*?）匹配区别？
+### 41.正则表达式匹配中，（.\*）和（.\*?）匹配区别？
 - （.*）是贪婪匹配，会把满足正则的尽可能多的往后匹配
 - （.*?）是非贪婪匹配，会把满足正则的尽可能少匹配
 

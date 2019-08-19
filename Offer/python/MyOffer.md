@@ -301,13 +301,39 @@ False
 139733368805448
 ```
 
+### 39.字典根据键从小到大排序
+```python
+y = {1:3, 2:2, 3:1}
+by_key =  sorted(y.items(),key = lambda item:item[0])
+by_value = sorted(y.items(),key = lambda item:item[1])
+print by_key   # 结果为[(1, 3), (2, 2), (3, 1)]，即按照键名排列
+print by_value # 结果为[(3, 1), (2, 2), (1, 3)]，即按照键值排列
+```
+[python之对字典按照键的大小进行排序！](https://blog.csdn.net/leokingszx/article/details/81154681)
+
+### 40.过滤掉列表 a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]中的所有偶数
+```python
+a = [1,2,3,4,5,6,7,8,9,10]
+print([x for x in a if x & 1])
+
+def foo(a):
+	return a & 1
+new_a = list(filter(foo, a))
+print(new_a)
+```
+
+### 41.正则表达式匹配中，（.*）和（.*?）匹配区别？
+- （.*）是贪婪匹配，会把满足正则的尽可能多的往后匹配
+- （.*?）是非贪婪匹配，会把满足正则的尽可能少匹配
 
 
-
-
-
-
-
+### 42.[[1,2],[3,4],[5,6]],一行代码展开该列表，得出[1,2,3,4,5,6]
+```python
+>>> a = [[1,2],[3,4],[5,6]]
+>>> new_a = [i for x in a for i in x]
+>>> new_a
+[1, 2, 3, 4, 5, 6]
+```
 
 
 
@@ -328,6 +354,7 @@ Python并不支持真正意义上的多线程，Python提供了多线程包。Py
 ## 推荐/参考链接
 - [Python工程师面试必备25条Python知识点](https://zhuanlan.zhihu.com/p/32818342)
 - [常见面试题整理--Python概念篇](https://zhuanlan.zhihu.com/p/23526961)
+- [110道Python面试题（真题）](https://zhuanlan.zhihu.com/p/54430650)
 
 
 

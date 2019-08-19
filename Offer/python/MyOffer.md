@@ -32,7 +32,11 @@ print(os.getcwd())
 print('-' * 30)
 print('hello world')
 ```
-在终端使用命令行:python stream_redirection.py > saveit.txt，就会把print()里的内容打印到文本saveit.txt  
+在终端使用命令行:
+```shell
+python stream_redirection.py > saveit.txt
+```
+就会把print()里的内容打印到文本saveit.txt  
 
 ### 7.什么是Python装饰器？
 Python装饰器是Python中的特有变动，可以使修改函数变得更容易。
@@ -67,8 +71,9 @@ Python中文档字符串被称为docstring，它在Python中的作用是为函�
 ### 16.如何在Python中拷贝一个对象？
 - 赋值（=），就是创建了对象的一个新的引用，修改其中任意一个变量都会影响到另一个。
 - 浅拷贝：创建一个新的对象，但它包含的是对原始对象中包含项的引用（copy模块的copy()函数）
+- 深拷贝：创建一个新的对象，并且递归的复制它所包含的对象（修改其中一个，另外一个不会改变）（copy模块的deep.deepcopy()函数）
 ```python
-In [187]: import copy  # copy浅拷贝，没有拷贝子对象，所以原始数据改变，子对象会改变
+In [187]: import copy  # copy 浅拷贝，没有拷贝子对象，所以原始数据改变，子对象会改变
 In [188]: a=[1,2,3,4,['a','b']]
 In [189]: c=copy.copy(a)
 In [190]: a.append(5)
@@ -85,7 +90,6 @@ Out[194]: [1, 2, 3, 4, ['a', 'b', 'c'], 5]
 In [195]: c
 Out[195]: [1, 2, 3, 4, ['a', 'b', 'c']]
 ```
-- 深拷贝：创建一个新的对象，并且递归的复制它所包含的对象（修改其中一个，另外一个不会改变）（copy模块的deep.deepcopy()函数）
 综上所述，浅copy和深copy:  
 copy浅拷贝（copy.copy()），没有拷贝子对象，所以原始数据改变，子对象会改变;  
 深copy(copy.deepcopy())，递归的复制它所包含的对象，所以原始对象的改变不会造成深拷贝里任何子元素的改变;  

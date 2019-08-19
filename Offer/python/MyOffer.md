@@ -243,11 +243,57 @@ print("0-1随机小数:"+str(ret))
 """
 ```
 
+### 36.python中的断言
+assert（）方法，断言成功，则程序继续执行，断言失败，则程序报错。
+```python
+a = 3
+assert(a > 1)
+print("successfully")
+b = 4
+assert(b > 5)
+print("failed")
+"""
+successfully
+Traceback (most recent call last):
+  File "t.py", line 5, in <module>
+    assert(b > 5)
+AssertionError
+""""
+```
 
+### 37.python2和python3区别？至少5个
+- 1、Python3 使用 print 必须要以小括号包裹打印内容，比如 print('hi')，Python2 既可以使用带小括号的方式，也可以使用一个空格来分隔打印内容，比 如 print 'hi'
+- 2、python2 range(1,10)返回列表，python3中返回迭代器，节约内存
+- 3、python2 中使用 ascii 编码，python中使用utf-8编码
+- 4、python2 中 unicode表示字符串序列，str表示字节序列，python3中str表示字符串序列，byte表示字节序列
+- 5、python2中为正常显示中文，引入coding声明，python3中不需要
+- 6、python2中是raw_input()函数，python3中是input()函数
 
-
-
-
+### 38.列出python中可变数据类型和不可变数据类型，并简述原理
+不可变数据类型：数值型、字符串型string和元组tuple  
+不允许变量的值发生变化，如果改变了变量的值，相当于是新建了一个对象，而对于相同的值的对象，在内存中则只有一个对象（一个地址），如下面代码中用id()方法可以打印对象的id  
+```python
+>>> a = 3
+>>> b = 3
+>>> id(3)
+94437307314304
+>>> id(b)
+94437307314304
+```
+可变数据类型：列表list和字典dict；
+允许变量的值发生变化，即如果对变量进行append、+=等这种操作后，只是改变了变量的值，而不会新建一个对象，变量引用的对象的地址也不会变化。对于相同的值的不同对象，在内存中地址不同，即每个对象都有自己的地址，相当于内存中对于同值的对象保存了多份，这里不存在引用计数，是实实在在的对象。
+```python
+>>> a = [1,2]
+>>> b = [1,2]
+>>> a == b
+True
+>>> a is b
+False
+>>> id(a)
+139733341882056
+>>> id(b)
+139733368805448
+```
 
 
 

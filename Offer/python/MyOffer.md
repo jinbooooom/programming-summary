@@ -1,4 +1,4 @@
-### 1.到底什么是Python？你可以在回答中与其他技术进行对比
+﻿### 1.到底什么是Python？你可以在回答中与其他技术进行对比
 下面是一些关键点：
 - Python是一种解释型语言。这就是说，与C语言和C的衍生语言不同，Python代码在运行之前不需要编译。其他解释型语言还包括PHP和Ruby。Python是动态类型语言，指的是你在声明变量时，不需要说明变量的类型。你可以直接编写类似x=111和x="I'm a string"这样的代码，程序不会报错。Python非常适合面向对象的编程（OOP），因为它支持通过组合（composition）与继承（inheritance）的方式定义类（class）。
 - Python中没有访问修饰符（access specifier，类似C++中的public和private），但以\__XX（双横线）结尾的函数或者变量相当于private。这么设计的依据是“大家都是成年人了”，Python本身没有任何机制阻止你干坏事，一切全靠自觉。
@@ -373,10 +373,6 @@ print(new_a)
 [1, 2, 3, 4, 5, 6]
 ```
 
-### 42.异常模块中try except else finally的区别
-- try..except..else没有捕获到异常，执行else语句
-- try..except..finally不管是否捕获到异常，都执行finally语句
-
 ### 43.举例说明zip()函数用法
 zip()函数在运算时，会以一个或多个序列（可迭代对象）做为参数，返回一个元组的列表。同时将这些序列中并排的元素配对。  
 zip()参数可以接受任何类型的序列，同时也可以有两个以上的参数;当传入参数的长度不同时，zip能自动以最短序列长度为准进行截取，获得元组。
@@ -536,6 +532,10 @@ Python并不支持真正意义上的多线程，Python提供了多线程包。Py
 
 [详解Python中的多线程编程](https://www.jb51.net/article/63784.htm)  
 [CPU-bound(计算密集型) 和I/O bound(I/O密集型)](https://blog.csdn.net/q_l_s/article/details/51538039)  
+
+### 56.异常模块中try except else finally的区别
+- try..except..else没有捕获到异常，执行else语句
+- try..except..finally不管是否捕获到异常，都执行finally语句
 
 ## 推荐/参考链接
 - [Python工程师面试必备25条Python知识点](https://zhuanlan.zhihu.com/p/32818342)

@@ -188,7 +188,7 @@ Python代码由表达式和语句组成，并由Python解释器负责执行。
 [Python中的__new__及其用法](https://my.oschina.net/kinegratii/blog/334968)
 
 ### 27.Python中单下划线和双下划线分别是什么？
-- \__name\__：一种约定，Python内部的名字，用来与用户自定义的名字区分开，防止冲突  
+- \_\_name\_\_：一种约定，Python内部的名字，用来与用户自定义的名字区分开，防止冲突  
 - \_name：一种约定，用来指定变量私有  
 - \__name：解释器用\_classname\__name来代替这个名字用以区别和其他类相同的命名
 [python中的下划线](https://segmentfault.com/a/1190000002611411)

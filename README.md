@@ -2,13 +2,12 @@
 **特色：用面试问答的方式来回顾知识点**，我会持续整理的，可以先点下star收藏
 
 ## 主要包含：
-- [C/C++ 学习 笔记](C&C++/C)
+- [C/C++ 学习 笔记](C&C++)
 - [python 问答](Offer/python/MyOffer.md)
 
 ## 详细目录
-### [C 语言](https://github.com/jinbooooom/Programming-Checking-for-Missing/tree/master/C%26C%2B%2B/C)
+### [C 语言](C&C++/C)
 - [1.C 程序设计概述](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/1.C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E6%A6%82%E8%BF%B0.md)
-### [python 问答](Offer/python/MyOffer.md)
 - [2.数据及运算](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/2.%E6%95%B0%E6%8D%AE%E5%8F%8A%E8%BF%90%E7%AE%97.md)
 - [3.流程控制](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/3.%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6.md)
 - [4.数组](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/4.%E6%95%B0%E7%BB%84.md)

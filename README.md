@@ -5,16 +5,22 @@
 - [C/C++ 学习 笔记](C&C++/C)
 - [python 问答](Offer/python/MyOffer.md)
 
-## 一些有用的链接
-### python
-- [Python 官方文档](https://docs.python.org/zh-cn/3.7/)
-- [python 面试](https://github.com/taizilongxu/interview_python/)
-### C/C++
-- [C/C++ 面试基础知识总结·语雀](https://www.yuque.com/huihut/interview)
-- [C++ 面试](https://github.com/huihut/interview)
+
 
 ## 详细目录
+### [C 语言]
+- [1.C 程序设计概述](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/1.C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E6%A6%82%E8%BF%B0.md)
 ### [python 问答](Offer/python/MyOffer.md)
+- [2.数据及运算](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/2.%E6%95%B0%E6%8D%AE%E5%8F%8A%E8%BF%90%E7%AE%97.md)
+- [3.流程控制](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/3.%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6.md)
+- [4.数组](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/4.%E6%95%B0%E7%BB%84.md)
+- [5.指针](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/5.%E6%8C%87%E9%92%88.md)
+- [6.指针和数组](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/6.%E6%8C%87%E9%92%88%E5%92%8C%E6%95%B0%E7%BB%84.md)
+- [7.指针和动态内存分配](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/7.%E6%8C%87%E9%92%88%E5%92%8C%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.md)
+- [8.函数](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/8.%E5%87%BD%E6%95%B0.md)
+- [9.编译预处理](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/9.%E7%BC%96%E8%AF%91%E9%A2%84%E5%A4%84%E7%90%86.md)
+
+### [Python](Offer/python/MyOffer.md)
 - 1.到底什么是Python？你可以在回答中与其他技术进行对比
 - 2.什么是PEP8？
 - 3.什么是pickling和unpickling？

@@ -3,7 +3,7 @@
 
 ## 主要包含：
 - [C/C++ 学习 笔记](C&C++)
-- [python 问答](Offer/python/MyOffer.md)
+- [python 问答](QA/python/MyOffer.md)
 
 ## 详细目录
 ### [C 语言](C&C++/C)
@@ -17,7 +17,7 @@
 - [8.函数](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/8.%E5%87%BD%E6%95%B0.md)
 - [9.编译预处理](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/9.%E7%BC%96%E8%AF%91%E9%A2%84%E5%A4%84%E7%90%86.md)
 
-### [Python 问答](Offer/python/MyOffer.md)
+### [Python 问答](QA/python/MyOffer.md)
 - 1.到底什么是Python？你可以在回答中与其他技术进行对比
 - 2.什么是PEP8？
 - 3.什么是pickling和unpickling？

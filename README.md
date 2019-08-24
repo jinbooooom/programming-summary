@@ -18,17 +18,17 @@
 - [9.编译预处理](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C/9.%E7%BC%96%E8%AF%91%E9%A2%84%E5%A4%84%E7%90%86.md)
 
 ### [Python 问答](QA/python/MyOffer.md)
-- 1.到底什么是Python？你可以在回答中与其他技术进行对比
-- 2.什么是PEP8？
+- [1.到底什么是Python？]你可以在回答中与其他技术进行对比(https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/QA/python/MyOffer.md#1%E5%88%B0%E5%BA%95%E4%BB%80%E4%B9%88%E6%98%AFpython%E4%BD%A0%E5%8F%AF%E4%BB%A5%E5%9C%A8%E5%9B%9E%E7%AD%94%E4%B8%AD%E4%B8%8E%E5%85%B6%E4%BB%96%E6%8A%80%E6%9C%AF%E8%BF%9B%E8%A1%8C%E5%AF%B9%E6%AF%94)
+- [2.什么是PEP8？](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/QA/python/MyOffer.md#2%E4%BB%80%E4%B9%88%E6%98%AFpep8)
 - 3.什么是pickling和unpickling？
-- 4.Python是如何被解释的？
+- 4.说说python程序运行过程？
 - 5.Python是怎样管理内存的？
 - 6.流重定向
-- 7.什么是Python装饰器？
+- 7.python为什么不能像C++一样快?如果要追求速度该怎么做？
 - 8.数组和元组之间的区别是什么？
-- 9.参数按值传递和引用传递是怎样实现的？
-- 10.字典推导式和列表推导式是什么？
-- 11.Python都有哪些自带的数据结构？
+- 9.谈谈你对python中变量、对象和引用的理解
+- 10.python中的冻结二进制文件你了解多少？
+- 11.Python都有哪些自带的数据类型？
 - 12.什么是Python的命名空间？
 - 13.Python中的pass是什么？
 - 14.在Python中什么是slicing？
@@ -74,4 +74,26 @@
 - 54.Python传参数是传值还是传址？
 - 55.Python多线程（multi-threading）。这是个好主意吗？
 - 56.异常模块中try except else finally的区别
+- 57.is与==有什么区别?
+- 58.python除法‘/’ 与 ‘//’
+- 59.集合有哪些运算?
+- 60.列出字符串常用操作
+- 61.列出列表的常用操作
+- 62.两个等长列表如何构造字典？
+- 63.只有一个列表如何用enumerate构造字典?
+- 64.迭代器和可迭代对象分别是什么，它们之间有什么区别？
+- 65.单遍迭代器与多遍迭代器有什么区别？
+- 66.什么是多态？
+- 67.如何理解闭包?
+- 68.谈谈类中的访问限制
+
+
+
+
+
+
+
+
+
+
 

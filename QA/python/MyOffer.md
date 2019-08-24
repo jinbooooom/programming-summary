@@ -673,7 +673,7 @@ print(D > E, D < E, D == E)  # False False True 相等不是包含
 
 ### 61.列出列表的常用操作
 常用操作无非增删改查  
-**增**
+**增**  
 - L.insert(index, object) 在指定索引位置插入值
 - L.append(object) 在列表尾部添加值
 - L.extend(iter) 在列表尾部添加另一个可迭代对象
@@ -698,15 +698,17 @@ extend方法传入的是一个可迭代的对象，在使用extend方法时会�
 >>> b
 [1, 2, 3, 9, [8, [7]]]
 ```
-**删**
+**删**  
 - L.pop(index=-1) 删除指定索引位置的元素，默认删除最后一个
 - L.remove(object) 删除列表中的元素
 - L.clear() 清空列表，L 存在
 - del L[slicing] # 删除 L 中某一个索引处的元素或某一段切片
-	- del L 删除 L 这个对象，L 被垃圾回收  
-**改**
-L[index] = new_value  
-**查**
+	- del L 删除 L 这个对象，L 被垃圾回收     
+  
+**改**  
+L[index] = new_value    
+
+**查**  
 - L.index(object) 查找列表元素的索引，元素不存在时执行index方法会抛出异常：使用语法：list.index(value, [start, [stop]]), start表示查找的起始位置，stop表示查找的结束位置(闭区间，不包括stop)。start的默认值为0，end的默认值为列表的长度。
 - L.count(object) 统计元素的数量，元素不存在时返回0
 

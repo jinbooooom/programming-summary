@@ -50,7 +50,7 @@ delete 语句用于删除表中的数据, 基本用法为:
 
 删除所有年龄小于21岁的数据: 
 
-`delete from students where age<20;
+`delete from students where age<20;`
 
 删除表中的所有数据: 
 

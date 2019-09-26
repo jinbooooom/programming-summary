@@ -19,6 +19,7 @@ MySQL有三大类数据类型, 分别为数字、日期\时间、字符串, 这�
 (MySQL语句以分号作为语句结尾，若不加分号，命令符会以 -> 提示你继续输入)
 
 `create database 数据库名 [其他选项]`;
+
 `create database samp_db character set gbk;`
 
 `show databases;`查看已经创建了哪些数据库
@@ -44,10 +45,15 @@ delete 语句用于删除表中的数据, 基本用法为:
 `delete from 表名称 where 删除条件;`
 
 删除id为2的行: 
+
 `delete from students where id=2;`
+
 删除所有年龄小于21岁的数据: 
-`delete from students where age<20;`
+
+`delete from students where age<20;
+
 删除表中的所有数据: 
+
 `delete from students;`
 
 ### 改
@@ -71,6 +77,7 @@ delete 语句用于删除表中的数据, 基本用法为:
 #### 创建表后对表的修改（更改表）
 
 添加列基本形式:
+
 `alter table 表名 add 列名 列数据类型 [after 插入位置];`
 
 在表的最后追加列address: 
@@ -84,21 +91,33 @@ delete 语句用于删除表中的数据, 基本用法为:
 #### 修改列
 
 基本形式: 
+
 `alter table 表名 change 列名称 列新名称 新数据类型;`
+
 将表 tel 列改名为 telphone: 
+
 `alter table students change tel telphone char(13) default "-";`
+
 将 name 列的数据类型改为 char(16): 
+
 `alter table students change name name char(16) not null;`
 
 #### 删除列
 基本形式: 
+
 `alter table 表名 drop 列名称;`
+
 删除 birthday 列: 
+
 `alter table students drop birthday;`
+
 #### 重命名表
 基本形式: 
+
 `alter table 表名 rename 新表名;`
+
 重命名 students 表为 workmates:
+
 `alter table students rename workmates;`
 
 ### 查
@@ -130,3 +149,5 @@ delete 语句用于删除表中的数据, 基本用法为:
 ### 参考
 
 - [21分钟 MySQL 入门教程](https://www.cnblogs.com/mr-wid/archive/2013/05/09/3068229.html#c1)
+- [数据库多表联合查询附简单例子](https://blog.csdn.net/weixin_30363263/article/details/81280934)
+

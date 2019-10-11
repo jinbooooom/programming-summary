@@ -43,3 +43,6 @@
 - 阻塞状态： 进程等待某种条件，在条件满足之前无法执行 
 
 [节选自路人甲: 常见面试题整理--操作系统篇（每位开发者必备）](https://zhuanlan.zhihu.com/p/23755202?refer=passer)
+
+https://www.zhihu.com/search?type=content&q=%E9%9D%9E%E7%A7%91%E7%8F%AD%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%A6%82%E4%BD%95%E5%BA%94%E4%BB%98%E9%9D%A2%E8%AF%95
+

@@ -23,10 +23,10 @@
 
 ### [C++](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/QA/C%2B%2B/C%2B%2Binterview.md)
 
-- [C++编程基础](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#c%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80)
-- [面向过程编程](https://github.com/jinbooooom/C-plus-plus/blob/master/ch2-Procedural%20programming.md#%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E7%9A%84%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC)
-- [面向对象编程](https://github.com/jinbooooom/C-plus-plus/blob/master/ch2-Procedural%20programming.md#%E7%BB%93%E6%9E%84%E4%BD%93%E4%B8%8E%E8%81%94%E5%90%88%E4%BD%93%E5%85%B1%E7%94%A8%E4%BD%93%E7%9A%84%E5%8C%BA%E5%88%AB)
-- [泛型编程](https://github.com/jinbooooom/C-plus-plus/blob/master/ch4-Generic%20Programming.md#%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC)
+- [C++编程基础](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md)
+- [面向过程编程](https://github.com/jinbooooom/C-plus-plus/blob/master/ch2-Procedural%20programming.md)
+- [面向对象编程](https://github.com/jinbooooom/C-plus-plus/blob/master/ch3-Object-Oriented%20Programming.md)
+- [泛型编程](https://github.com/jinbooooom/C-plus-plus/blob/master/ch4-Generic%20Programming.md)
 
 ### [Python 问答](QA/python/MyOffer.md)
 

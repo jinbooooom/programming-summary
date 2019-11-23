@@ -149,5 +149,7 @@ delete 语句用于删除表中的数据, 基本用法为:
 ### 参考
 
 - [21分钟 MySQL 入门教程](https://www.cnblogs.com/mr-wid/archive/2013/05/09/3068229.html#c1)
-- [数据库多表联合查询附简单例子](https://blog.csdn.net/weixin_30363263/article/details/81280934)
+- [数据库多表联合查询附简单例子](https://blog.csdn.net/linan_pin/article/details/70158259)
+- [学生表创建与查询](https://blog.csdn.net/hello_syt_2018/article/details/80344460)
+- [MySQL等 SQL语句在线练习](https://blog.csdn.net/zytbft/article/details/84504348)
 

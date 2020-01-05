@@ -1,4 +1,4 @@
-# C-plus-plus
+﻿# C-plus-plus
 阅读完 C++ primer plus + Essential C++，整理的一些知识点。
 
 [CPP 78] 指 C++ primer plus 中文版第 78 页
@@ -7,33 +7,33 @@
 
 ## 详细目录
 
-### [C++编程基础](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#c%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80)
+### [C++编程基础](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#c%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80)
 
-- [Hello, world!](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#hello-world)
+- [Hello, world!](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#hello-world)
 
-  - [main 函数前面的数据类型 int 与 void](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#main-%E5%87%BD%E6%95%B0%E5%89%8D%E9%9D%A2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-int-%E4%B8%8E-void)
+  - [main 函数前面的数据类型 int 与 void](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#main-%E5%87%BD%E6%95%B0%E5%89%8D%E9%9D%A2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-int-%E4%B8%8E-void)
   
-  - ["\n" 与 endl 的区别](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#n-%E4%B8%8E-endl-%E7%9A%84%E5%8C%BA%E5%88%AB)
+  - ["\n" 与 endl 的区别](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#n-%E4%B8%8E-endl-%E7%9A%84%E5%8C%BA%E5%88%AB)
   
-  - [头文件里的 " " 与 < >](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E5%A4%B4%E6%96%87%E4%BB%B6%E9%87%8C%E7%9A%84---%E4%B8%8E--)
-  - [命名空间 std](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4-std)
-  - [system("pause")](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#systempause)
-  - [cout 与 printf()](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#cout-%E4%B8%8E-printf)
-  - [main函数与命令行参数](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#main%E5%87%BD%E6%95%B0%E4%B8%8E%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0)
-  - [编译](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E7%BC%96%E8%AF%91)
-- [iostream cin cout cerr clog](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#-iostream)
-- [初始化](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E5%88%9D%E5%A7%8B%E5%8C%96)
-- [逗号表达式](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E9%80%97%E5%8F%B7%E8%A1%A8%E8%BE%BE%E5%BC%8F)
-- [指针](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E6%8C%87%E9%92%88)
-  - [数组指针与指针数组](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88%E4%B8%8E%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84)
-  - [指针函数与函数指针](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E6%8C%87%E9%92%88%E5%87%BD%E6%95%B0)
-  - [函数指针数组](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84)
-  - [指针与数组的区别](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E6%8C%87%E9%92%88%E4%B8%8E%E6%95%B0%E7%BB%84%E7%9A%84%E5%8C%BA%E5%88%AB)
-  - [指针与引用的区别](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB)
-  - [指针的一些细节](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#%E6%8C%87%E9%92%88%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82)
-    - [\*&p和&\*p](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#p%E5%92%8Cp)
-    - [p+(或-)n](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#p%E6%88%96-n)
-    - [\*p++， (\*p)++，++\*p，\*++p](https://github.com/jinbooooom/C-plus-plus/blob/master/ch1-Basic%20C%2B%2B%20Programming.md#p-ppp)
+  - [头文件里的 " " 与 < >](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E5%A4%B4%E6%96%87%E4%BB%B6%E9%87%8C%E7%9A%84---%E4%B8%8E--)
+  - [命名空间 std](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4-std)
+  - [system("pause")](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#systempause)
+  - [cout 与 printf()](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#cout-%E4%B8%8E-printf)
+  - [main函数与命令行参数](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#main%E5%87%BD%E6%95%B0%E4%B8%8E%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0)
+  - [编译](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E7%BC%96%E8%AF%91)
+- [iostream cin cout cerr clog](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#-iostream)
+- [初始化](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E5%88%9D%E5%A7%8B%E5%8C%96)
+- [逗号表达式](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E9%80%97%E5%8F%B7%E8%A1%A8%E8%BE%BE%E5%BC%8F)
+- [指针](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E6%8C%87%E9%92%88)
+  - [数组指针与指针数组](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88%E4%B8%8E%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84)
+  - [指针函数与函数指针](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E6%8C%87%E9%92%88%E5%87%BD%E6%95%B0)
+  - [函数指针数组](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84)
+  - [指针与数组的区别](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E6%8C%87%E9%92%88%E4%B8%8E%E6%95%B0%E7%BB%84%E7%9A%84%E5%8C%BA%E5%88%AB)
+  - [指针与引用的区别](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB)
+  - [指针的一些细节](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E6%8C%87%E9%92%88%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82)
+    - [\*&p和&\*p](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#p%E5%92%8Cp)
+    - [p+(或-)n](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#p%E6%88%96-n)
+    - [\*p++， (\*p)++，++\*p，\*++p](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#p-ppp)
 
 ### [面向过程编程](https://github.com/jinbooooom/C-plus-plus/blob/master/ch2-Procedural%20programming.md#%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E7%9A%84%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC)
 

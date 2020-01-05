@@ -1,13 +1,4 @@
 push.sh
 .idea/*
-_reference/*
-data/*
-**/.vs/*
-**/ConsoleApplication1/*
 
-**/coding/*
-!**/coding/*.Cpp
-!**/coding/*.md
-
-/À¢Ã‚/*
 

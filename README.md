@@ -11,7 +11,7 @@
 - [python 问答](QA/python/MyOffer.md)
 
 ## 详细目录
-### ### [C/C++](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md)
+### [C/C++](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md)
 
 - [C++ 编程基础](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#c%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80)
 - [面向过程](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/C%2B%2B.md#%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E7%9A%84%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC)
@@ -90,7 +90,7 @@
 - [66.什么是多态？](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/QA/python/MyOffer.md#66%E4%BB%80%E4%B9%88%E6%98%AF%E5%A4%9A%E6%80%81)
 - [67.如何理解闭包?](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/QA/python/MyOffer.md#67%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3%E9%97%AD%E5%8C%85)
 - [68.谈谈类中的访问限制](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/QA/python/MyOffer.md#68%E8%B0%88%E8%B0%88%E7%B1%BB%E4%B8%AD%E7%9A%84%E8%AE%BF%E9%97%AE%E9%99%90%E5%88%B6)
-- [69.装饰器实例](https://github.com/jinbooooom/Programming-Checking-for-Missing/tree/master/Learning%20python/8.%20%E8%A3%85%E9%A5%B0%E5%99%A8)
+- [69.装饰器实例](https://github.com/jinbooooom/Programming-Checking-for-Missing/tree/master/Learning%20python/8.%20%E8%A3%85%E9%A5%B0%E5%99%A8#%E8%A3%85%E9%A5%B0%E5%99%A8)
 
 
 

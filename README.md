@@ -20,7 +20,7 @@
 - [STL](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/C%26C%2B%2B/C%2B%2B/STL.md#stl)
 
 
-### [Python 问答](QA/python/MyOffer.md)
+### [Python 问答](Python/python.md)
 
 - [1.到底什么是Python？你可以在回答中与其他技术进行对比](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/QA/python/MyOffer.md#1%E5%88%B0%E5%BA%95%E4%BB%80%E4%B9%88%E6%98%AFpython%E4%BD%A0%E5%8F%AF%E4%BB%A5%E5%9C%A8%E5%9B%9E%E7%AD%94%E4%B8%AD%E4%B8%8E%E5%85%B6%E4%BB%96%E6%8A%80%E6%9C%AF%E8%BF%9B%E8%A1%8C%E5%AF%B9%E6%AF%94)
 - [2.什么是PEP8？](https://github.com/jinbooooom/Programming-Checking-for-Missing/blob/master/QA/python/MyOffer.md#2%E4%BB%80%E4%B9%88%E6%98%AFpep8)

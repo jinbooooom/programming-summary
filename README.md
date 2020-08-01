@@ -21,17 +21,25 @@
 
 - [Hello, world!](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#hello-world)
 
-- [main 函数前面的数据类型 int 与 void](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main-%E5%87%BD%E6%95%B0%E5%89%8D%E9%9D%A2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-int-%E4%B8%8E-void)
+    - [main 函数前面的数据类型 int 与 void](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main-%E5%87%BD%E6%95%B0%E5%89%8D%E9%9D%A2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-int-%E4%B8%8E-void)
 
-- [main 函数执行完后执行其他语句](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main-%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E5%AE%8C%E5%90%8E%E6%89%A7%E8%A1%8C%E5%85%B6%E4%BB%96%E8%AF%AD%E5%8F%A5)
-- ["\n" 与 endl 的区别](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#n-%E4%B8%8E-endl-%E7%9A%84%E5%8C%BA%E5%88%AB)
-- [头文件里的 " " 与 < >](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%A4%B4%E6%96%87%E4%BB%B6%E9%87%8C%E7%9A%84---%E4%B8%8E--)
-- [命名空间 std](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4-std)
-- [system("pause")](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#systempause)
-- [cout 与 printf()](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#cout-%E4%B8%8E-printf)
-- [main函数与命令行参数](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main%E5%87%BD%E6%95%B0%E4%B8%8E%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0)
-- [预处理、编译与链接](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E9%A2%84%E5%A4%84%E7%90%86%E7%BC%96%E8%AF%91%E4%B8%8E%E9%93%BE%E6%8E%A5)
-- [静态链接与动态链接](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5%E5%92%8C%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5)
+    - [main 函数执行完后执行其他语句](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main-%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E5%AE%8C%E5%90%8E%E6%89%A7%E8%A1%8C%E5%85%B6%E4%BB%96%E8%AF%AD%E5%8F%A5)
+
+    - ["\n" 与 endl 的区别](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#n-%E4%B8%8E-endl-%E7%9A%84%E5%8C%BA%E5%88%AB)
+
+    - [头文件里的 " " 与 < >](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%A4%B4%E6%96%87%E4%BB%B6%E9%87%8C%E7%9A%84---%E4%B8%8E--)
+
+    - [命名空间 std](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4-std)
+
+    - [system("pause")](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#systempause)
+
+    - [cout 与 printf()](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#cout-%E4%B8%8E-printf)
+
+    - [main函数与命令行参数](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main%E5%87%BD%E6%95%B0%E4%B8%8E%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0)
+
+    - [预处理、编译与链接](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E9%A2%84%E5%A4%84%E7%90%86%E7%BC%96%E8%AF%91%E4%B8%8E%E9%93%BE%E6%8E%A5)
+
+    - [静态链接与动态链接](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5%E5%92%8C%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5)
 
 - [iostream cin cout cerr clog](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#iostream)
 
@@ -217,7 +225,7 @@
 - [39.字典根据键从小到大排序](https://github.com/jinbooooom/Programming-language-QA/blob/master/Python/python.md#39%E5%AD%97%E5%85%B8%E6%A0%B9%E6%8D%AE%E9%94%AE%E4%BB%8E%E5%B0%8F%E5%88%B0%E5%A4%A7%E6%8E%92%E5%BA%8F)
 - [40.过滤掉列表 a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]中的所有偶数](https://github.com/jinbooooom/Programming-language-QA/blob/master/Python/python.md#40%E8%BF%87%E6%BB%A4%E6%8E%89%E5%88%97%E8%A1%A8-a--1-2-3-4-5-6-7-8-9-10%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E5%81%B6%E6%95%B0)
 - [41.正则表达式匹配中，（.\*）和（.\*?）匹配区别？](https://github.com/jinbooooom/Programming-language-QA/blob/master/Python/python.md#41%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8C%B9%E9%85%8D%E4%B8%AD%E5%92%8C%E5%8C%B9%E9%85%8D%E5%8C%BA%E5%88%AB)
-- [42.[[1,2],[3,4],[5,6]],一行代码展开该列表，得出[1,2,3,4,5,6]](https://github.com/jinbooooom/Programming-language-QA/blob/master/Python/python.md#42123456%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%B1%95%E5%BC%80%E8%AF%A5%E5%88%97%E8%A1%A8%E5%BE%97%E5%87%BA123456)
+- [42.\[\[1,2\],\[3,4\],\[5,6\]],一行代码展开该列表，得出\[1,2,3,4,5,6]](https://github.com/jinbooooom/Programming-language-QA/blob/master/Python/python.md#42123456%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%B1%95%E5%BC%80%E8%AF%A5%E5%88%97%E8%A1%A8%E5%BE%97%E5%87%BA123456)
 - [43.举例说明zip()函数用法](https://github.com/jinbooooom/Programming-language-QA/blob/master/Python/python.md#43%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8Ezip%E5%87%BD%E6%95%B0%E7%94%A8%E6%B3%95)
 - [44.提高python运行效率的方法](https://github.com/jinbooooom/Programming-language-QA/blob/master/Python/python.md#44%E6%8F%90%E9%AB%98python%E8%BF%90%E8%A1%8C%E6%95%88%E7%8E%87%E7%9A%84%E6%96%B9%E6%B3%95)
 - [45.如何四舍五入？](https://github.com/jinbooooom/Programming-language-QA/blob/master/Python/python.md#45%E5%A6%82%E4%BD%95%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5)

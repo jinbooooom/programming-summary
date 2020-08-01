@@ -1,37 +1,40 @@
-## 个人编程语言学习的笔记整理和资料整理，主要用来查漏补缺
+## 个人编程语言学习时的笔记整理，主要用来查漏补缺
 关于学习方法论，可以阅读[这篇文章](https://github.com/jinbooooom/life)。
 
 其实看的书也不少，也做过一些小工具。但没有及时记录下来，然后几个月也不用，很多就忘了。  
 
-我打算用**提问的方式**去记录一些知识点，这样每次阅读笔记的时候，看着目录，想想这个知识点的提问我能不能回答。  
+我打算用**提问的方式**去记录一些知识点，这样每次阅读笔记的时候，看着目录，想想这个知识点我能不能回答。  
 
 我会持续整理的，觉得对你有用可以先 star 收藏。
 
 用 markdown 书写，建议使用 [Typora](https://www.typora.io/) 打开阅读。
 
 ## 主要包含：
-- [C/C++ 学习笔记](C-plus-plus/C-plus-plus.md)
-- [python 问答](Python/python.md)
+- [C/C++ 学习笔记](https://github.com/jinbooooom/Programming-language-QA#cc)
+- [python 问答](https://github.com/jinbooooom/Programming-language-QA#python-%E9%97%AE%E7%AD%94)
+- Java 学习笔记(等待阅读完 Java 核心技术卷 I 和卷 II )
 
 ## 详细目录
 ### [C/C++](C-plus-plus/C-plus-plus.md)
 
-- ### [C++编程基础](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#c%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80)
+### [C++编程基础](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#c%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80)
 
-  - [Hello, world!](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#hello-world)
+- [Hello, world!](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#hello-world)
+
 - [main 函数前面的数据类型 int 与 void](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main-%E5%87%BD%E6%95%B0%E5%89%8D%E9%9D%A2%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-int-%E4%B8%8E-void)
-    - [main 函数执行完后执行其他语句](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main-%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E5%AE%8C%E5%90%8E%E6%89%A7%E8%A1%8C%E5%85%B6%E4%BB%96%E8%AF%AD%E5%8F%A5)
-    - ["\n" 与 endl 的区别](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#n-%E4%B8%8E-endl-%E7%9A%84%E5%8C%BA%E5%88%AB)
-    - [头文件里的 " " 与 < >](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%A4%B4%E6%96%87%E4%BB%B6%E9%87%8C%E7%9A%84---%E4%B8%8E--)
-    - [命名空间 std](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4-std)
-    - [system("pause")](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#systempause)
-    - [cout 与 printf()](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#cout-%E4%B8%8E-printf)
-    - [main函数与命令行参数](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main%E5%87%BD%E6%95%B0%E4%B8%8E%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0)
-    - [预处理、编译与链接](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E9%A2%84%E5%A4%84%E7%90%86%E7%BC%96%E8%AF%91%E4%B8%8E%E9%93%BE%E6%8E%A5)
-    - [静态链接与动态链接](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5%E5%92%8C%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5)
-    
-  - [iostream cin cout cerr clog](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#iostream)
-  
+
+- [main 函数执行完后执行其他语句](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main-%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E5%AE%8C%E5%90%8E%E6%89%A7%E8%A1%8C%E5%85%B6%E4%BB%96%E8%AF%AD%E5%8F%A5)
+- ["\n" 与 endl 的区别](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#n-%E4%B8%8E-endl-%E7%9A%84%E5%8C%BA%E5%88%AB)
+- [头文件里的 " " 与 < >](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%A4%B4%E6%96%87%E4%BB%B6%E9%87%8C%E7%9A%84---%E4%B8%8E--)
+- [命名空间 std](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4-std)
+- [system("pause")](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#systempause)
+- [cout 与 printf()](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#cout-%E4%B8%8E-printf)
+- [main函数与命令行参数](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#main%E5%87%BD%E6%95%B0%E4%B8%8E%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0)
+- [预处理、编译与链接](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E9%A2%84%E5%A4%84%E7%90%86%E7%BC%96%E8%AF%91%E4%B8%8E%E9%93%BE%E6%8E%A5)
+- [静态链接与动态链接](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5%E5%92%8C%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5)
+
+- [iostream cin cout cerr clog](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#iostream)
+
 - [初始化](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%88%9D%E5%A7%8B%E5%8C%96)
   
 - [逗号表达式](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E9%A2%84%E5%A4%84%E7%90%86%E7%BC%96%E8%AF%91%E4%B8%8E%E9%93%BE%E6%8E%A5)
@@ -63,7 +66,7 @@
   - [strcpy 与memcpy区别](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#strcpy-%E4%B8%8E-memcpy-%E5%8C%BA%E5%88%AB)
   
 - [作用域与生存周期](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8E%E7%94%9F%E5%AD%98%E5%91%A8%E6%9C%9F)
-    
+  
     - [花括号作用域](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E8%8A%B1%E6%8B%AC%E5%8F%B7%E4%BD%9C%E7%94%A8%E5%9F%9F)
     
     - [内存分配](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D)
@@ -90,7 +93,7 @@
 - [结构体与联合体（共用体）的区别](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E7%BB%93%E6%9E%84%E4%BD%93%E4%B8%8E%E8%81%94%E5%90%88%E4%BD%93%E5%85%B1%E7%94%A8%E4%BD%93%E7%9A%84%E5%8C%BA%E5%88%AB)
   
 ### [类 & 对象](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E7%B1%BB--%E5%AF%B9%E8%B1%A1)
-  
+
 - [类访问修饰](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E7%B1%BB%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6)
   
 - [封装继承多态](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%B0%81%E8%A3%85%E7%BB%A7%E6%89%BF%E5%A4%9A%E6%80%81)
@@ -103,7 +106,7 @@
     - [浅复制与深复制](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E6%B5%85%E5%A4%8D%E5%88%B6%E4%B8%8E%E6%B7%B1%E5%A4%8D%E5%88%B6)
   
 - [初始化列表](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%88%9D%E5%A7%8B%E5%8C%96%E5%88%97%E8%A1%A8)
-    
+  
     - [使用初始化列表的原因](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E4%BD%BF%E7%94%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E5%88%97%E8%A1%A8%E7%9A%84%E5%8E%9F%E5%9B%A0)
     - [必须使用初始化列表的情况](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%BF%85%E9%A1%BB%E4%BD%BF%E7%94%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E5%88%97%E8%A1%A8%E7%9A%84%E6%83%85%E5%86%B5)
   - [初始化顺序](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%BA%E5%BA%8F)
@@ -117,7 +120,7 @@
 - [explicit](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#explicit)
   
 - [const](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#const)
-    
+  
     - [函数返回引用](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%BC%95%E7%94%A8)
     - [const作用](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#const%E4%BD%9C%E7%94%A8)
     - [const修饰指针](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#const%E4%BF%AE%E9%A5%B0%E6%8C%87%E9%92%88)
@@ -153,7 +156,7 @@
 - [类型安全](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8)
   
 ### [STL](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#stl)
-  
+
 - [vector 扩容原理](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#vector%E6%89%A9%E5%AE%B9%E5%8E%9F%E7%90%86)
   - [map 与 hash_map](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#map-%E4%B8%8E-hash_map-%E5%8C%BA%E5%88%AB)
     - [map 底层为什么用红黑树而不是平衡二叉树（AVL）](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#map-%E5%BA%95%E5%B1%82%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%E8%80%8C%E4%B8%8D%E6%98%AF%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91avl)
@@ -164,10 +167,11 @@
 - [智能指针](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88)
     - [智能指针的内存泄露以及解决办法](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E7%9A%84%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E4%BB%A5%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95)
     - [为什么摒弃 auto_ptr](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/C-plus-plus.md#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%91%92%E5%BC%83-auto_ptr)
-  
+
 ### [泛型编程](https://github.com/jinbooooom/C-plus-plus/blob/master/ch4-Generic%20Programming.md#%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC)
-  
+
 - [用实例理解泛型编程](https://github.com/jinbooooom/Programming-language-QA/blob/master/C-plus-plus/Generic-programming.md)
+
 
 
 ### [Python 问答](Python/python.md)

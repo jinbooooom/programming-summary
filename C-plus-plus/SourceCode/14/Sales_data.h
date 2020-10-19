@@ -44,8 +44,9 @@ friend std::istream &read(std::istream&, Sales_data&);
 
 public:
 	// constructors
-	Sales_data() = default;
-	Sales_data(const std::string &s): bookNo(s) { }
+	Sales_data(): units_sold(0), revenue(0.0) { }
+	Sales_data(const std::string &s): 
+	           bookNo(s), units_sold(0), revenue(0.0) { }
 	Sales_data(const std::string &s, unsigned n, double p):
 	           bookNo(s), units_sold(n), revenue(p*n) { }
 	Sales_data(std::istream &);
@@ -55,8 +56,8 @@ public:
 private:
 	double avg_price() const;  
 	std::string bookNo;
-	unsigned units_sold = 0;
-	double revenue = 0.0;
+	unsigned units_sold;
+	double revenue;
 };
 
 // non-member Sales_data operations

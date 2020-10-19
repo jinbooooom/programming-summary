@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+// This file illustrates a literal class, which is a C++ 11 feature
+
 #ifndef DEBUG_H
 #define DEBUG_H
 class Debug {

@@ -33,6 +33,9 @@
 #include <string>
 #include <iostream>
 
+#include <functional> 
+// needed for hash
+
 // unchanged from chapter 14 except for added friend declaration for hash
 class Sales_data {
 friend class std::hash<Sales_data>;
@@ -45,8 +48,9 @@ friend std::ostream &print(std::ostream&, const Sales_data&);
 friend std::istream &read(std::istream&, Sales_data&);
 public:
 	// constructors
-	Sales_data() = default;
-	Sales_data(const std::string &s): bookNo(s) { }
+	Sales_data(): units_sold(0), revenue(0.0) { }
+	Sales_data(const std::string &s): 
+	           bookNo(s), units_sold(0), revenue(0.0) { }
 	Sales_data(const std::string &s, unsigned n, double p):
 	           bookNo(s), units_sold(n), revenue(p*n) { }
 	Sales_data(std::istream &);
@@ -55,10 +59,11 @@ public:
 private:
 	double avg_price() const;  
 	std::string bookNo;
-	unsigned units_sold = 0;
-	double revenue = 0.0;
+	unsigned units_sold;
+	double revenue;
 };
 
+// nested namespaces are covered in Section 18.2, page 789
 namespace std {
 template <>              // we're defining a specialization with
 struct hash<Sales_data>  // the template parameter of Sales_data
@@ -72,7 +77,7 @@ struct hash<Sales_data>  // the template parameter of Sales_data
     // our class uses synthesized copy control and default constructor
     // other members as before
 };
-}  // close the std namespace; note: no semicolon after the close curly
+}  // close std 
 
 // non-member Sales_data operations
 inline

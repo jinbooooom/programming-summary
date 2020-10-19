@@ -1,5 +1,0 @@
-for i 
-do
-    echo $i
-    ./$i
-done

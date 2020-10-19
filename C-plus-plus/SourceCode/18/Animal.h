@@ -50,7 +50,7 @@ operator<<(std::ostream&, const ZooAnimal&);
 
 class ZooAnimal {
 public:
-    ZooAnimal() = default;
+    ZooAnimal(): exhibit_stat(false) { }
     ZooAnimal(std::string animal, bool exhibit,
               std::string family): nm(animal), 
                                    exhibit_stat(exhibit), 
@@ -72,20 +72,20 @@ public:
     // . . .
 protected:
     std::string nm;
-    bool        exhibit_stat = false;
+    bool        exhibit_stat;
     std::string fam_name;
     // . . .
 private:
 };
 
-using DanceType = unsigned;
-constexpr DanceType two_left_feet = 0;
-constexpr DanceType Astaire = 1;
-constexpr DanceType Rogers = 42;
+typedef unsigned DanceType;
+const DanceType two_left_feet = 0;
+const DanceType Astaire = 1;
+const DanceType Rogers = 42;
 
 class Bear : public ZooAnimal {
 public:
-    Bear() = default;
+	Bear(): dancetype(Rogers) { }
     Bear(std::string name, bool onExhibit=true, 
          std::string family = "Bear"):
                          ZooAnimal(name, onExhibit, family),
@@ -103,12 +103,12 @@ public:
     virtual ~Bear()
 		{ std::cout << "Bear dtor" << std::endl; }
 private:
-    DanceType   dancetype = Rogers;
+    DanceType   dancetype;
 };
 
 class Panda : public Bear, public Endangered {
 public:
-    Panda() = default;
+    Panda() { }
     Panda(std::string name, bool onExhibit=true);
     virtual ~Panda()
 		{ std::cout << "Panda dtor" << std::endl; }

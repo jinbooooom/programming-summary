@@ -4,8 +4,8 @@ OBJECTS = arith-ex.exe arraysizeof.exe cond.exe \
 		  prec.exe shift-prec.exe sizeof_pgm.exe \
 		  unaryOps.exe vec_init.exe warn_dbltoint.exe
 
-# tells make to use the file "../GNU_makefile_template", which
-# defines general rules for making .o and .exe files
-include ../GNU_makefile_template
+# tells make to use the file "..\MS_makefile_template", which
+# defines general rules for making .obj and .exe files
+include ..\MS_makefile_template
 
-LOCFLAGS = -I../2
+LOCFLAGS = /I..\2

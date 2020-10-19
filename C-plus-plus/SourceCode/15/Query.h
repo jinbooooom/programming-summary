@@ -41,8 +41,8 @@
 class Query_base {
     friend class Query;  
 protected:
-    using line_no = TextQuery::line_no; // used in the eval functions
-    virtual ~Query_base() = default;
+    typedef TextQuery::line_no line_no; // used in the eval functions
+    virtual ~Query_base() { }
 private:
     // eval returns the QueryResult that matches this Query
     virtual QueryResult eval(const TextQuery&) const = 0; 

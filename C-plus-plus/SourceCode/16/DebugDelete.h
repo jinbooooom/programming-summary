@@ -37,7 +37,7 @@
 // function-object class that calls delete on a given pointer
 class DebugDelete {
 public:
-	DebugDelete(const std::string &s = "unique_ptr",
+	DebugDelete(const std::string &s,
                 std::ostream &strm = std::cerr): os(strm), type(s) { }
 	// as with any function template, the type of T is deduced by the compiler
 	template <typename T> void operator()(T *p) const 

@@ -1,50 +1,36 @@
 # executable files for this directory
 OBJECTS = Array.exe array-parms4.exe \
 		  compare.exe compareDef.exe compareSpec.exe \
-		  debug.exe expansion.exe flip.exe multiset.exe \
-		  overloaded.exe overSpec.exe qm.exe \
+		  debug.exe multiset.exe overloaded.exe overSpec.exe qm.exe \
 		  SP.exe special.exe specialized.exe \
-		  trail-ret.exe typealias.exe \
-		  useBlob.exe useChcking.exe \
-		  variadic.exe variadic3.exe Vecmain.exe
+		  useBlob.exe useChcking.exe Vecmain.exe
 
-# tells make to use the file "../GNU_makefile_template", which
-# defines general rules for making .o and .exe files
-include ../GNU_makefile_template
+# tells make to use the file "..\MS_makefile_template", which
+# defines general rules for making .obj and .exe files
+include ..\MS_makefile_template
 
-LOCFLAGS = 
+LOCFLAGS = /I..\14
 
-SP.o: DebugDelete.h
+SP.obj: DebugDelete.h
 
-compareDef.o multiset.o variadic.o variadic3.o Sales_data.o: Sales_data.h
+Vecmain.obj: Vec.h
 
-Vecmain.o: Vec.h
+compareDef.exe: compareDef.obj ..\14\Sales_data.obj
+	$(CPP) $(CPPFLAGS) $(LOCFLAGS) compareDef.obj ..\14\Sales_data.obj 
 
-compareDef.exe: compareDef.o Sales_data.o
-	$(CC) $(CCFLAGS) $(LOCFLAGS) compareDef.o Sales_data.o \
-			-o compareDef.exe
+qm.exe: qm.obj build.obj 
+	$(CPP) $(CPPFLAGS) $(LOCFLAGS) qm.obj build.obj 
 
-variadic.exe: variadic.o Sales_data.o
-	$(CC) $(CCFLAGS) $(LOCFLAGS) variadic.o Sales_data.o \
-			-o variadic.exe
+specialized.exe: debug.cpp
+	$(CPP) /Fespecialized -D SPECIALIZED $(CPPFLAGS) $(LOCFLAGS) debug.cpp 
 
-variadic3.exe: variadic3.o Sales_data.o
-	$(CC) $(CCFLAGS) $(LOCFLAGS) variadic3.o Sales_data.o \
-			-o variadic3.exe
+overloaded.exe: debug.cpp
+	$(CPP) /Feoverloaded -D OVERCHAR $(CPPFLAGS) $(LOCFLAGS) debug.cpp 
 
-multiset.exe: multiset.o Sales_data.o
-	$(CC) $(CCFLAGS) $(LOCFLAGS) multiset.o Sales_data.o \
-			-o multiset.exe
+debug.exe: debug.cpp
+	$(CPP) -D DEBUG $(CPPFLAGS) $(LOCFLAGS) debug.cpp 
 
-qm.exe: qm.o build.o 
-	$(CC) $(CCFLAGS) $(LOCFLAGS) qm.o build.o -o qm.exe
-
-specialized.exe: debug.cc
-	$(CC) -D SPECIALIZED $(CCFLAGS) $(LOCFLAGS) debug.cc -o specialized.exe
-
-overloaded.exe: debug.o
-	$(CC) -D OVERCHAR $(CCFLAGS) $(LOCFLAGS) debug.cc -o overloaded.exe
-
-debug.exe: debug.o
-	$(CC) -D DEBUG $(CCFLAGS) $(LOCFLAGS) debug.cc -o debug.exe
+multiset.exe: multiset.obj Sales_data.obj
+	$(CPP) $(CPPFLAGS) $(LOCFLAGS) multiset.obj Sales_data.obj 
+ 
 

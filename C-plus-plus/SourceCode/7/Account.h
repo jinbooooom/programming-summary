@@ -33,7 +33,7 @@
 
 class Account {
 public:
-	Account() = default;
+	Account(): amount(0.0) { }
 	Account(const std::string &s, double amt):
 		owner(s), amount(amt) { }
 
@@ -44,11 +44,11 @@ public:
     static void rate(double);   
 private:
     std::string owner; 
-    double amount = 0.0;
+    double amount;
     static double interestRate; 
     static double initRate() { return .0225; }
     static const std::string accountType;
-    static constexpr int period = 30;// period is a constant expression
+    static const int period = 30;// period is a constant expression
     double daily_tbl[period];
 };
 #endif

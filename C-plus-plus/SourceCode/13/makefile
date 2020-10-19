@@ -1,27 +1,29 @@
 # executable files for this directory
 OBJECTS = FolderMain.exe HasPtrUseCount.exe \
-		  HasPtrValueLike.exe copyNoMove.exe \
+		  HasPtrValueLike.exe \
 		  moveHP.exe serial.exe StrFolderMain.exe \
 		  useStrVec.exe substr.exe 
 
-# tells make to use the file "../GNU_makefile_template", which
-# defines general rules for making .o and .exe files
-include ../GNU_makefile_template
+# the corresponding source file uses c++ 11 features
+C11_OBJECTS = copyNoMove.exe 
 
-LOCFLAGS = -I../1 -I../7
+# tells make to use the file "..\MS_makefile_template", which
+# defines general rules for making .obj and .exe files
+include ..\MS_makefile_template
 
-Folder.o FolderMain.o: Folder.h
-StrFolder.o StrFolderMain.o: StrFolder.h String.h
-String.o: String.h
-useStrVec.o StrVec.o: String.h StrVec.h
+LOCFLAGS = /I..\1 -I..\7
 
-useStrVec.exe: StrVec.o useStrVec.o
-	$(CC) $(CCFLAGS) $(LOCFLAGS) StrVec.o useStrVec.o -o useStrVec.exe
+Folder.obj FolderMain.obj: Folder.h
+StrFolder.obj StrFolderMain.obj: StrFolder.h String.h
+String.obj: String.h
+useStrVec.obj StrVec.obj: String.h StrVec.h
 
-FolderMain.exe: Folder.o FolderMain.o
-	$(CC) $(CCFLAGS) $(LOCFLAGS) Folder.o FolderMain.o -o FolderMain.exe
+useStrVec.exe: StrVec.obj useStrVec.obj
+	$(CPP) $(CPPFLAGS) $(LOCFLAGS) useStrVec.obj StrVec.obj
 
-StrFolderMain.exe: StrFolder.o StrFolderMain.o String.o
-	$(CC) $(CCFLAGS) $(LOCFLAGS) StrFolder.o StrFolderMain.o String.o \
-		-o StrFolderMain.exe
+FolderMain.exe: Folder.obj FolderMain.obj
+	$(CPP) $(CPPFLAGS) $(LOCFLAGS) FolderMain.obj Folder.obj
+
+StrFolderMain.exe: StrFolder.obj StrFolderMain.obj String.obj
+	$(CPP) $(CPPFLAGS) $(LOCFLAGS) StrFolderMain.obj StrFolder.obj String.obj 
 

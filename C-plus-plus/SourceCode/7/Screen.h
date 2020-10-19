@@ -33,9 +33,10 @@
 class Screen {
 public:
     typedef std::string::size_type pos;
-	Screen() = default;  // needed because Screen has another constructor
-	// cursor initialized to 0 by its in-class initializer
-    Screen(pos ht, pos wd, char c): height(ht), width(wd), 
+	// default constructor needed because Screen has another constructor
+	Screen(): cursor(0), height(0), width(0) { }
+    Screen(pos ht, pos wd, char c): cursor(0),
+	                                height(ht), width(wd), 
 	                                contents(ht * wd, c) { }
 	friend class Window_mgr;
     Screen(pos ht = 0, pos wd = 0): 
@@ -50,16 +51,17 @@ public:
     Screen &move(pos r, pos c);      // can be made inline later
     Screen &set(char);
     Screen &set(pos, pos, char);
+	// other members as before
     // display overloaded on whether the object is const or not
     Screen &display(std::ostream &os) 
                   { do_display(os); return *this; }
     const Screen &display(std::ostream &os) const
                   { do_display(os); return *this; }
 private:
-     // function to do the work of displaying a Screen
-     void do_display(std::ostream &os) const {os << contents;}
-    pos cursor = 0;
-    pos height = 0, width = 0;
+    // function to do the work of displaying a Screen
+    void do_display(std::ostream &os) const {os << contents;}
+    pos cursor;
+    pos height, width;
     std::string contents;
 };
 

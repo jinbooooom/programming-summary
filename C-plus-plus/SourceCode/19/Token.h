@@ -27,6 +27,10 @@
  * 	Fax: (201) 236-3290
 */ 
 
+// This file illustrates use of unions with a class type member
+// that has constructors and copy control members
+// Such unions are supported only under C++ 11
+
 #ifndef TOKEN_H
 #define TOKEN_H
 

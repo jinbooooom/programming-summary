@@ -53,8 +53,9 @@ operator==(const Sales_item&, const Sales_item&);
 public:
     // constructors are explained in section 7.1.4, pages 262 - 265
     // default constructor needed to initialize members of built-in type
-    Sales_item() = default;
-    Sales_item(const std::string &book): bookNo(book) { }
+    Sales_item(): units_sold(0), revenue(0.0) { }
+    Sales_item(const std::string &book): 
+                  bookNo(book), units_sold(0), revenue(0.0) { }
     Sales_item(std::istream &is) { is >> *this; }
 public:
     // operations on Sales_item objects
@@ -67,8 +68,8 @@ public:
 // private members as before
 private:
     std::string bookNo;      // implicitly initialized to the empty string
-    unsigned units_sold = 0; // explicitly initialized
-    double revenue = 0.0;
+    unsigned units_sold;
+    double revenue;
 };
 
 // used in chapter 10

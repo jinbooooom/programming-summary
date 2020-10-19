@@ -38,7 +38,7 @@ public:
 
 	// Action is a type that can point to a member function of Screen
     // that returns a reference to a Screen and takes no arguments
-	using Action = Screen&(Screen::*)();
+	typedef Screen&(Screen::*Action)();
 
     // constructor: build screen of given size containing all blanks
     Screen(pos ht = 0, pos wd = 0): contents(ht * wd, ' '), cursor(0), 

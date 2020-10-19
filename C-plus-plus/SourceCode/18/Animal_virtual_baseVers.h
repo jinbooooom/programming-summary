@@ -51,7 +51,7 @@ operator<<(std::ostream&, const ZooAnimal&);
 
 class ZooAnimal {
 public:
-    ZooAnimal() = default;
+	ZooAnimal(): exhibit_stat(false) { }
     ZooAnimal(std::string animal, bool exhibit,
               std::string family): nm(animal), 
                                    exhibit_stat(exhibit), 
@@ -71,7 +71,7 @@ public:
     // . . .
 protected:
     std::string nm;
-    bool exhibit_stat = false;
+    bool exhibit_stat;
     std::string fam_name;
     // . . .
 private:
@@ -80,7 +80,7 @@ private:
 // the order of the keywords public and virtual is not significant
 class Raccoon : public virtual ZooAnimal {
 public:
-    Raccoon() = default;
+	Raccoon(): pettable_flag(false) { }
     Raccoon(std::string name, bool onExhibit=true);
 
     virtual std::ostream& print(std::ostream&) const
@@ -91,7 +91,7 @@ public:
     // . . .
 
 protected:
-    bool pettable_flag = false;
+    bool pettable_flag;
     // . . .
 };
 
@@ -124,7 +124,7 @@ private:
 class Panda : public Bear,
               public Raccoon, public Endangered {
 public:
-    Panda() = default;
+	Panda(): sleeping_flag(false) { }
     Panda(std::string name, bool onExhibit=true);
     virtual std::ostream& print(std::ostream&) const
 		{ return  std::cout << "Panda::print" << std::endl; }
@@ -134,7 +134,7 @@ public:
     // . . .
 
 protected:
-    bool sleeping_flag = false;
+    bool sleeping_flag;
     // . . .
 };
 
@@ -142,7 +142,7 @@ protected:
 Bear::Bear(std::string name, bool onExhibit):
          ZooAnimal(name, onExhibit, "Bear") { }
 Raccoon::Raccoon(std::string name, bool onExhibit)
-       : ZooAnimal(name, onExhibit, "Raccoon") { }
+       : ZooAnimal(name, onExhibit, "Raccoon"), pettable_flag(false) { }
 
 Panda::Panda(std::string name, bool onExhibit)
       : ZooAnimal(name, onExhibit, "Panda"),

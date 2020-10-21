@@ -26,7 +26,7 @@ public class BigIntegerTest
 
       for (int i = 1; i <= k; i++)
          lotteryOdds = lotteryOdds.multiply(BigInteger.valueOf(n - i + 1)).divide(
-               BigInteger.valueOf(i));
+            BigInteger.valueOf(i));
 
       System.out.println("Your odds are 1 in " + lotteryOdds + ". Good luck!");
    }

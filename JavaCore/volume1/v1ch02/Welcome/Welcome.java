@@ -1,18 +1,16 @@
 /**
- * This program displays a greeting from the authors.
- * @version 1.20 2004-02-28
+ * This program displays a greeting for the reader.
+ * @version 1.30 2014-02-27
  * @author Cay Horstmann
  */
 public class Welcome
 {
    public static void main(String[] args)
    {
-      String[] greeting = new String[3];
-      greeting[0] = "Welcome to Core Java";
-      greeting[1] = "by Cay Horstmann";
-      greeting[2] = "and Gary Cornell";
-
-      for (String g : greeting)
-         System.out.println(g);
+      String greeting = "Welcome to Core Java!";
+      System.out.println(greeting);
+      for (int i = 0; i < greeting.length(); i++)
+         System.out.print("=");
+      System.out.println();
    }
 }

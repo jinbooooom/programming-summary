@@ -2,23 +2,25 @@ package com.horstmann.corejava;
 
 // the classes in this file are part of this package
 
-import java.util.*;
+import java.time.*;
 
 // import statements come after the package statement
 
 /**
- * @version 1.10 1999-12-18
+ * @version 1.11 2015-05-08
  * @author Cay Horstmann
  */
 public class Employee
 {
-   public Employee(String n, double s, int year, int month, int day)
+   private String name;
+   private double salary;
+   private LocalDate hireDay;
+
+   public Employee(String name, double salary, int year, int month, int day)
    {
-      name = n;
-      salary = s;
-      GregorianCalendar calendar = new GregorianCalendar(year, month - 1, day);
-      // GregorianCalendar uses 0 for January
-      hireDay = calendar.getTime();
+      this.name = name;
+      this.salary = salary;
+      hireDay = LocalDate.of(year, month, day);
    }
 
    public String getName()
@@ -31,7 +33,7 @@ public class Employee
       return salary;
    }
 
-   public Date getHireDay()
+   public LocalDate getHireDay()
    {
       return hireDay;
    }
@@ -41,8 +43,4 @@ public class Employee
       double raise = salary * byPercent / 100;
       salary += raise;
    }
-
-   private String name;
-   private double salary;
-   private Date hireDay;
 }

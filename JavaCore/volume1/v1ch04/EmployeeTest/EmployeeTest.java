@@ -1,8 +1,8 @@
-import java.util.*;
+import java.time.*;
 
 /**
  * This program tests the Employee class.
- * @version 1.11 2004-02-19
+ * @version 1.13 2018-04-10
  * @author Cay Horstmann
  */
 public class EmployeeTest
@@ -22,20 +22,22 @@ public class EmployeeTest
 
       // print out information about all Employee objects
       for (Employee e : staff)
-         System.out.println("name=" + e.getName() + ",salary=" + e.getSalary() + ",hireDay="
-               + e.getHireDay());
+         System.out.println("name=" + e.getName() + ",salary=" + e.getSalary() + ",hireDay=" 
+            + e.getHireDay());
    }
 }
 
 class Employee
 {
+   private String name;
+   private double salary;
+   private LocalDate hireDay;
+
    public Employee(String n, double s, int year, int month, int day)
    {
       name = n;
       salary = s;
-      GregorianCalendar calendar = new GregorianCalendar(year, month - 1, day);
-      // GregorianCalendar uses 0 for January
-      hireDay = calendar.getTime();
+      hireDay = LocalDate.of(year, month, day);
    }
 
    public String getName()
@@ -48,7 +50,7 @@ class Employee
       return salary;
    }
 
-   public Date getHireDay()
+   public LocalDate getHireDay()
    {
       return hireDay;
    }
@@ -58,8 +60,4 @@ class Employee
       double raise = salary * byPercent / 100;
       salary += raise;
    }
-
-   private String name;
-   private double salary;
-   private Date hireDay;
 }

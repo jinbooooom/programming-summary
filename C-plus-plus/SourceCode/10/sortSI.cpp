@@ -30,11 +30,11 @@
 #include <algorithm>
 using std::sort;
 
-#include <iostream>
-using std::cout; using std::cin; using std::endl;
-
 #include <vector>
 using std::vector; 
+
+#include <iostream>
+using std::cout; using std::cin; using std::endl;
 
 #include "Sales_item.h"
 
@@ -46,16 +46,13 @@ int main()
     while (std::cin >> trans)  // read the transations
         file.push_back(trans);
 
-	for (vector<Sales_item>::const_iterator i = file.begin();
-			i != file.end(); ++i)        // print what was read
-		cout << *i << endl;
+	for (auto i : file)        // print what was read
+		cout << i << endl;
 	cout << "\n\n";
 
 	sort(file.begin(), file.end(), compareIsbn); // sort into ISBN order
-	for (vector<Sales_item>::const_iterator i = file.begin();
-			i != file.end(); ++i)        // print in ISBN order
-		cout << *i << endl;
+	for (auto i : file)        // print in ISBN order
+		cout << i << endl;
 
 	return 0;
 }
-

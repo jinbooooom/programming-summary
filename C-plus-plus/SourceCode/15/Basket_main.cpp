@@ -28,7 +28,7 @@
 */ 
 
 #include <memory>
-using std::shared_ptr; 
+using std::shared_ptr; using std::make_shared;
 #include "Basket.h"
 #include <iostream>
 using std::cout; using std::endl;
@@ -39,7 +39,7 @@ int main()
 	sale.add_item(shared_ptr<Quote>(new Quote("123", 45)));
 	sale.add_item(shared_ptr<Quote>(new Quote("123", 45)));
 	sale.add_item(shared_ptr<Quote>(new Quote("123", 45)));
-	sale.add_item(shared_ptr<Quote>(new Bulk_quote("345", 45, 3, .15)));
+	sale.add_item(make_shared<Bulk_quote>("345", 45, 3, .15));
 	sale.add_item(shared_ptr<Quote>(new Bulk_quote("345", 45, 3, .15)));
 	sale.add_item(shared_ptr<Quote>(new Bulk_quote("345", 45, 3, .15)));
 	sale.add_item(shared_ptr<Quote>(new Bulk_quote("345", 45, 3, .15)));

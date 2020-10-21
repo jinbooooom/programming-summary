@@ -44,15 +44,14 @@ int main()
 	while (cin >> i)
 		grades.push_back(i);
 
-	for (vector<unsigned>::const_iterator grade = grades.begin();
-			grade != grades.end(); ++grade) {  
+	for (auto grade : grades) {  // for each grade in grades
 		// set the initial grade as pass or fail
-		string finalgrade = (*grade < 60) ?  "fail" : "pass";
+		string finalgrade = (grade < 60) ?  "fail" : "pass";
 
-		finalgrade = (*grade > 90) ? "high pass"
-				                  : (*grade < 60) ? "fail" : "pass";
+		finalgrade = (grade > 90) ? "high pass"
+				                  : (grade < 60) ? "fail" : "pass";
 
-		cout << *grade << " " + finalgrade << endl;
+		cout << grade << " " + finalgrade << endl;
 	}
 
 	return 0;

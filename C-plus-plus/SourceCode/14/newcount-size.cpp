@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include "make_plural.h"
 
 #include <iostream>
@@ -61,10 +63,21 @@ bool GT(const string &s, string::size_type m)
 }
 
 class SizeComp {
-	SizeComp();  // private not implemented, no default constructor
-	SizeComp &operator=(const SizeComp&); // no assignment
 public:
+#ifdef DELETED_FCNS
+	SizeComp() = delete;  // no default constructor
+	SizeComp &operator=(const SizeComp&) = delete; // no assignment
+#else
+private:
+	SizeComp(); // there will be no definition for these members
+	SizeComp &operator=(const SizeComp&);
+public:
+#endif
+#ifdef DEFAULT_FCNS
+	~SizeComp() = default;
+#else
 	~SizeComp() { }
+#endif
 
 	// constructor with a parameter for each captured variable
 	SizeComp(size_t n): sz(n) { }  
@@ -77,8 +90,13 @@ private:
 };
 
 class PrintString {
-	PrintString();   // no default constructor
 public:
+#ifdef DELETED_FCNS
+	PrintString() = delete;   // no default constructor
+	// no need for any code in the #else case, because PrintString
+	// won't get a default constructor anyway,
+	// because it has another constructor
+#endif
 	PrintString(ostream &o) : os(o) { }
 	void operator()(const string &s) const { os << s << " "; }
 private:
@@ -103,8 +121,7 @@ void elimDups(vector<string> &words)
     // unique reorders the input so that each word appears once in the
     // front part of the range 
 	// returns an iterator one past the unique range;
-    vector<string>::iterator end_unique = 
-				unique(words.begin(), words.end());
+    auto end_unique = unique(words.begin(), words.end());
 
     // erase uses a vector operation to remove the nonunique elements
     words.erase(end_unique, words.end());
@@ -124,11 +141,10 @@ void biggies(vector<string> &words, vector<string>::size_type sz)
 
 	// use object of type SizeComp to find
 	// the first element whose size() is >= sz
-    vector<string>::iterator wc = 
-				find_if(words.begin(), words.end(), SizeComp(sz));
+    auto wc = find_if(words.begin(), words.end(), SizeComp(sz));
 
 	// compute the number of elements with size >= sz 
-	vector<string>::size_type count = words.end() - wc;
+	auto count = words.end() - wc;
 
 	// print results
     cout << count << " " << make_plural(count, "word", "s")

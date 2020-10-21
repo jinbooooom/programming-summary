@@ -43,9 +43,6 @@ using std::string;
 using std::ostream; using std::endl; 
 using std::cout;
 
-#include <memory>
-using std::shared_ptr;
-
 // debugging routine to check contents in a Basket
 void Basket::display(ostream &os) const
 {
@@ -54,8 +51,8 @@ void Basket::display(ostream &os) const
     // print each distinct ISBN in the Basket along with
     // count of how many copies are ordered and what their price will be
     // upper_bound returns an iterator to the next item in the set
-    for (auto next_item = items.begin();
-              next_item != items.end();
+    for (auto next_item = items.cbegin();
+              next_item != items.cend();
               next_item = items.upper_bound(*next_item))
     {
         // we know there's at least one element with this key in the Basket
@@ -74,8 +71,8 @@ double Basket::total_receipt(ostream &os) const
 
     // iter refers to the first element in a batch of elements with the same ISBN
     // upper_bound returns an iterator to the element just past the end of that batch
-    for (auto iter = items.begin(); 
-              iter != items.end();
+    for (auto iter = items.cbegin(); 
+              iter != items.cend();
               iter = items.upper_bound(*iter)) {
         // we know there's at least one element with this key in the Basket
 		// print the line item for this book

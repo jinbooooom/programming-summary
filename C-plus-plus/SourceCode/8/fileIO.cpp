@@ -49,7 +49,7 @@ void process(ifstream &is)
 int main(int argc, char* argv[])
 {
 	// for each file passed to the program
-	for (char **p = argv + 1; p != argv + argc; ++p) {
+	for (auto p = argv + 1; p != argv + argc; ++p) {
 	    ifstream input(*p);   // create input and open the file
 	    if (input) {          // if the file is ok, ``process'' this file
 	        process(input);
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 	        cerr << "couldn't open: " + string(*p);
 	} // input goes out of scope and is destroyed on each iteration
 	
-	char **p = argv + 1, **end = argv + argc;
+	auto p = argv + 1, end = argv + argc;
 	
 	ifstream input;           
 	while (p != end) {        // for each file passed to the program

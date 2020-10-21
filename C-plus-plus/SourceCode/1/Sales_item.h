@@ -28,7 +28,7 @@
 */ 
 
 /* This file defines the Sales_item class used in chapter 1.
- * The code used in this file will be explained in
+ * The code used in this file will be explained in 
  * Chapter 7 (Classes) and Chapter 14 (Overloaded Operators)
  * Readers shouldn't try to understand the code in this file
  * until they have read those chapters.
@@ -37,6 +37,8 @@
 #ifndef SALESITEM_H
 // we're here only if SALESITEM_H has not yet been defined 
 #define SALESITEM_H
+
+#include "Version_test.h" 
 
 // Definition of Sales_item class and related functions goes here
 #include <iostream>
@@ -53,9 +55,13 @@ operator==(const Sales_item&, const Sales_item&);
 public:
     // constructors are explained in section 7.1.4, pages 262 - 265
     // default constructor needed to initialize members of built-in type
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+    Sales_item() = default;
+#else
     Sales_item(): units_sold(0), revenue(0.0) { }
-    Sales_item(const std::string &book): 
-                  bookNo(book), units_sold(0), revenue(0.0) { }
+#endif
+    Sales_item(const std::string &book):
+              bookNo(book), units_sold(0), revenue(0.0) { }
     Sales_item(std::istream &is) { is >> *this; }
 public:
     // operations on Sales_item objects
@@ -68,8 +74,13 @@ public:
 // private members as before
 private:
     std::string bookNo;      // implicitly initialized to the empty string
-    unsigned units_sold;
-    double revenue;
+#ifdef IN_CLASS_INITS
+    unsigned units_sold = 0; // explicitly initialized
+    double revenue = 0.0;
+#else
+    unsigned units_sold;  
+    double revenue;       
+#endif
 };
 
 // used in chapter 10

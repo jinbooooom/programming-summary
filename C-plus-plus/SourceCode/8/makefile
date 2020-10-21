@@ -6,7 +6,7 @@ OBJECTS = buf.exe clearIO.exe fileIO.exe add_item.exe \
 # defines general rules for making .obj and .exe files
 include ..\MS_makefile_template
 
-LOCFLAGS = /I..\7
+LOCFLAGS = -I..\7
 
 add_itemV2.exe: add_itemV2.obj ..\7\Sales_data.obj
 	$(CPP) $(CPPFLAGS) $(LOCFLAGS) add_itemV2.obj ..\7\Sales_data.obj 

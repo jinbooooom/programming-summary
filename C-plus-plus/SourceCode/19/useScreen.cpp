@@ -27,7 +27,15 @@
  * 	Fax: (201) 236-3290
 */
 
+#include "Version_test.h"
+
 #include "Screen.h"
+
+#include <functional>
+using std::function; 
+#ifndef FUNCTION_PTRMEM
+using std::mem_fn;
+#endif
 
 #include <iostream>
 using std::cout; using std::endl;
@@ -35,12 +43,30 @@ using std::cout; using std::endl;
 #include <string>
 using std::string;
 
+struct X {
+	int foo(int i) { cout << "foo(" << i << ")" << endl; return i; }
+};
+
+void xfcn()
+{
+	function<int (X*, int)> f;
+#ifdef FUNCTION_PTRMEM
+	f = &X::foo;		 // pointer to member
+#else
+	f = mem_fn(&X::foo); // pointer to member
+#endif
+
+	X x;
+	int v = f(&x, 5);
+	cout << "v = " << v << endl;
+}
+
 int main ()
 {
 	// pdata can point to a string member of a const (or nonconst) Screen
 	const string Screen::*pdata;  // uninitialized
 	pdata = &Screen::contents;    // points to the contents member
-	const string Screen::*pdata2 = &Screen::contents; 
+	auto pdata2 = &Screen::contents; // equivalent declaration
 
 	// data() returns a pointer to the contents member of class Screen
 	const string Screen::*pdata3 = Screen::data();
@@ -51,8 +77,8 @@ int main ()
 
 	// .* dereferences pdata to fetch the contents member 
 	// from the object myScreen
-	string str = myScreen.*pdata;  // s is a string
-	const string cstr = cScreen.*pdata;  // c is a const string
+	auto str = myScreen.*pdata;  // s is a string
+	auto cstr = cScreen.*pdata;  // c is a const string
 	
 	// ->* dereferences pdata to fetch contents 
 	// from the object to which pScreen points
@@ -61,7 +87,7 @@ int main ()
 	// pmf is a pointer that can point to a Screen member function 
 	// that takes no arguments, returns a char, and is const
 	// that returns a char and takes no arguments
-	char (Screen::*pmf)() const = &Screen::get_cursor;
+	auto pmf = &Screen::get_cursor;
 	char (Screen::*pmf2)() const = &Screen::get; // same type as pmf
 	
 	pmf = &Screen::get; // which version of get deduced from type of pmf
@@ -82,12 +108,24 @@ int main ()
 	
 	// Op is a type that can point to a member function of Screen 
 	// that returns a char and takes two pos arguments
+#ifdef TYPE_ALIAS_DECLS
+	using Op = char (Screen::*)(Screen::pos, Screen::pos) const;
+#endif
+	// equivalent declaration of Op using a typedef
 	typedef char (Screen::*Op)(Screen::pos, Screen::pos) const;
 
 	Op get = &Screen::get; // get points to the get member of Screen
 	
 	myScreen.move(Screen::HOME);  // invokes myScreen.home
 	myScreen.move(Screen::DOWN);  // invokes myScreen.down
+
+	// bind an object of type function to a pointer to member
+#ifdef FUNCTION_PTRMEM
+	function<char (const Screen*)> f = &Screen::get_cursor;
+#else
+	auto pm = mem_fn(&Screen::get_cursor);
+	function<char (const Screen*)> f = pm;
+#endif
 
 	return 0;
 }

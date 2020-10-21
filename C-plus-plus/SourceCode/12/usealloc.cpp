@@ -46,18 +46,16 @@ int main()
 {
 	const size_t n = 100;
 	allocator<string> alloc;      // object that can allocate strings
-	string *p = alloc.allocate(n);   // allocate n unconstructed strings
+	auto p = alloc.allocate(n);   // allocate n unconstructed strings
 	
-	string *q = p; // q will point to one past the last constructed element
-	// pre-C++ 11 alloc.construct must be explicitly passed an object of
-	// the allocated type, so, we pass an empty string() explicitly
-	alloc.construct(q++, string()); // *q is the empty string
+	auto q = p; // q will point to one past the last constructed element
+	alloc.construct(q++);         // *q is the empty string
 	cout << *(q-1) << endl;
 	
-	alloc.construct(q++, string(10, 'c')); // *q is cccccccccc
+	alloc.construct(q++, 10, 'c'); // *q is cccccccccc
 	cout << *(q - 1) << endl;
 	
-	alloc.construct(q++, string("hi"));    // *q is hi!
+	alloc.construct(q++, "hi");    // *q is hi!
 	cout << *(q - 1) << endl;
 	
 	cout << *p << endl;  // ok: uses the string output operator

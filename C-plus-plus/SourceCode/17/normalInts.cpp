@@ -27,7 +27,7 @@
  * 	Fax: (201) 236-3290
 */ 
 
-#include "ourRandom.h"   // for lround
+#include "Version_test.h"
 
 #include <string>
 using std::string;
@@ -39,8 +39,8 @@ using std::time;
 using std::rand;
 
 #include <random>
-using std::normal_distribution;
 using std::default_random_engine;
+using std::normal_distribution;
 
 #include <iostream>
 using std::cerr; using std::cout; using std::endl;
@@ -53,6 +53,12 @@ using std::max_element;
 
 #include <numeric>
 using std::accumulate;
+
+// Version_test.h defines lround if LROUND is not defined
+#ifdef LROUND    
+#include <cmath>
+using std::lround;
+#endif
 
 #include <cstddef>
 using std::size_t;

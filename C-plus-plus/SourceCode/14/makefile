@@ -6,7 +6,7 @@ OBJECTS = absInt.exe add.exe calc.exe directcall.exe \
 # defines general rules for making .obj and .exe files
 include ..\MS_makefile_template
 
-LOCFLAGS = /I..\1 -I..\6
+LOCFLAGS = -I..\1 -I..\6
 
 add.obj directcall.obj Sales_data.obj: Sales_data.h
 

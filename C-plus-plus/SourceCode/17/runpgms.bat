@@ -13,7 +13,7 @@ skipws.exe < data/skipws
 subexpr.exe < data/files
 validatePhones.exe < data/validatePhones
 
-for %%i in ( manips.exe normalInts.exe point.exe 
+for %%i in ( manips.exe manips11.exe normalInts.exe point.exe 
 		   prec.exe rand1.exe rand2.exe rand4.exe 
-		   rand6.exe regex1.exe REerrs.exe 
+		   rand6.exe regex1.exe REerrs.exe sci_dec.exe
 		   seed.exe seek.exe setw.exe tuple.exe zips.exe ) do %%i

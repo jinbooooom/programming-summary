@@ -91,7 +91,7 @@ int main()
 	}
 
 	exercises();
-	
+
 	cast_to_ref(*bp);
 	cast_to_ref(Base());
 }

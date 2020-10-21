@@ -43,15 +43,15 @@ using std::toupper;
 // tolower and toupper change the argument itself, not a local copy
 string &tolower(string &s)
 {
-	for (string::size_type i = 0; i != s.size(); ++i)
-		s[i] = tolower(s[i]);
+	for (auto &i : s)
+		i = tolower(i);
 	return s;
 }
 
 string &toupper(string &s)
 {
-	for (string::size_type i = 0; i != s.size(); ++i)
-		s[i] = toupper(s[i]);
+	for (auto &i : s)
+		i = toupper(i);
 	return s;
 }
 

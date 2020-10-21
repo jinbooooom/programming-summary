@@ -1,0 +1,5 @@
+compare(T)	1
+compare(T)	-1
+-1
+compare(const char arrays)	-1
+compare(const char*const)	-1

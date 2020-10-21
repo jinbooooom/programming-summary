@@ -27,6 +27,9 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include <iterator>
+using std::begin; using std::end;
+
 #include <cstddef>
 using std::size_t;
 
@@ -46,7 +49,7 @@ int main()
 {
     int j[] = { 0, 1 };  // int array of size 2
 
-    print(j, sizeof(j)/sizeof(*j));
+    print(j, end(j) - begin(j));  
 
     return 0;
 }

@@ -42,7 +42,7 @@ position(const string &a, const string &b, const string &c)
 int main()
 {
 	string s1 = "a value", s2 = "another";
-	string::size_type x = position(s1, s2, "val");
+	auto x = position(s1, s2, "val");
 	if (x == string::npos)
 		cout << "not found" << endl;
 	else if (x < s1.size())
@@ -50,7 +50,7 @@ int main()
 	else
 		cout << "value is in second parameter" << endl;
 
-	string::size_type n = (s1 + s2).find('a');
+	auto n = (s1 + s2).find('a');
 	cout << "n = " << n << endl;
 	s1 + s2 = "wow!";
 }

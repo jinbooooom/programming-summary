@@ -26,13 +26,19 @@
  * 	Upper Saddle River, NJ  07458
  * 	Fax: (201) 236-3290
 */
-
 #ifndef STRBLOB_H
 #define STRBLOB_H
+
+#include "Version_test.h"
+
 #include <vector>
 #include <string>
 #include <memory>
 #include <stdexcept>
+
+#ifdef LIST_INIT
+#include <initializer_list>
+#endif
 
 // forward declaration needed for friend declaration in StrBlob
 class StrBlobPtr;
@@ -43,10 +49,12 @@ public:
     typedef std::vector<std::string>::size_type size_type;
 
 	// constructors
-    StrBlob() : data(new std::vector<std::string>()) { }
-	// pre C++11 no initializer_list, we'll define a constructor
-	// that takes pointers to an array instead
-    StrBlob(const std::string*, const std::string*);
+    StrBlob() : data(std::make_shared<std::vector<std::string>>()) { }
+#ifdef LIST_INIT
+    StrBlob(std::initializer_list<std::string> il);
+#else
+	StrBlob(std::string *, std::string*);  
+#endif
 
 	// size operations
     size_type size() const { return data->size(); }
@@ -64,15 +72,21 @@ public:
 	StrBlobPtr begin();  // can't be defined until StrBlobPtr is
     StrBlobPtr end();
 private:
-    std::shared_ptr<std::vector<std::string> > data; 
+    std::shared_ptr<std::vector<std::string>> data; 
     // throws msg if data[i] isn't valid
     void check(size_type i, const std::string &msg) const;
 };
 
 // constructor
+#ifdef LIST_INIT
 inline
-StrBlob::StrBlob(const std::string *beg, const std::string *end): 
-       data(new std::vector<std::string>(beg, end)) { }
+StrBlob::StrBlob(std::initializer_list<std::string> il): 
+              data(std::make_shared<std::vector<std::string>>(il)) { }
+#else
+inline
+StrBlob::StrBlob(std::string *b, std::string *e):
+              data(std::make_shared<std::vector<std::string>>(b,e)) { }
+#endif
 
 // StrBlobPtr throws an exception on attempts to access a nonexistent element 
 class StrBlobPtr {
@@ -86,35 +100,31 @@ public:
     StrBlobPtr& decr();       // prefix version
 private:
     // check returns a shared_ptr to the vector if the check succeeds
-    std::shared_ptr<std::vector<std::string> > 
+    std::shared_ptr<std::vector<std::string>> 
         check(std::size_t, const std::string&) const;
 
     // store a weak_ptr, which means the underlying vector might be destroyed
-    std::weak_ptr<std::vector<std::string> > wptr;  
+    std::weak_ptr<std::vector<std::string>> wptr;  
     std::size_t curr;      // current position within the array
 };
 
 inline
 std::string& StrBlobPtr::deref() const
 {
-    std::shared_ptr<std::vector<std::string> >
-			 p = check(curr, "dereference past end"); 
+    auto p = check(curr, "dereference past end"); 
     return (*p)[curr];  // (*p) is the vector to which this object points
 }
 
 inline
-std::shared_ptr<std::vector<std::string> > 
+std::shared_ptr<std::vector<std::string>> 
 StrBlobPtr::check(std::size_t i, const std::string &msg) const
 {
-	// is the vector still around?
-    std::shared_ptr<std::vector<std::string> > ret = wptr.lock();   
-
+    auto ret = wptr.lock();   // is the vector still around?
     if (!ret)
         throw std::runtime_error("unbound StrBlobPtr");
 
     if (i >= ret->size()) 
         throw std::out_of_range(msg);
-
     return ret; // otherwise, return a shared_ptr to the vector
 }
 
@@ -149,7 +159,7 @@ inline
 StrBlobPtr
 StrBlob::end() 
 {
-	StrBlobPtr ret = StrBlobPtr(*this, data->size());
+	auto ret = StrBlobPtr(*this, data->size());
     return ret; 
 }
 
@@ -157,8 +167,7 @@ StrBlob::end()
 inline
 bool eq(const StrBlobPtr &lhs, const StrBlobPtr &rhs)
 {
-	std::shared_ptr<std::vector<std::string> > 
-		 l = lhs.wptr.lock(), r = rhs.wptr.lock();
+	auto l = lhs.wptr.lock(), r = rhs.wptr.lock();
 	// if the underlying vector is the same 
 	if (l == r) 
 		// then they're equal if they're both null or 

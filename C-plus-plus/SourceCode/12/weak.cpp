@@ -28,11 +28,11 @@
 */ 
 
 #include <memory>
-using std::weak_ptr; using std::shared_ptr;
+using std::make_shared; using std::weak_ptr; using std::shared_ptr;
 
 int main()
 {
-	shared_ptr<int> p(new int(42));
+	auto p = make_shared<int>(42);
 
 	weak_ptr<int> wp(p);  // wp weakly shares with p; use count in p is unchanged
 

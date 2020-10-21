@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <cstddef>
 using std::size_t;
 
@@ -38,11 +40,18 @@ int arr[10];          // arr is an array of ten ints
 int *p1[10];          // p1 is an array of ten pointers
 int (*p2)[10] = &arr; // p2 points to an array of ten ints
 
-typedef int arrT[10]; // arrT is a synonym for the type array of ten ints
+#ifdef TYPE_ALIAS_DECLS
+using arrtT = int[10]; // arrT is a synonym for the type array of ten ints
+#else
+typedef int arrT[10];  // arrT is a synonym for the type array of ten ints
+#endif
 
-// two ways to declare function returning pointer to array of ten ints
+// three ways to declare function returning pointer to array of ten ints
 arrT* func(int i);               // use a type alias
+auto func(int i) -> int(*)[10];  // use a trailing return type
 int (*func(int i))[10];          // direct declaration
+
+auto func2(int i) -> int(&)[10]; // func2 returns a refernce to an array
 
 // two arrays
 int odd[] = {1,3,5,7,9};
@@ -56,7 +65,7 @@ int *elemPtr(int i)
 }
 	
 // returns a pointer to an array of five int elements
-int(*arrPtr(int i))[5]
+decltype(odd) *arrPtr(int i)
 {
 	return (i % 2) ? &odd : &even; // returns a pointer to the array 
 }

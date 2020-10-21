@@ -36,7 +36,7 @@ using std::cout; using std::endl;
 int main() 
 {
     string name("AnnaBelle");
-    string::size_type pos1 = name.find("Anna"); // pos1 == 0
+    auto pos1 = name.find("Anna"); // pos1 == 0
     cout << pos1 ;
     string lowercase("annabelle");
     pos1 = lowercase.find("Anna");   // pos1 == npos

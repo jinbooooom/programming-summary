@@ -27,7 +27,7 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates a literal class, which is a C++ 11 feature
+#include "Version_test.h"
 
 #include <iostream>
 using std::cerr; using std::endl;
@@ -36,11 +36,19 @@ using std::cerr; using std::endl;
 
 int main()
 {
+#ifdef CONSTEXPR_VARS
 	constexpr Debug io_sub(false, true, false);  // debugging IO    
+#else
+	const     Debug io_sub(false, true, false);  // debugging IO    
+#endif
 	if (io_sub.any())  // equivalent to if(true)
 		cerr << "print appropriate error messages" << endl;
 
+#ifdef CONSTEXPR_VARS
 	constexpr Debug prod(false); // no debugging during production
+#else
+	const     Debug prod(false); // no debugging during production
+#endif
 	if (prod.any())    // equivalent to if(false)
 		cerr << "print an error message" << endl;
 

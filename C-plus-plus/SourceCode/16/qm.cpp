@@ -27,11 +27,18 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include "compare.h"
 #include "Blob.h"
 
 #include <string>
 using std::string;
+
+#ifndef INITIALIZER_LIST
+#include <iterator>
+using std::begin; using std::end;
+#endif
 
 // Application.cc
 // these template types must be instantiated elsewhere in the program
@@ -43,9 +50,16 @@ int main() {
 
 	Blob<string> sa1, sa2; // instantiation will appear elsewhere
 
-	// Blob<int> and its default constructor 
+#ifdef INITIALIZER_LIST
+	// Blob<int> and its initializer_list constructor 
 	// are instantiated in this file
-	Blob<int> a1;
+	Blob<int> a1 = {0,1,2,3,4,5,6,7,8,9}; 
+#else
+	int temp[] = {0,1,2,3,4,5,6,7,8,9};
+	// Blob<int> and its iterator constructor 
+	// are instantiated in this file
+	Blob<int> a1(begin(temp), end(temp));
+#endif
 	Blob<int> a2(a1);  // copy constructor instantiated in this file
 
 	int i = compare(a1[0], a2[0]); // instantiation will appear elsewhere

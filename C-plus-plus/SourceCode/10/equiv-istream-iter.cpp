@@ -41,11 +41,10 @@ int main() {
 	istream_iterator<int> in_iter(cin), eof;  
 	vector<int> vec(in_iter, eof);  
 
-	for (vector<int>::const_iterator it = vec.begin();
-			it != vec.end(); ++it)
-		cout << *it << " ";
+	for (auto it : vec)
+		cout << it << " ";
 	cout << endl;
-
+	
 	return 0;
 }
 

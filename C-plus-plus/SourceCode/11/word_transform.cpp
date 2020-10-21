@@ -58,9 +58,9 @@ const string &
 transform(const string &s, const map<string, string> &m)
 {
 	// the actual map work; this part is the heart of the program
-	map<string, string>::const_iterator map_it = m.find(s);
+	auto map_it = m.find(s);
 	// if this word is in the transformation map
-	if (map_it != m.end()) 
+	if (map_it != m.cend()) 
 		return map_it->second; // use the replacement word
 	else
 		return s;              // otherwise return the original unchanged
@@ -70,15 +70,13 @@ transform(const string &s, const map<string, string> &m)
 // second is file to transform
 void word_transform(ifstream &map_file, ifstream &input)
 {
-	map<string, string> trans_map = 
-				buildMap(map_file); // store the transformations
+	auto trans_map = buildMap(map_file); // store the transformations
 
 	// for debugging purposes print the map after its built
     cout << "Here is our transformation map: \n\n";
-	for (map<string, string>::const_iterator entry = trans_map.begin();
-				entry != trans_map.end(); ++entry)
-        cout << "key: "   << entry->first
-             << "\tvalue: " << entry->second << endl;
+	for (auto entry : trans_map)
+        cout << "key: "   << entry.first
+             << "\tvalue: " << entry.second << endl;
     cout << "\n\n";
 
 	// do the transformation of the given text 

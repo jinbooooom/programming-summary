@@ -27,8 +27,12 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <functional>
-using std::plus; using std::negate; using std::less_equal; 
+using std::plus; using std::negate;
+using std::function; using std::placeholders::_1;
+using std::bind; using std::less_equal; 
 
 #include <iostream>
 using std::cout; using std::endl;
@@ -45,19 +49,15 @@ using std::cin;
 #include <string>
 using std::string; 
 
-struct Size_compare {
-	Size_compare(string::size_type i): sz(i) { }
-	bool operator()(const string &s) { return s.size() >= sz; }
-private:
-	size_t sz;
-};
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif
 
-struct LessVal {
-	LessVal(int i): sz(i) { }
-	bool operator()(int i) { return less_equal<int>()(i, sz); }
-private:
-	int sz;
-};
+bool size_compare(const string &s, string::size_type sz)
+{
+    return s.size() >= sz;
+}
 
 int main() {
 
@@ -79,11 +79,16 @@ int main() {
 	
 	cout << sum << endl;
 	
-	int vals[] = {0,1,2,3,4,5,16,17,18,19};
+#ifdef LIST_INIT
+	vector<int> vec = {0,1,2,3,4,5,16,17,18,19};
+#else
+	int temp[] = {0,1,2,3,4,5,16,17,18,19};
+	vector<int> vec(begin(temp), end(temp));
+#endif
 	
 	// bind second argument to less_equal
-	cout << count_if(vals, vals + sizeof(vals)/sizeof(*vals), 
-					 LessVal(10));
+	cout << count_if(vec.begin(), vec.end(),
+		             bind(less_equal<int>(), _1, 10));  
 	cout << endl;
 	
 	vector<string> svec;
@@ -91,8 +96,16 @@ int main() {
 	while (cin >> in) 
 		svec.push_back(in);
 
-	cout << count_if(svec.begin(), svec.end(), Size_compare(6))
+	function<decltype(size_compare)> fp1 = size_compare;
+
+	//decltype(fp1)::result_type ret;
+	function<bool(const string&)> fp2 = bind(size_compare, _1, 6);
+	cout << count_if(svec.begin(), svec.end(), fp2)
 	     << endl;
+	cout << count_if(svec.begin(), svec.end(), 
+	                 bind(size_compare, _1, 6))
+	     << endl;
+
 
 	return 0;
 }

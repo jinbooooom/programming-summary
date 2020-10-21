@@ -27,9 +27,6 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates the use of bind and ref, which are
-// functions in the C++ 11 library
-
 #include <algorithm>
 using std::for_each;
 

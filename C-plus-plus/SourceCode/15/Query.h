@@ -29,6 +29,8 @@
 
 #ifndef QUERY_H
 #define QUERY_H
+
+#include "Version_test.h"
 #include "TextQuery.h"
 #include <string>
 #include <set>
@@ -41,8 +43,17 @@
 class Query_base {
     friend class Query;  
 protected:
+#ifdef TYPE_ALIAS_DECLS
+    using line_no = TextQuery::line_no; // used in the eval functions
+#else
     typedef TextQuery::line_no line_no; // used in the eval functions
-    virtual ~Query_base() { }
+#endif
+
+#ifdef DEFAULT_FCNS
+    virtual ~Query_base() = default;
+#else
+	virtual ~Query_base() { }
+#endif
 private:
     // eval returns the QueryResult that matches this Query
     virtual QueryResult eval(const TextQuery&) const = 0; 

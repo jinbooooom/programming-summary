@@ -58,11 +58,10 @@ int main() {
 	cout << endl;
 	
 	// alternative way to print contents of vec
-	for (vector<int>::const_iterator e = vec.begin();
-			e != vec.end(); ++e)
-		*out_iter++ = *e;  // the assignment writes this element to cout
+	for (auto e : vec)
+		*out_iter++ = e;  // the assignment writes this element to cout
 	cout << endl;
-
+	
 	return 0;
 }
 	

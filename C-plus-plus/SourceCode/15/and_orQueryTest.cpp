@@ -53,7 +53,7 @@ int main(int argc, char **argv)
         Query q = Query(sought1) & Query(sought2) 
                              | Query(sought3);
         cout << "\nExecuting Query for: " << q << endl;
-        const QueryResult results = q.eval(file);
+        const auto results = q.eval(file);
         // report matches
 		print(cout, results);
      } 

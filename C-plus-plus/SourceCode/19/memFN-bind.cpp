@@ -27,7 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates use of bind, which is a C++ 11 library facility
+#include "Version_test.h"
+
 #include <string>
 using std::string; 
 
@@ -46,20 +47,21 @@ using std::placeholders::_1;
 
 int main()
 {
-    vector<string> svec;
-	svec.push_back("hi");
-	svec.push_back("bye");
+#ifdef LIST_INIT
+    vector<string> svec = {"hi", "bye"};
+#else
+	vector<string> svec; svec.push_back("hi"); svec.push_back("bye");
+#endif
     // bind each string in the range to the implicit first argument to empty
-    vector<string>::iterator it = find_if(svec.begin(), svec.end(), 
+    auto it = find_if(svec.begin(), svec.end(), 
 	                  bind(&string::empty, _1));
     if (it == svec.end()) 
 		cout << "worked" << endl; 
 	else 
 		cout << "failed"  << endl;
-
-	// we need auto to define a variable to hold the result of bind
 	auto f =  bind(&string::empty, _1);
 	f(*svec.begin()); // ok: argument is a string f will use .* to call empty
+	f(&svec[0]); // ok: argument is a pointer to string f will use .-> to call empty
 }
 
 

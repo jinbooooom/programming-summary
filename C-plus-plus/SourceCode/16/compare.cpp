@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <vector>
 using std::vector;
 
@@ -39,6 +41,11 @@ using std::strcmp;
 #include <iostream>
 using std::cout; using std::endl;
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
 #include "compare.h"
 
 int main()
@@ -47,8 +54,13 @@ int main()
     cout << compare(1, 0) << endl;       // T is int
 
     // instantiates int compare(const vector<int>&, const vector<int>&)
-	int temp[] = {1,2,3,4,5,6};
-    vector<int> vec1(temp, temp+3), vec2(temp+3, temp+6);
+#ifdef LIST_INIT
+    vector<int> vec1{1, 2, 3}, vec2{4, 5, 6};
+#else
+    int temp1[] = {1, 2, 3}, temp2[] = {4, 5, 6};
+    vector<int> vec1(begin(temp1), end(temp1)), 
+	            vec2(begin(temp2), end(temp2));
+#endif
     cout << compare(vec1, vec2) << endl; // T is vector<int>
 
     long l1, l2;

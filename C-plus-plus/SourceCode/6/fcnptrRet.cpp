@@ -52,23 +52,19 @@ string::size_type largerLength(const string &s1, const string &s2)
 // getFcn returns a pointer to sumLength or to largerLength
 
 // three ways to declare getFcn 
-
-/* the first two declarations of getFcn use C++11 features
-
 // 1. use decltype for the return type, 
 //    remembering to add a * to indicate that getFcn returns a pointer
 decltype(sumLength) *getFcn(const string &);
 
 // use trailing return type
 auto getFcn(const string&) -> string::size_type(*)(const string&, const string&);
-*/
 
 // direct definition
 string::size_type (*getFcn(const string&))(const string&, const string&);
 
 // define getFcn
-string::size_type
-(*getFcn(const string &fetch))(const string&, const string&)
+decltype(sumLength)* 
+getFcn(const string &fetch)
 {
 	if (fetch == "sum")
 		return sumLength;

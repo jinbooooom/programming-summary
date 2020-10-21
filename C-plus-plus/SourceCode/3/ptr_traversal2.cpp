@@ -27,6 +27,9 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include <iterator>
+using std::begin; using std::end;
+
 #include <cstddef>
 using std::size_t; 
 
@@ -48,16 +51,16 @@ int main()
 	const size_t sz = 10;
 	int arr[sz];  // array of 10 ints
 
-	for (size_t n = 0; n != sz; ++n) // for each element in arr
-		cin >> arr[n];  // read values from the standard input
+	for (auto &n : arr) // for each element in arr
+		cin >> n;  // read values from the standard input
 
-	for (size_t i = 0; i != sz; ++i)
-		cout << arr[i] << " ";
+	for (auto i : arr)
+		cout << i << " ";
 	cout << endl;
 
 	// pbeg points to the first and 
 	// pend points just past the last element in arr
-	int *pbeg = arr,  *pend = arr + sz;
+	int *pbeg = begin(arr),  *pend = end(arr);
 
 	// find the first negative element, 
 	// stopping if we've seen all the elements

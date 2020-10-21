@@ -27,6 +27,11 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
+#include <iterator>
+using std::begin; using std::end;
+
 #include <list>
 using std::list;
 
@@ -39,6 +44,11 @@ using std::cout; using std::endl;
 #include <string>
 using std::string;
 
+#ifdef INITIALIZER_LIST
+#include <initializer_list>
+using std::initializer_list;
+#endif
+
 #include <cstddef>
 using std::size_t;
 
@@ -47,9 +57,12 @@ using std::size_t;
 int main()
 {
     Blob<int> ia;                // empty Blob<int>
-	int temp1[] = {0,1,2,3,4}; 
-	// Blob<int> with five elements
-	Blob<int> ia2(temp1, temp1 + sizeof(temp1)/sizeof(*temp1));
+#ifdef INITIALIZER_LIST
+	Blob<int> ia2 = {0,1,2,3,4}; // Blob<int> with five elements
+#else
+	int temp1[] = {0,1,2,3,4}; // Blob<int> with five elements
+	Blob<int> ia2(begin(temp1), end(temp1));
+#endif
 	vector<int> v1(10, 0); // ten elements initialized to 0
     Blob<int> ia3(v1.begin(), v1.end());  // copy elements from v1
     cout << ia << "\n" << ia2 << "\n" << ia3 << endl;
@@ -58,15 +71,26 @@ int main()
     Blob<string> names; // Blob that holds strings
     Blob<double> prices;// different element type
 
-    // instantiates Blob<string> class and the constructor
-    //  that has two const string* parameters
-	string temp2[] = {"a", "an", "the"}; // three elements
-	Blob<string> articles(temp2, temp2 + sizeof(temp2)/sizeof(*temp2));
+#ifdef INITIALIZER_LIST
+	// instantiates Blob<string> class and its
+	//  initializer_list<const char*> constructor
+	Blob<string> articles = {"a", "an", "the"}; // three elements
+#else
+	// instantiates Blob<string> class and the constructor
+	//  that has two const string* parameters
+	string temp2[] = {"a", "an", "the"};
+	Blob<string> articles(begin(temp2), end(temp2));
+#endif
 
-    // instantiates Blob<int> and the constructor
-    // that has two const int* parameters
+#ifdef INITIALIZER_LIST
+	// instantiates Blob<int> and the initializer_list<int> constructor
+	Blob<int> squares = {0,1,2,3,4,5,6,7,8,9};
+#else
+	// instantiates Blob<int> and the constructor 
+	// that has two const int* parameters
 	int temp3[] = {0,1,2,3,4,5,6,7,8,9};
-	Blob<int> squares(temp3, temp3 + sizeof(temp3)/sizeof(*temp3));
+	Blob<int> squares(begin(temp3), end(temp3));
+#endif
 
 	// instantiates Blob<int>::size() const
     cout << squares << endl;
@@ -74,8 +98,12 @@ int main()
 		squares[i] = i*i; // instantiates Blob<int>::operator[](size_t)
     cout << squares << endl;
 
+#ifdef LIST_INIT
+	vector<long> vl = {0,1,2,3,4,5,6,7,8,9};
+#else
 	long temp4[] = {0,1,2,3,4,5,6,7,8,9};
-	vector<long> vl(temp4, temp4 + sizeof(temp4)/sizeof(*temp4));
+	vector<long> vl(begin(temp4), end(temp4));
+#endif
 	// instantiates the Blob<int> constructor that has
 	// two vector<long>::iterator parameters
 	Blob<int> a1(vl.begin(), vl.end());   // copy from a vector
@@ -83,7 +111,7 @@ int main()
 	// instantiates the Blob<int> class 
 	// and the Blob<int> constructor that has two int* parameters
 	int arr[] = {0,1,2,3,4,5,6,7,8,9};
-	Blob<int> a2(arr, arr + sizeof(arr)/sizeof(*arr));   // copy from an array
+	Blob<int> a2(begin(arr), end(arr));   // copy from an array
 
 	list<int> li(10, 0); // 10 elements all zeros
 	Blob<int> zeros(li.begin(), li.end());  // copy from a list
@@ -93,8 +121,12 @@ int main()
 	a1.swap(zeros);
     cout << a1 << "\n" << zeros << endl;
 
+#ifdef LIST_INIT
+	list<const char*> w = {"now", "is", "the", "time"};
+#else
 	const char* temp5[] = {"now", "is", "the", "time"};
-	list<const char*> w(temp5, temp5 + sizeof(temp5)/sizeof(*temp5));
+	list<const char*> w(begin(temp5), end(temp5));
+#endif
 
 	// instantiates the Blob<string> class and the Blob<string> 
 	// constructor that has two (list<const char*>::iterator parameters 

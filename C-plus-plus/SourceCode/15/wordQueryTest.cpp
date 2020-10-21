@@ -60,7 +60,7 @@ int main(int argc, char **argv)
         // find all the occurrences of the requested string
         // define synonym for the line_no set 
         Query name(sought);
-        const QueryResult results = name.eval(file);
+        const auto results = name.eval(file);
         cout << "\nExecuting Query for: " << name << endl;
 
         // report no matches

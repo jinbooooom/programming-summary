@@ -45,9 +45,8 @@ int main() {
 		vec.push_back(*in_iter++);
 	ostream_iterator<int> out_iter(cout, " ");
 	
-	for (vector<int>::const_iterator e = vec.begin();
-			e != vec.end(); ++e)
-		out_iter = *e;  // the assignment writes this element to cout
+	for (auto e : vec)
+		out_iter = e;  // the assignment writes this element to cout
 	cout << endl;
 
 	return 0;

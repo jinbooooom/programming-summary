@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <algorithm>
 using std::for_each;
 
@@ -52,6 +54,9 @@ private:
 
 class ReadLine {
 public:
+#ifdef DELETED_FCNS
+	ReadLine() = delete;
+#endif 
 	ReadLine(istream &i) : is(i) { }
 	bool operator()(string &s) const { return getline(is, s); }
 private:

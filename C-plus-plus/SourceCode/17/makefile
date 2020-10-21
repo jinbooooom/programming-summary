@@ -7,7 +7,8 @@ OBJECTS =  badgetc.exe bits.exe findbook.exe \
 		  skipws.exe tuple.exe  phones.exe \
 		  ccpgms.exe validatePhones.exe \
 		  phonesFinal.exe subexpr.exe \
-		  regex1.exe zips.exe REerrs.exe 
+		  regex1.exe zips.exe REerrs.exe \
+		  manips11.exe sci_dec.exe
 
 # tells make to use the file "..\MS_makefile_template", which
 # defines general rules for making .obj and .exe files

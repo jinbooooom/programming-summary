@@ -67,9 +67,8 @@ int main()
 {
 	int *p1 = new int(45);
 	int *p2 = new int(42);
-
 	// because we're comparing pointer values, the result of
-    // this call may vary each time the program is run
+	// this call may vary each time the program is run
 	cout << compare(*p1, *p2) << endl;
 	cout << compare(p1, p2) << endl;
 

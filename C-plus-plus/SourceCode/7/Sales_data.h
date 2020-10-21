@@ -30,6 +30,8 @@
 #ifndef SALES_DATA_H
 #define SALES_DATA_H
 
+#include "Version_test.h"
+
 #include <string>
 #include <iostream>
 
@@ -39,9 +41,19 @@ friend std::ostream &print(std::ostream&, const Sales_data&);
 friend std::istream &read(std::istream&, Sales_data&);
 public:
 	// constructors
+// using the synthesized version is safe only
+// if we can also use in-class initializers
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+	Sales_data() = default;
+#else
 	Sales_data(): units_sold(0), revenue(0.0) { }
+#endif
+#ifdef IN_CLASS_INITS
+	Sales_data(const std::string &s): bookNo(s) { }
+#else
 	Sales_data(const std::string &s): 
 	           bookNo(s), units_sold(0), revenue(0.0) { }
+#endif
 	Sales_data(const std::string &s, unsigned n, double p):
 	           bookNo(s), units_sold(n), revenue(p*n) { }
 	Sales_data(std::istream &);
@@ -52,8 +64,13 @@ public:
 	double avg_price() const;
 private:
 	std::string bookNo;
+#ifdef IN_CLASS_INITS   // using the synthesized version is safe only
+	unsigned units_sold = 0;
+	double revenue = 0.0;
+#else
 	unsigned units_sold;
 	double revenue;
+#endif
 };
 
 

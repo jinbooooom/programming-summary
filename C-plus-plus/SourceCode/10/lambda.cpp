@@ -27,7 +27,6 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates lambda expressions, which is a C++ 11 feature
 #include <vector>
 #include <string>
 #include <iostream>
@@ -97,5 +96,6 @@ int main()
 	fcn3();
 	fcn4();
 	fcn5();
+
 	return 0;
 }

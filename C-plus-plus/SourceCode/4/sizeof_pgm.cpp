@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <iostream>
 using std::cout; using std::endl;
 
@@ -39,7 +41,12 @@ int main()
 	sizeof data; // size of data's type, i.e., sizeof(Sales_data)
 	sizeof p;    // size of a pointer
 	sizeof *p;   // size of the type to which p points, i.e., sizeof(Sales_data)
-	sizeof Sales_data().revenue; // alternative way to get the size of revenue
+	sizeof data.revenue; // size of the type of Sales_data's revenue member 
+#ifdef SIZEOF_MEMBER
+	sizeof Sales_data::revenue; // alternative way to get the size of revenue
+#else
+	sizeof Sales_data().revenue; // use an object
+#endif
 	
 	cout << "short: " << sizeof(short) << "\n"
 	     << "short[3]: " << sizeof(short[3]) << "\n"
@@ -60,8 +67,12 @@ int main()
 	     << "Sales_data*: " << sizeof(Sales_data*) << "\n"
 	     << "Sales_data&: " << sizeof(Sales_data&) << endl;
 	
+#ifdef SIZEOF_MEMBER
+	cout << "Sales_data::revenue: " << sizeof Sales_data::revenue << "\n"
+#else
 	cout << "Sales_data().revenue: " << sizeof Sales_data().revenue << "\n"
 	     << "data.revenue: " << sizeof data.revenue << endl;
+#endif
 
 	int x[10];   
 	int *ip = x;

@@ -34,7 +34,7 @@ using std::vector;
 using std::string;
 
 #include <memory>
-using std::shared_ptr;
+using std::make_shared; using std::shared_ptr;
 
 #include <iostream>
 using std::istream; using std::ostream; 
@@ -47,9 +47,7 @@ shared_ptr<Foo> factory(T arg)
 {
 	// process arg as appropriate
 	// shared_ptr will take care of deleting this memory
-	// the tr1 version of shared_ptr does not include
-	// the make_shared function, so we must directly allocate memory
-	return shared_ptr<Foo>(new Foo(arg)); 
+	return make_shared<Foo>(arg); 
 }
 
 shared_ptr<Foo> use_factory(T arg)

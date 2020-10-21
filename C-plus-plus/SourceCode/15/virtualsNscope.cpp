@@ -48,7 +48,7 @@ public:
 int D1::fcn(int) { cout << "D1::fcn(int)" << endl; return 0; }
 void D1::f2() { cout << "D1::f2()" << endl; }
 
-class D2 : public D1 {
+class D2 final : public D1 {
 public:
     int fcn(int); // nonvirtual function hides D1::fcn(int)
     int fcn();    // overrides virtual fcn from Base

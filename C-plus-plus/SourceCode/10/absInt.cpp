@@ -14,7 +14,7 @@
  * 
  * Permission is granted for this code to be used for educational purposes in
  * association with the book, given proper citation if and when posted or
- * reproduced. Any commercial use of this code requires the explicit written
+ * reproduced.Any commercial use of this code requires the explicit written
  * permission of the publisher, Addison-Wesley Professional, a division of
  * Pearson Education, Inc. Send your request for permission, stating clearly
  * what code you would like to use, and in what specific way, to the following
@@ -25,11 +25,7 @@
  * 	One Lake Street
  * 	Upper Saddle River, NJ  07458
  * 	Fax: (201) 236-3290
-*/
-// This file originally used lambda expressions,
-// which is a C++ 11 feature
-// Under earlier compilers, we can replace these lambdas
-// by function object classes, which is a topic we'll cover in Chapter 14
+*/ 
 
 #include <vector>
 using std::vector;
@@ -43,25 +39,31 @@ using std::cin; using std::cout; using std::endl;
 #include <algorithm>
 using std::for_each; using std::transform;
 
-void print(int i) { cout << i << " "; }
-unsigned absInt(int i) { return i < 0 ? -i : i; }
-
 int main() {
 	vector<int> vi;
 	int i;
 	while (cin >> i)
 		vi.push_back(i);
-	// pass a function to for_each to print each element in vi
-	for_each(vi.begin(), vi.end(), print);
+	// pass a lambda to for_each to print each element in vi
+	for_each(vi.begin(), vi.end(), [](int i) { cout << i << " "; });
 	cout << endl;
 
 	vector<int> orig = vi; // save original data in vi
 
 	// replace negative values by their absolute value
-	transform(vi.begin(), vi.end(), vi.begin(), absInt);
-
+	transform(vi.begin(), vi.end(), vi.begin(),
+	          [](int i) { return i < 0 ? -i : i; });
 	// print the elements now in vi
-	for_each(vi.begin(), vi.end(), print);
+	for_each(vi.begin(), vi.end(), [](int i) { cout << i << " "; });
+	cout << endl;
+
+	vi = orig;  // start afresh
+	// use a lambda with a specified return type to transform vi
+	transform(vi.begin(), vi.end(), vi.begin(),
+	          [](int i) -> int 
+	          { if (i < 0) return -i; else return i; });
+	// print the elements now in vi
+	for_each(vi.begin(), vi.end(), [](int i) { cout << i << " "; });
 	cout << endl;
 
     return 0;

@@ -27,8 +27,7 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates the range for statement, 
-// which is a C++ 11 feature
+#include "Version_test.h"
 
 #include <iostream>
 using std::cout; using std::endl;
@@ -39,33 +38,28 @@ using std::vector;
 #include <string>
 using std::string;
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
 int main()
 {
 	vector<int> ivec;
-	// C++ code: list initialization
-	//vector<int> v = {0,1,2,3,4,5,6,7,8,9};
-
-	// replace with
+#ifdef LIST_INIT
+	vector<int> v = {0,1,2,3,4,5,6,7,8,9};
+#else
 	int temp[] = {0,1,2,3,4,5,6,7,8,9};
-	// copy from first up to one past the last element from temp
-	vector<int> v(temp, temp + sizeof(temp)/sizeof(*temp));
+	vector<int> v(begin(temp), end(temp));
+#endif
 
 	// range variable must be a reference so we can write to the elements
-	// C++11 code: range for statement
-	// for (auto &r : v)   // for each element in v
-		//r *= 2;         // double the value of each element in v
-
-	// replace with traditional for loop:
-	for (vector<int>::iterator r = v.begin(); r != v.end(); ++r)
-		*r *= 2; // r is an iterator, *r is the element
+	for (auto &r : v)   // for each element in v
+		r *= 2;         // double the value of each element in v
 	
 	// print every element in v
-	// C++11 code: range for statement
-	//for (int r : v)
-		//cout << r << " "; // print the elements in v
-
-	for (vector<int>::const_iterator r = v.begin(); r != v.end(); ++r)
-		cout << *r << " "; // print the elements in v
+	for (int r : v)
+		cout << r << " "; // print the elements in v
 	cout << endl;
 
 	return 0;

@@ -30,6 +30,9 @@
 #include <iostream>
 using std::endl; using std::cout;
 
+#include <iterator>
+using std::begin; using std::end;
+
 // prints a null-terminated array of characters
 void print(const char *cp)
 {
@@ -54,9 +57,8 @@ int main()
 
     // j is converted to a pointer to the first element in j
     // the second argument is a pointer to one past the end of j
-	// use sizeof to calculate the size of the array
     int j[2] = {0, 1};  
-    print(j, j + sizeof(j)/sizeof(*j));                                    
+    print(begin(j), end(j));  // library begin and end functions
 	cout << endl;
 
 	// equivalent call, directly calculate the begin and end pointers

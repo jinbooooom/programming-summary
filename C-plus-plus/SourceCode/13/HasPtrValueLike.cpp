@@ -59,7 +59,7 @@ void swap(HasPtr &lhs, HasPtr &rhs)
 using std::string;
 HasPtr& HasPtr::operator=(const HasPtr &rhs) 
 {
-	string *newp = new string(*rhs.ps);  // copy the underlying string
+	auto newp = new string(*rhs.ps);  // copy the underlying string
 	delete ps;       // free the old memory
 	ps = newp;       // copy data from rhs into this object
 	i = rhs.i;

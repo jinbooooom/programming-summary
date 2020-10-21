@@ -42,18 +42,17 @@ int main()
 	getline(cin, line);
 
 	// find the first element in a comma-separated list
-	string::iterator comma = find(line.begin(), line.end(), ',');
-	cout << string(line.begin(), comma) << endl;
+	auto comma = find(line.cbegin(), line.cend(), ',');
+	cout << string(line.cbegin(), comma) << endl;
 	
 	// find the last element in a comma-separated list
-	string::reverse_iterator rcomma = 
-			find(line.rbegin(), line.rend(), ',');
+	auto rcomma = find(line.crbegin(), line.crend(), ',');
 	
 	// WRONG: will generate the word in reverse order
-	cout << string(line.rbegin(), rcomma) << endl;
+	cout << string(line.crbegin(), rcomma) << endl;
 	
 	// ok: get a forward iterator and read to the end of line
-	cout << string(rcomma.base(), line.end()) << endl;
+	cout << string(rcomma.base(), line.cend()) << endl;
 
 	return 0;
 }

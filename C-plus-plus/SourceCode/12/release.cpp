@@ -27,9 +27,6 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates unique_ptrs, which unlike shared_ptr
-// were not defined in TR1 and hence not available in pre-C++11 libraries
-
 #include <string>
 using std::string;
 

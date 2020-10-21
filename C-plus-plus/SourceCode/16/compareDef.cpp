@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include "Sales_data.h"
 
 #include <iostream>
@@ -35,19 +37,31 @@ using std::cout; using std::endl; using std::cin;
 #include <functional>
 using std::less; using std::greater;
 
-template <typename T, typename F> 
+#ifdef TEMPLATE_FCN_DEFAULT_ARGS
+// compare has a default template argument, less<T> 
+// and a default function argument, F()
+template <typename T, typename F = less<T>> 
+int compare(const T &v1, const T &v2, F f = F()) 
+{
+	if (f(v1, v2)) return -1;
+	if (f(v2, v1)) return 1;  
+	return 0;
+}
+#else // if no defaults, define two functions
+template <typename T, typename F>   // user will supply a comparison operation 
 int compare(const T &v1, const T &v2, F f) 
 {
 	if (f(v1, v2)) return -1;
 	if (f(v2, v1)) return 1;  
 	return 0;
 }
-
-template <typename T>
+template <typename T>  // use less<T>
 int compare(const T &v1, const T &v2)
 {
-	return compare(v1, v2, less<T>());
+	compare(v1, v2, less<T>());
+	return 0;
 }
+#endif
 
 int main()
 {

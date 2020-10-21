@@ -30,6 +30,10 @@
 #include <algorithm>
 using std::sort; using std::for_each;
 
+#include <functional>
+using std::bind; 
+using namespace std::placeholders;
+
 #include <string>
 using std::string;
 
@@ -50,13 +54,10 @@ bool LT(const string &s1, const string &s2)
 	return s1 < s2;
 }
 
-void printStr(const string &s) {
-	cout << s << " ";
-}
-
 void print(const vector<string> &words)
 {
-	for_each(words.begin(), words.end(), printStr);
+	for_each(words.begin(), words.end(),
+	        [](const string &s) { cout << s << " "; });
 	cout << endl;
 }
 
@@ -88,7 +89,7 @@ int main()
 
 	// eliminate duplicates
 	sort(words.begin(), words.end());
-	vector<string>::iterator it = unique(words.begin(), words.end());
+	auto it = unique(words.begin(), words.end());
 	words.erase(it, words.end());
 
 	// sort by length using a function
@@ -100,12 +101,9 @@ int main()
 	sort(words.begin(), words.end(), isShorter);  
     print(words);
 
-/* the following code uses the bind function, which is 
-   defined in the C++ 11 library
 	// use bind to invert isShorter to sort longest to shortest
 	sort(words.begin(), words.end(), bind(isShorter, _2, _1));  
     print(words);
-*/
 
 	return 0;
 }

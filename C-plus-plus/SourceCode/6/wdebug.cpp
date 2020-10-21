@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <cstddef>
 using std::size_t;
 
@@ -47,8 +49,14 @@ using std::size_t;
 void print(const int ia[], size_t size)
 {
 #ifndef NDEBUG
-cerr << "print(int*, size_t)" << ": array size is " << size << endl;
-#endif
+#ifdef FUNC_CPP
+// __func__ is a local static defined by the compiler that holds the name of this function
+cerr << __func__ << ": array size is " << size << endl;
+#else
+// if __func__ isn't defined yet, use nonstandard MS equivalent __FUNCTION__ variable
+cerr << __FUNCTION__ << ": array size is " << size << endl;
+#endif  // FUNC_CPP
+#endif  // NDEBUG
 // . . .
 }
 
@@ -58,7 +66,11 @@ int main()
     const string::size_type threshold = 5;
     if (word.size() < threshold) 
         cerr << "Error: " << __FILE__
-             << " : in function " << main
+#ifdef FUNC_CPP
+             << " : in function " << __func__ 
+#else
+             << " : in function " << __FUNCTION__ 
+#endif
              << " at line " << __LINE__ << endl
              << "       Compiled on " << __DATE__ 
              << " at " << __TIME__ << endl

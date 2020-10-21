@@ -49,4 +49,6 @@ int main()
 	} else {                                 // there was no input
 		cerr << "No data?!" << endl;         // notify the user
 	}
+
+	return 0;
 }

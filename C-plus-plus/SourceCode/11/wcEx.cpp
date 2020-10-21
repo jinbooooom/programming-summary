@@ -27,11 +27,10 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <map>
 using std::map;
-
-#include <utility>
-using std::pair; using std::make_pair;
 
 #include <string>
 using std::string;
@@ -48,18 +47,21 @@ int main()
     map<string, size_t> word_count; // empty map from string to size_t
 	string word;
 	while (cin >> word)
+#ifdef LIST_INIT
+      ++word_count.insert({word, 0}).first->second;
+#else
       ++word_count.insert(make_pair(word, 0)).first->second;
+#endif
 
-	for(map<string, size_t>::iterator it = word_count.begin(); 
-			it != word_count.end(); ++it) {
-		pair<const string, size_t> w = *it;
+	for(auto it = word_count.cbegin(); it != word_count.cend(); ++it) {
+		auto w = *it;
 		cout <<  w.first << " occurs " << w.second << " times" << endl;
 	}
 
     // get iterator positioned on the first element
-    map<string, size_t>::const_iterator map_it = word_count.begin();
+    auto map_it = word_count.cbegin();
     // for each element in the map
-    while (map_it != word_count.end()) {
+    while (map_it != word_count.cend()) {
         // print the element key, value pairs
         cout << map_it->first << " occurs " 
              << map_it->second << " times" << endl;

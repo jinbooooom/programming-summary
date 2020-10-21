@@ -44,6 +44,11 @@ using std::ifstream;
 #include <cstddef>
 using std::size_t;
 
+#include <functional>
+using std::bind; 
+using std::placeholders::_1;
+using namespace std::placeholders;
+
 #include <iostream>
 using std::cin; using std::cout; using std::endl;
 
@@ -61,52 +66,27 @@ bool GT(const string &s, string::size_type m)
     return s.size() >= m;
 }
 
-/* we'll explain this class in chapter 14,
- * the thing to know now, is that we can call an
- * object of type Shorter passing it a string
- * and that will execute the body of the the
- * function named operator(), which means that
- * calling an object of type Shorter will compare
- * the size of the given string with the value stored
- * in sz.  For example:
- * 		Shorter foobar(6);
- * 		string s = "something or another";
- * 		foobar(s); // will return true, because s.size() >= 6
-*/
-class Shorter {
-public:
-	Shorter(size_t i): sz(i) { }
-	bool operator()(const string &s1) 
-	{ return s1.size() >= sz; }
-private:
-	size_t sz;
-};
-
-
-void print(const string &s)
-{
-	cout << s << " ";
-}
-
 void elimDups(vector<string> &words)
 {
     // sort words alphabetically so we can find the duplicates
     sort(words.begin(), words.end());
-	for_each(words.begin(), words.end(), print);
+	for_each(words.begin(), words.end(), 
+	         [](const string &s) { cout << s << " "; });
 	cout << endl;
+
 
     // unique reorders the input so that each word appears once in the
     // front part of the range 
 	// returns an iterator one past the unique range
-    vector<string>::iterator end_unique = 
-					unique(words.begin(), words.end());
-	for_each(words.begin(), words.end(), print);
+    auto end_unique = unique(words.begin(), words.end());
+	for_each(words.begin(), words.end(), 
+	         [](const string &s) { cout << s << " "; });
 	cout << endl;
 
     // erase uses a vector operation to remove the nonunique elements
     words.erase(end_unique, words.end());
-
-	for_each(words.begin(), words.end(), print);
+	for_each(words.begin(), words.end(), 
+	         [](const string &s) { cout << s << " "; });
 	cout << endl;
 }
 
@@ -115,19 +95,23 @@ biggies(vector<string> &words, vector<string>::size_type sz)
 {
 	elimDups(words); // put words in alphabetical order and remove duplicates
     // sort words by size, but maintain alphabetical order for words of the same size
-    stable_sort(words.begin(), words.end(), isShorter);
+    stable_sort(words.begin(), words.end(), 
+	            [](const string &a, const string &b) 
+	              { return a.size() < b.size();});
 
 	// get an iterator to the first element whose size() is >= sz
-    vector<string>::iterator wc = 
-			find_if(words.begin(), words.end(), Shorter(sz));
+    auto wc = find_if(words.begin(), words.end(), 
+                [sz](const string &a) 
+	                { return a.size() >= sz; });
 
 	// compute the number of elements with size >= sz 
-	vector<string>::size_type count = words.end() - wc;
+	auto count = words.end() - wc;
     cout << count << " " << make_plural(count, "word", "s")
          << " of length " << sz << " or longer" << endl;
 
 	// print words of the given size or longer, each one followed by a space
-	for_each(wc, words.end(), print);
+	for_each(wc, words.end(), 
+	         [](const string &s){cout << s << " ";});
 	cout << endl;
 }
 
@@ -148,6 +132,18 @@ int main()
     }
 
 	biggies(words, 5); // biggies changes its first argument
+
+	// alternative solution using bind and check_size function
+	// NB: words was changed inside biggies, 
+	//     at this point in the program words has only unique
+	//     words and is in order by size
+	size_t sz = 5;
+	auto
+	wc = find_if(words.begin(), words.end(), 
+	             bind(check_size, std::placeholders::_1, sz));
+	auto count = words.end() - wc;
+    cout << count << " " << make_plural(count, "word", "s")
+         << " of length " << sz << " or longer" << endl;
 
 	return 0;
 }

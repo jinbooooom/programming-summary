@@ -36,13 +36,13 @@ using std::vector;
 #include <iostream>
 using std::cin; using std::cout; using std::endl;
 
+
 int main ()
 {
 	vector<unsigned> grades;
-	// count the number of grades by clusters of ten: 
+	// count the number of grades by clusters of ten:
 	// 0--9, 10--19, . . . 90--99, 100
-	const size_t sz = 11;
-	unsigned scores[sz] = {};  // 11 buckets, all value initialized to 0
+	unsigned scores[11] = {};  // 11 buckets, all value initialized to 0
 	unsigned grade;
 	while (cin >> grade) {
 		if (grade <= 100)
@@ -52,13 +52,11 @@ int main ()
 	}
 	cout << "grades.size = " << grades.size() << endl;
 
-	// for every element in grades
-	for (vector<unsigned>::const_iterator g = grades.begin(); g != grades.end(); ++g)  
-		cout << *g << " " ;
+	for (auto g : grades)  // for every element in grades
+		cout << g << " " ;
 	cout << endl;
 
-	// for each counter in scores
-	for (size_t i = 0; i != sz; ++i)
-		cout << scores[i] << " ";       // print the value of that counter
+	for (auto i : scores)       // for each counter in scores
+		cout << i << " ";       // print the value of that counter
 	cout << endl;
 }

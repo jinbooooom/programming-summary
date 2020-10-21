@@ -27,6 +27,13 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
 #include <list>
 using std::list;
 
@@ -48,15 +55,15 @@ int main()
 {
 	// tuple that represents a bookstore transaction: 
 	// ISBN, count, price per book
-	tuple<const char*, int, double> item = make_tuple("0-999-78345-X", 3, 20.00);
-	const char *book = get<0>(item);      // returns the first member of item
-	int cnt = get<1>(item);       // returns the second member of item
-	double price = get<2>(item)/cnt; // returns the last member of item
+	auto item = make_tuple("0-999-78345-X", 3, 20.00);
+	auto book = get<0>(item);      // returns the first member of item
+	auto cnt = get<1>(item);       // returns the second member of item
+	auto price = get<2>(item)/cnt; // returns the last member of item
 	get<2>(item) *= 0.8;           // apply 20% discount
 	
 	cout << book << " " << cnt << " " << price << endl;
 
-	typedef tuple<const char*, int, double> trans; // trans is the type of item 
+	typedef decltype(item) trans; // trans is the type of item 
 	
 	// returns the number of members in object's of type trans
 	size_t sz = tuple_size<trans>::value;  // returns 3
@@ -70,14 +77,18 @@ int main()
 	cout << book2 << " " << cnt2 << " " << price2 << endl;
 	
 	tuple<size_t, size_t, size_t> threeD;  // all three members set to 0
+#ifdef LIST_INIT
+	tuple<string, vector<double>, int, list<int>>
+	    someVal("constants", {3.14, 2.718}, 42, {0,1,2,3,4,5});
+#else
 	double temp1[] = {3.14, 2.718};
 	int temp2[] = {0,1,2,3,4,5};
-	tuple<string, vector<double>, int, list<int> >
+	tuple<string, vector<double>, int, list<int>>
 		someVal("constants", 
-				vector<double>(temp1, 
-							   temp1 + sizeof(temp1)/sizeof(*temp1)),
+				vector<double>(begin(temp1), end(temp1)),
 				42,
-				list<int>(temp2, temp2 + sizeof(temp2)/sizeof(*temp2)));
+				list<int>(begin(temp2), end(temp2)));
+#endif
 	
 	return 0;
 }

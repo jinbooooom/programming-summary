@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include "Blob.h"
 #include <string>
 using std::string;
@@ -37,13 +39,23 @@ using std::vector;
 #include <iostream>
 using std::cout; using std::endl;
 
+#ifndef INITIALIZER_LIST
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
 int main()
 {
 	vector<int> v1(3, 43), v2(10);
-	int temp[] = {0,1,2,3,4,5,6,7,8,9};
 	Blob<int> a1(v1.begin(), v1.end()),
-	          a2(temp, temp + sizeof(temp)/sizeof(*temp)),
+#ifdef INITIALIZER_LIST
+	          a2 = {0,1,2,3,4,5,6,7,8,9},
+#endif
 	          a3(v2.begin(), v2.end());
+#ifndef INITIALIZER_LIST
+	int temp[] = {0,1,2,3,4,5,6,7,8,9};
+	Blob<int> a2(begin(temp), end(temp));
+#endif
 	
 	cout << a1 << "\n\n" << a2 << "\n\n" << a3 << endl;
 	
@@ -61,19 +73,23 @@ int main()
 	a1[a1.size() - 1] = 15;
 	cout << a1 << "\n\n" << a3 << endl;
 	
-	Blob<string> s1;
-	s1.push_back("hi");
-	s1.push_back("bye");
-	s1.push_back("now");
+#ifdef INITIALIZER_LIST
+	Blob<string> s1 = {"hi", "bye", "now"};
+#else
+	string temp2[] = {"hi", "bye", "now"};
+	Blob<string> s1(begin(temp2), end(temp2));
+#endif
 	BlobPtr<string> p(s1);    // p points to the vector inside s1
 	*p = "okay";                 // assigns to the first element in s1
 	cout << p->size() << endl;   // prints 4, the size of the first element in s1
 	cout << (*p).size() << endl; // equivalent to p->size()
 	
-	Blob<string> s2;
-	s2.push_back("one");
-	s1.push_back("two");
-	s1.push_back("three");
+#ifdef INITIALIZER_LIST
+	Blob<string> s2{"one", "two", "three"};
+#else
+	string temp3[] = {"one", "two", "three"};
+	Blob<string> s2(begin(temp3), end(temp3));
+#endif
 	// run the string empty function in the first element in s2
 	if (s2[0].empty())   
 	    s2[0] = "empty"; // assign a new value to the first string in s2

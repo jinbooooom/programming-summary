@@ -27,16 +27,13 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates use of function, which is a C++ 11 library facility
+#include "Version_test.h"
 
 #include <iostream>
 using std::cout; using std::endl; using std::ostream;
 
 #include <map>
 using std::map;
-
-#include <utility>
-using std::make_pair;
 
 #include <string>
 using std::string;
@@ -45,15 +42,19 @@ using std::string;
 using std::bind; using std::function;
 using namespace std::placeholders;
 
+#ifndef LIST_INIT
+#include <utility>
+using std::make_pair;
+#endif
+
 // ordinary function
 int add(int i, int j) { return i + j; }
 
-// functions to use in place of the lambda used in the original code
-int mod(int i, int j) { return i % j; };
-int mult(int i, int j) { return i * j; };
+// lambda, which generates an unnamed function-object class
+auto mod = [](int i, int j) { return i % j; };
 
 // function-object class
-// In the first printing this struct was named div, but that name conflicts with
+// In the first printing we named this struct div, but this name conflicts with
 // the name of a C library function.  Compilers are permitted to put
 // C library names in the global namespace.  Future printings will
 // change the name of this calss to divide.
@@ -65,9 +66,10 @@ struct divide {
 
 int main()
 {
-	function<int(int, int)> f1 = add;      // function pointer
+	function<int(int, int)> f1 = add;   // function pointer
 	function<int(int, int)> f2 = divide(); // callable class type
-	function<int(int, int)> f3 = mult;     // function pointer
+	function<int(int, int)> f3 = [](int i, int j) // lambda
+	                             { return i * j; };
 	cout << f1(4,2) << endl; // prints 6
 	cout << f2(4,2) << endl; // prints 2
 	cout << f3(4,2) << endl; // prints 8
@@ -75,13 +77,21 @@ int main()
 	// table of callable objects corresponding to each binary operator
 	// all the callables must take two ints and return an int
 	// an element can be a function pointer, function object, or lambda
-	map<string, function<int(int, int)> > binops;
-        binops.insert(make_pair(string("+"), add));   // function pointer
-        binops.insert(make_pair(string("-"), std::minus<int>())); // library function object
-        binops.insert(make_pair(string("/"),  divide())); // user-defined function object
-        binops.insert(make_pair(string("*"), mult)); // function pointer
-        binops.insert(make_pair(string("%"), mod));  // function pointer
-
+#ifdef LIST_INIT
+	map<string, function<int(int, int)>> binops = {
+		{"+", add},                  // function pointer
+		{"-", std::minus<int>()},    // library function object
+		{"/",  divide()},            // user-defined function object
+		{"*", [](int i, int j) { return i * j; }}, // unnamed lambda
+		{"%", mod} };                // named lambda object
+#else
+	map<string, function<int(int, int)>> binops;
+		binops.insert(make_pair("+", add));                 // function pointer
+		binops.insert(make_pair("-", std::minus<int>()));   // library function object
+		binops.insert(make_pair("/",  divide()));           // user-defined function object
+		binops.insert(make_pair("*", [](int i, int j) { return i * j; })); // unnamed lambda
+		binops.insert(make_pair("%", mod));                // named lambda object
+#endif
 	cout << binops["+"](10, 5) << endl; // calls add(10, 5)
 	cout << binops["-"](10, 5) << endl; // uses the call operator of the minus<int> object
 	cout << binops["/"](10, 5) << endl; // uses the call operator of the divide object

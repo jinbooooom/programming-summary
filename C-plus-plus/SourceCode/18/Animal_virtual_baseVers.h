@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <string>
 #include <iostream>
 
@@ -51,7 +53,11 @@ operator<<(std::ostream&, const ZooAnimal&);
 
 class ZooAnimal {
 public:
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+    ZooAnimal() = default;
+#else
 	ZooAnimal(): exhibit_stat(false) { }
+#endif
     ZooAnimal(std::string animal, bool exhibit,
               std::string family): nm(animal), 
                                    exhibit_stat(exhibit), 
@@ -71,7 +77,11 @@ public:
     // . . .
 protected:
     std::string nm;
+#ifdef IN_CLASS_INITS
+    bool exhibit_stat = false;
+#else
     bool exhibit_stat;
+#endif
     std::string fam_name;
     // . . .
 private:
@@ -80,7 +90,11 @@ private:
 // the order of the keywords public and virtual is not significant
 class Raccoon : public virtual ZooAnimal {
 public:
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+    Raccoon() = default;
+#else
 	Raccoon(): pettable_flag(false) { }
+#endif
     Raccoon(std::string name, bool onExhibit=true);
 
     virtual std::ostream& print(std::ostream&) const
@@ -91,7 +105,11 @@ public:
     // . . .
 
 protected:
+#ifdef IN_CLASS_INITS
+    bool pettable_flag = false;
+#else
     bool pettable_flag;
+#endif
     // . . .
 };
 
@@ -124,7 +142,11 @@ private:
 class Panda : public Bear,
               public Raccoon, public Endangered {
 public:
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+    Panda() = default;
+#else
 	Panda(): sleeping_flag(false) { }
+#endif
     Panda(std::string name, bool onExhibit=true);
     virtual std::ostream& print(std::ostream&) const
 		{ return  std::cout << "Panda::print" << std::endl; }
@@ -134,15 +156,24 @@ public:
     // . . .
 
 protected:
+#ifdef IN_CLASS_INITS
+    bool sleeping_flag = false;
+#else
     bool sleeping_flag;
+#endif
     // . . .
 };
 
 
 Bear::Bear(std::string name, bool onExhibit):
          ZooAnimal(name, onExhibit, "Bear") { }
+#ifdef IN_CLASS_INITS
+Raccoon::Raccoon(std::string name, bool onExhibit)
+       : ZooAnimal(name, onExhibit, "Raccoon") { }
+#else
 Raccoon::Raccoon(std::string name, bool onExhibit)
        : ZooAnimal(name, onExhibit, "Raccoon"), pettable_flag(false) { }
+#endif
 
 Panda::Panda(std::string name, bool onExhibit)
       : ZooAnimal(name, onExhibit, "Panda"),

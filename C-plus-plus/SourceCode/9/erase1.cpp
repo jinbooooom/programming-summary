@@ -56,11 +56,11 @@ int main()
 	 * if that element exists in the input sequence
 	 * otherwise returns the end iterator
 	*/
-	list<string>::iterator iter = find(slist.begin(), slist.end(), "Quasimodo");
+	auto iter = find(slist.begin(), slist.end(), "Quasimodo");
 	if (iter != slist.end())
 	     slist.erase(iter);
 	
-	list<string> orig = slist; // keep a copy before we destroy the contents
+	auto orig = slist; // keep a copy before we destroy the contents
 	slist.clear();     // delete all the elements within the container
 	cout << "after clear, size is: " << slist.size() << endl;
 	
@@ -69,7 +69,7 @@ int main()
 	cout << "after erase begin to end, size is: " << slist.size() << endl;
 	
 	slist = orig; // restore the data
-	list<string>::iterator elem1 = slist.begin(), elem2 = slist.end();
+	auto elem1 = slist.begin(), elem2 = slist.end();
 	// delete the range of elements between two iterators
 	// returns an iterator to the element just after the last removed element
 	elem1 = slist.erase(elem1, elem2); // after the call elem1 == elem2

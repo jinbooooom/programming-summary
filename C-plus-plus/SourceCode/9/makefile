@@ -7,5 +7,5 @@ OBJECTS = capacity.exe erase1.exe erase2.exe find_ops.exe \
 # defines general rules for making .obj and .exe files
 include ..\MS_makefile_template
 
-LOCFLAGS = /I..\7
+LOCFLAGS = -I..\7
 

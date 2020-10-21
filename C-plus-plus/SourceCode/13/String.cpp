@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <cstring>
 using std::strlen;
 
@@ -42,6 +44,11 @@ using std::ostream;
 #include <utility>
 using std::swap;
 
+#ifdef IN_CLASS_INITS
+#include <initializer_list>
+using std::initializer_list;
+#endif
+
 #include <memory>
 using std::uninitialized_copy;
 
@@ -54,7 +61,7 @@ std::allocator<char> String::a;
 String & String::operator=(const String &rhs)
 {
 	// copying the right-hand operand before deleting the left handles self-assignment
-    char *newp = a.allocate(rhs.sz); // copy the underlying string from rhs
+    auto newp = a.allocate(rhs.sz); // copy the underlying string from rhs
 	uninitialized_copy(rhs.p, rhs.p + rhs.sz, newp);
 
 	if (p)
@@ -63,6 +70,25 @@ String & String::operator=(const String &rhs)
 	sz = rhs.sz; // update the size
 
     return *this;     
+}
+
+// move assignment operator
+#ifdef NOEXCEPT
+String & String::operator=(String &&rhs) noexcept
+#else
+String & String::operator=(String &&rhs) throw()
+#endif
+{
+	// explicit check for self-assignment
+	if (this != &rhs) {
+		if (p)
+			a.deallocate(p, sz);  // do the work of the destructor
+		p = rhs.p;    // take over the old memory
+		sz = rhs.sz;
+		rhs.p = 0;    // deleting rhs.p is safe
+		rhs.sz = 0;
+	}
+    return *this; 
 }
 
 String& String::operator=(const char *cp)
@@ -80,11 +106,22 @@ String& String::operator=(char c)
 	*p = c;
 	return *this;
 }
+#ifdef INITIALIZER_LIST
+String& String::operator=(initializer_list<char> il)
+{
+	// no need to check for self-assignment
+	if (p)
+		a.deallocate(p, sz);        // do the work of the destructor
+	p = a.allocate(sz = il.size()); // do the work of the copy constructor
+	uninitialized_copy(il.begin(), il.end(), p);
+	return *this;
+}
+#endif
 
 // named functions for operators
 ostream &print(ostream &os, const String &s)
 {
-	const char *p = s.begin();
+	auto p = s.begin();
 	while (p != s.end())
 		os << *p++ ;
 	return os;

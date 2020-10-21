@@ -45,8 +45,6 @@ struct absInt {
     }
 };
 
-void print(unsigned u) { cout << u << " "; }
-
 int main() {
     int i = -42;
     absInt absObj;           // object that has a function-call operator
@@ -63,7 +61,19 @@ int main() {
 	transform(vi.begin(), vi.end(), back_inserter(vu), absInt());
 
 	// print contents of vu using a lambda
-	for_each(vu.begin(), vu.end(), print);
+	for_each(vu.begin(), vu.end(), [](unsigned i) { cout << i << " "; });
+	cout << endl;
+
+	vector<unsigned> vu2;
+	// similar transformation but using a lambda
+	transform(vi.begin(), vi.end(), back_inserter(vu2),
+	          [](int i) { return i < 0 ? -i : i; });
+	if (vu == vu2)
+		cout << "as expected" << endl;
+	else {
+		cout << "something's wrong, vectors differ" << endl;
+		for_each(vu.begin(), vu.end(), [](unsigned i) { cout << i << " "; });
+	}
 	cout << endl;
 
     return 0;

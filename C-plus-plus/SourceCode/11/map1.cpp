@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <set>
 using std::multiset;
 
@@ -50,7 +52,13 @@ typedef bool(*SDComp)(const Sales_data&, const Sales_data&);
 
 // bookstore can have several transactions with the same ISBN
 // elements in bookstore will be in ISBN order
-multiset<Sales_data, SDComp> bookstore(compareIsbn);
+multiset<Sales_data, decltype(compareIsbn)*> 
+	bookstore(compareIsbn);
+
+// alternative way to declare bookstore using a lambda
+multiset<Sales_data, SDComp> 
+	bookstore2([](const Sales_data &l, const Sales_data &r)
+                 { return l.isbn() < r.isbn(); });
 
 int main() 
 {
@@ -68,6 +76,9 @@ int main()
 	
 	// various ways to add word to word_count 
 	string word; 
+#ifdef LIST_INIT
+	word_count.insert({word, 1});
+#endif
 	word_count.insert(make_pair(word, 1));
 	word_count.insert(pair<string, size_t>(word, 1));
 	word_count.insert(map<string, size_t>::value_type(word, 1));
@@ -79,14 +90,18 @@ int main()
 	pair<map<string, size_t>::iterator, bool> insert_ret;
 
 	// if Anna not already in word_count, insert it with value 1
+#ifdef LIST_INIT
+	insert_ret = word_count.insert({"Anna", 1});
+#else
 	insert_ret = word_count.insert(make_pair("Anna", 1));
+#endif
 	
 	if (insert_ret.second == false)    // Anna was already in the map
 	    insert_ret.first->second++;    // increment current value
 	cout << word_count["Anna"] << endl;
 
 	// get an iterator to an element in word_count
-	map <string, size_t>::iterator map_it = word_count.begin();
+	auto map_it = word_count.begin();
 	
 	// *map_it is a reference to a pair<const string, size_t> object
 	cout << map_it->first;         // prints the key for this element

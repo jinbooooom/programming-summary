@@ -46,13 +46,13 @@ int main()
 	cout << "text.size: " << text.size() << endl;
 
 	// print each line in text up to the first blank line
-	for (vector<string>::const_iterator it = text.begin(); 
-	     it != text.end() && !(*it).empty(); ++it) 
+	for (auto it = text.cbegin(); 
+	     it != text.cend() && !(*it).empty(); ++it) 
 		cout << *it << endl;
 
 	// equivalent loop using arrow to dereference it and call empty
-	for (vector<string>::const_iterator it = text.begin(); 
-	     it != text.end() && !it->empty(); ++it) 
+	for (auto it = text.cbegin(); 
+	     it != text.cend() && !it->empty(); ++it) 
 		cout << *it << endl;
 }
 		

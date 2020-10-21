@@ -30,6 +30,8 @@
 #ifndef FOLDER_H
 #define FOLDER_H
 
+#include "Version_test.h"
+
 #include <string>
 #include <set>
 
@@ -47,6 +49,8 @@ public:
     Message(const Message&);             // copy constructor
     Message& operator=(const Message&);  // copy assignment
     ~Message();                          // destructor
+    Message(Message&&);            // move constructor
+    Message& operator=(Message&&); // move assignment
 
     // add/remove this Message from the specified Folder's set of messages
     void save(Folder&);   
@@ -60,7 +64,7 @@ private:
     // utility functions used by copy constructor, assignment, and destructor
     // add this Message to the Folders that point to the parameter
     void add_to_Folders(const Message&);
-
+	void move_Folders(Message*);
     // remove this Message from every Folder in folders
     void remove_from_Folders(); 
 
@@ -79,7 +83,15 @@ public:
     Folder(const Folder&); // add new folder to each Message in msgs
     Folder& operator=(const Folder&); // delete Folder from lhs messages
                                       // add Folder to rhs messages
-    Folder() { }        // defaults ok
+    Folder(Folder&&);   // move Messages to this Folder 
+    Folder& operator=(Folder&&); // delete Folder from lhs messages
+                                 // add Folder to rhs messages
+
+#ifdef DEFAULT_FCNS
+    Folder() = default; // defaults ok
+#else
+	Folder() { } // msgs will be default initialized, which is what we want
+#endif
 
     void save(Message&);   // add this message to folder
     void remove(Message&); // remove this message from this folder
@@ -92,6 +104,7 @@ private:
     void remove_from_Msgs();     // remove this Folder from each Message
     void addMsg(Message *m) { msgs.insert(m); }
     void remMsg(Message *m) { msgs.erase(m); }
+	void move_Messages(Folder*); // move Message pointers to point to this Folder
 };
 
 #endif

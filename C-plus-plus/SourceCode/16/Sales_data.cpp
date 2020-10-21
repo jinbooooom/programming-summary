@@ -34,19 +34,15 @@ using std::istream; using std::ostream;
 
 // define the hash interface for Sales_data
 
-#include <functional>
-using std::hash;
-
-// nested namespaces are covered in Section 18.2, page 789
 namespace std {
-	size_t
-	hash<Sales_data>::operator()(const Sales_data& s) const
-	{
-	    return hash<string>()(s.bookNo) ^
-	           hash<unsigned>()(s.units_sold) ^
-	           hash<double>()(s.revenue);
-	}
-}  // close the std namespace
+size_t
+hash<Sales_data>::operator()(const Sales_data& s) const
+{
+    return hash<string>()(s.bookNo) ^
+           hash<unsigned>()(s.units_sold) ^
+           hash<double>()(s.revenue);
+}
+}  // close the std namespace; note: no semicolon after the close curly
 
 // remaining members unchanged from chapter 14
 Sales_data::Sales_data(istream &is) 

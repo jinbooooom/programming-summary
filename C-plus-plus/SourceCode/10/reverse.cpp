@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <algorithm>
 using std::find; using std::find_if; using std::for_each;
 using std::remove_copy_if; using std::reverse_copy;
@@ -35,28 +37,30 @@ using std::reverse;
 #include <iterator>
 using std::back_inserter;
 
+#ifndef LIST_INIT
+using std::begin; using std::end;
+#endif
+
 #include <vector>
 using std::vector;
 
 #include <iostream>
 using std::cout; using std::endl;
 
-void print(int i)
-{
-	cout << i << " ";
-}
-
-bool odd(int i) { return i % 2; }
-
 int main()
 {
+#ifdef LIST_INIT
+	vector<int> v1 = {0,1,2,3,4,5,6,7,8,9};
+#else
 	int temp[] = {0,1,2,3,4,5,6,7,8,9};
-	vector<int> v1(temp, temp + sizeof(temp)/sizeof(*temp));
+	vector<int> v1(begin(temp), end(temp));
+#endif
 	vector<int> v2;
 	vector<int> v3 = v1;
 
 	find(v1.begin(), v1.end(), 42);  // find first element equal to 42 
-	find_if(v1.begin(), v1.end(), odd); // find first odd element
+	find_if(v1.begin(), v1.end(),    // find first odd element
+	        [](int i) { return i % 2; });
 
 	// puts elements in v1 into reverse order
 	reverse(v1.begin(), v1.end());  
@@ -65,35 +69,31 @@ int main()
 	// copies elements from v1 into v2 in reverse order; v1 is unchanged
 	reverse_copy(v1.begin(), v1.end(), back_inserter(v2));
 
-	for (vector<int>::const_iterator i = v1.begin();
-			i != v1.end(); ++i) 
-		cout << *i << " ";   // prints 0 1 2 . . . 8 9
+	for (auto i : v1) 
+		cout << i << " ";   // prints 0 1 2 . . . 8 9
 	cout << endl;
-	for (vector<int>::const_iterator i = v2.begin();
-			i != v2.end(); ++i) 
-		cout << *i << " ";   // prints 9 8 7 . . . 1 0
+	for (auto i : v2) 
+		cout << i << " ";   // prints 9 8 7 . . . 1 0
 	cout << endl;
 
 	// removes the odd elements from v1
-	vector<int>::iterator it = remove_if(v1.begin(), v1.end(), odd);
-
+	auto it = remove_if(v1.begin(), v1.end(), 
+	                    [](int i) { return i % 2; });
 	// prints 0 2 4 6 8
-	for_each(v1.begin(), it, print);
+	for_each(v1.begin(), it, [](int i) { cout << i << " "; });
 	cout << endl;
 
 	v1 = v3;    // restore original data
 	v2.clear(); // make v2 empty again
 
 	// copies only the even elements from v1 into v2; v1 is unchanged
-	remove_copy_if(v1.begin(), v1.end(), back_inserter(v2), odd);
-
-	for (vector<int>::const_iterator i = v2.begin();
-			i != v2.end(); ++i) 
-		cout << *i << " ";  // prints 0 2 4 6 8
+	remove_copy_if(v1.begin(), v1.end(), back_inserter(v2),
+	               [](int i) { return i % 2; });
+	for (auto i : v2) 
+		cout << i << " ";  // prints 0 2 4 6 8
 	cout << endl;
-	for (vector<int>::const_iterator i = v1.begin();
-			i != v1.end(); ++i)      // prints 0 1 2 . . . 8 9
-		cout << *i << " ";
+	for (auto i : v1)      // prints 0 1 2 . . . 8 9
+		cout << i << " ";
 	cout << endl;
 
 	return 0;

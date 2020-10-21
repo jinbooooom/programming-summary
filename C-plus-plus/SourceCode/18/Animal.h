@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -50,7 +52,11 @@ operator<<(std::ostream&, const ZooAnimal&);
 
 class ZooAnimal {
 public:
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+    ZooAnimal() = default;
+#else
     ZooAnimal(): exhibit_stat(false) { }
+#endif
     ZooAnimal(std::string animal, bool exhibit,
               std::string family): nm(animal), 
                                    exhibit_stat(exhibit), 
@@ -72,20 +78,32 @@ public:
     // . . .
 protected:
     std::string nm;
+#ifdef IN_CLASS_INITS
+    bool        exhibit_stat = false;
+#else
     bool        exhibit_stat;
+#endif
     std::string fam_name;
     // . . .
 private:
 };
 
+#ifdef TYPE_ALIAS_DECLS
+using DanceType = unsigned;
+#else
 typedef unsigned DanceType;
+#endif
 const DanceType two_left_feet = 0;
 const DanceType Astaire = 1;
 const DanceType Rogers = 42;
 
 class Bear : public ZooAnimal {
 public:
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+    Bear() = default;
+#else
 	Bear(): dancetype(Rogers) { }
+#endif
     Bear(std::string name, bool onExhibit=true, 
          std::string family = "Bear"):
                          ZooAnimal(name, onExhibit, family),
@@ -103,12 +121,20 @@ public:
     virtual ~Bear()
 		{ std::cout << "Bear dtor" << std::endl; }
 private:
+#ifdef IN_CLASS_INITS
+    DanceType   dancetype = Rogers;
+#else
     DanceType   dancetype;
+#endif
 };
 
 class Panda : public Bear, public Endangered {
 public:
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+    Panda() = default;
+#else
     Panda() { }
+#endif
     Panda(std::string name, bool onExhibit=true);
     virtual ~Panda()
 		{ std::cout << "Panda dtor" << std::endl; }

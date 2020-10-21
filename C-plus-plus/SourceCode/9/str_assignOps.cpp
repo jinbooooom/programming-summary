@@ -95,7 +95,7 @@ int main()
 	s.replace(11, 3, "Fifth"); // s == "C++ Primer Fifth Ed."
 	
 	// 2. call find first to get position from which to replace
-	string::size_type pos = s2.find("5th");
+	auto pos = s2.find("5th");
 	if (pos != string::npos)
 		s2.replace(pos, 3, "Fifth");
 	else

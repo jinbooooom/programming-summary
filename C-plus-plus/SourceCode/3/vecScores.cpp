@@ -51,30 +51,26 @@ int main()
 			++scores[grade/10]; // increment the counter for the current cluster
 	}
 	cout << "grades.size = " << grades.size() << endl;
-	for (vector<unsigned>::const_iterator it = grades.begin();
-			it != grades.end(); ++it)
-		cout << *it << " " ;
+	for (auto it : grades)
+		cout << it << " " ;
 	cout << endl;
 
 	cout << "scores.size = " << scores.size() << endl;
-	for (vector<unsigned>::const_iterator it = scores.begin();
-            it != scores.end(); ++it)
-		cout << *it << " " ;
+	for (auto it : scores)
+		cout << it << " " ;
 	cout << endl;
 
 	// equivalent program using iterators instead of subscripts
 	vector<unsigned> alt_scores(11, 0);  // 11 buckets, all initially 0
 	// for each grade in the input
-	for (vector<unsigned>::const_iterator it = grades.begin(); 
-			it != grades.end(); ++it) {
+	for (auto it = grades.begin(); it != grades.end(); ++it) {
 		unsigned i = *it;
 		// increment the counter for the current cluster
 		++(*(alt_scores.begin() + i/10));
 	}
 
 	cout << "alt_scores.size = " << alt_scores.size() << endl;
-	for (vector<unsigned>::const_iterator it = alt_scores.begin(); 
-			it != alt_scores.end(); ++it) 
+	for (auto it = alt_scores.begin(); it != alt_scores.end(); ++it) 
 		cout << *it << " " ;
 	cout << endl;
 

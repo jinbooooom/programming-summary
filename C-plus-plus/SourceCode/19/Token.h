@@ -27,12 +27,15 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates use of unions with a class type member
-// that has constructors and copy control members
-// Such unions are supported only under C++ 11
+#include "Version_test.h"
 
 #ifndef TOKEN_H
 #define TOKEN_H
+
+#include "Version_test.h"
+// if unions with class members that have constructors/copy control 
+// is not supported, do nothing
+#ifdef UNION_CLASS_MEMS  
 
 #include <string>
 using std::string;
@@ -46,7 +49,7 @@ friend std::ostream &operator<<(std::ostream&, const Token&);
 public:
 	// copy control needed because our class has a union with a string member
 	// defining the move constructor and move-assignment operator is left as an exercise
-	Token(): tok(INT), ival{0} { }
+	Token(): tok(INT), ival(0) { }
 	Token(const Token &t): tok(t.tok) { copyUnion(t); }
 	Token &operator=(const Token&);
 	// if the  union holds a string, we must destroy it; see XREF(expldtor)
@@ -141,4 +144,6 @@ Token &Token::operator=(const Token &t)
 	tok = t.tok;
 	return *this;
 }
+#endif  // UNION_CLASS_MEMS
+
 #endif

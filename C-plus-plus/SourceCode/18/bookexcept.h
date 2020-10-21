@@ -46,8 +46,6 @@ public:
     isbn_mismatch(const std::string &s,
         const std::string &lhs, const std::string &rhs):
         std::logic_error(s), left(lhs), right(rhs) { }
-	// pre C++11 did not inherit exception specifications
-	~isbn_mismatch() throw() { }
     const std::string left, right;
 };
 

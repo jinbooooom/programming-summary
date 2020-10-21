@@ -6,5 +6,5 @@ OBJECTS = add_item2.exe doWhile.exe guess.exe ifgrades.exe \
 # defines general rules for making .obj and .exe files
 include ..\MS_makefile_template
 
-LOCFLAGS = /I..\1
+LOCFLAGS = -I..\1
 

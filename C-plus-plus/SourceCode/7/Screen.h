@@ -27,16 +27,21 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <string>
 #include <iostream>
 
 class Screen {
 public:
     typedef std::string::size_type pos;
-	// default constructor needed because Screen has another constructor
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+	Screen() = default;  // needed because Screen has another constructor
+#else
 	Screen(): cursor(0), height(0), width(0) { }
-    Screen(pos ht, pos wd, char c): cursor(0),
-	                                height(ht), width(wd), 
+#endif
+	// cursor initialized to 0 by its in-class initializer
+    Screen(pos ht, pos wd, char c): height(ht), width(wd), 
 	                                contents(ht * wd, c) { }
 	friend class Window_mgr;
     Screen(pos ht = 0, pos wd = 0): 
@@ -58,10 +63,17 @@ public:
     const Screen &display(std::ostream &os) const
                   { do_display(os); return *this; }
 private:
-    // function to do the work of displaying a Screen
-    void do_display(std::ostream &os) const {os << contents;}
+     // function to do the work of displaying a Screen
+     void do_display(std::ostream &os) const {os << contents;}
+	// other members as before
+private:
+#ifdef IN_CLASS_INITS
+    pos cursor = 0;
+    pos height = 0, width = 0;
+#else
     pos cursor;
     pos height, width;
+#endif
     std::string contents;
 };
 

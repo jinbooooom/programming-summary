@@ -61,7 +61,7 @@ int main()
 	cout << endl;
 
 	// it refers to the first element in vec
-	vector<int>::iterator it = vec.begin();
+	auto it = vec.begin();
 
 	// rev_it refers one before the first element in vec
 	vector<int>::reverse_iterator rev_it(it);

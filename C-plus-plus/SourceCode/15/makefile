@@ -8,7 +8,7 @@ OBJECTS = andQueryTest.exe and_orQueryTest.exe \
 # defines general rules for making .obj and .exe files
 include ..\MS_makefile_template
 
-LOCFLAGS = /I..\12 -I..\6
+LOCFLAGS = /I..\12 /I..\6
 
 sample.obj useQuote.obj Quote.obj: Quote.h
 vecBasket.obj Basket_main.obj Basket.obj: Basket.h Quote.h
@@ -24,8 +24,8 @@ andQueryTest.exe: Query.obj andQueryTest.obj ..\12\TextQuery.obj get_print.obj
 	$(CPP) $(CPPFLAGS) $(LOCFLAGS) andQueryTest.obj Query.obj \
 		..\12\TextQuery.obj get_print.obj 
 
-and_orQueryTest.exe: and_orQueryTest.obj Query.obj ..\12\TextQuery.obj \
-		get_print.obj
+and_orQueryTest.exe: and_orQueryTest.obj Query.obj \
+					 ..\12\TextQuery.obj get_print.obj
 	$(CPP) $(CPPFLAGS) $(LOCFLAGS) and_orQueryTest.obj Query.obj \
 		..\12\TextQuery.obj get_print.obj 
 

@@ -51,7 +51,7 @@ int main()
 	fill(vec.begin(), vec.end(), 1);  // reset each element to 1
 
 	// sum the elements in vec starting the summation with the value 0
-	int sum = accumulate(vec.begin(), vec.end(), 0);
+	int sum = accumulate(vec.cbegin(), vec.cend(), 0);
 	cout << sum << endl;
 	
 	// set a subsequence of the container to 10
@@ -71,7 +71,7 @@ int main()
 	string s;
 	while (cin >> s)
 		v.push_back(s);
-	string concat = accumulate(v.begin(), v.end(), string(""));
+	string concat = accumulate(v.cbegin(), v.cend(), string(""));
 	cout << concat << endl;
 	
 	return 0;

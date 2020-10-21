@@ -27,12 +27,14 @@
  * 	Fax: (201) 236-3290
 */ 
 
-#include <utility>
-#include <iostream>
-using std::cout; using std::endl;
-#include <string>
+#include "Version_test.h"
 
-// HasPtr with copy and swap assignment operator
+#include <iostream>
+#include <string>
+#include <utility>
+// for swap but we do not provide a using declaration for swap
+
+// HasPtr with added move constructor
 class HasPtr {
 	friend void swap(HasPtr&, HasPtr&);
 public:
@@ -44,7 +46,14 @@ public:
     HasPtr(const HasPtr &p): 
 		ps(new std::string(*p.ps)), i(p.i) { }
 
-	// copy and swap assignment operator 
+#ifdef NOEXCEPT
+	// move constructor
+	HasPtr(HasPtr &&p) noexcept : ps(p.ps), i(p.i) {p.ps = 0;}
+#else
+	HasPtr(HasPtr &&p) throw() : ps(p.ps), i(p.i) {p.ps = 0;}
+#endif
+
+	// assignment operator is both the move- and copy-assignment operator
 	HasPtr& operator=(HasPtr rhs) 
 	               { swap(*this, rhs); return *this; }
 
@@ -67,4 +76,7 @@ int main()
 {
 	HasPtr hp("hi mom");
 	HasPtr hp2(hp);
+	
+	hp = hp2; // hp2 is an lvalue; copy constructor used to copy hp2 
+	hp = std::move(hp2); // move constructor moves hp2
 }

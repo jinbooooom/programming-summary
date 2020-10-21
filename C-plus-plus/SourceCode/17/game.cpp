@@ -31,8 +31,8 @@
 using std::string;
 
 #include <random>
-using std::bernoulli_distribution;
 using std::default_random_engine;
+using std::bernoulli_distribution;
 
 #include <iostream>
 using std::cin; using std::cout; using std::endl;
@@ -41,8 +41,8 @@ bool play(bool player) { return player; }
 int main()
 {
 	string resp;
-	// distributions and engines have state,
-    // they must be defined outside the loop!
+	// distributions and engines have state, 
+	// they must be defined outside the loop!
 	default_random_engine e;  
 
 	// 50/50 odds by default

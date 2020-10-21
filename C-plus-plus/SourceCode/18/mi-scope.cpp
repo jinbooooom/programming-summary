@@ -27,41 +27,63 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <string>
 #include <vector>
 #include <iostream>
 
 struct Base1 {
-	Base1(): ival(1) { }
     void print(int) const     // public by default
 		{ std::cout << "Base1::print(int) " << ival << std::endl; }
 protected:
-    int ival;
+#ifdef IN_CLASS_INITS
+    int ival = 1;
+#else
+	int ival;
+public:
+	Base1(): ival(1) { }
+#endif
 };
 
 struct Base2 {
-	Base2(): ival(2) { }
     void print(double) const        // public by default
 		{ std::cout << "Base2::print(double) " << ival << std::endl; }
 protected:
-    int ival;
+#ifdef IN_CLASS_INITS
+    int ival = 2;
+#else
+	int ival;
+public:
+	Base2(): ival(2) { }
+#endif
 };
 
 struct Derived : public Base1 {
-	Derived(): ival(3) { }
     void print(std::string) const   // public by default
 		{ std::cout << "Derived::print(string) " << ival << std::endl; }
 protected:
+#ifdef IN_CLASS_INITS
+	int ival = 3;
+#else
 	int ival;
+public:
+	Derived(): ival(3) { }
+#endif
 };
 
 struct MI : public Derived, public Base2 {
-	MI(): ival(4) { }
     void print(std::vector<double>) // public by default
 		{ std::cout << "MI::print(int(vector<double>) " 
 			        << ival << std::endl; }
 protected:
-    int ival;
+#ifdef IN_CLASS_INITS
+    int ival = 4;
+#else
+	int ival;
+public:
+	MI(): ival(4) { }
+#endif
 };
 
 int main()

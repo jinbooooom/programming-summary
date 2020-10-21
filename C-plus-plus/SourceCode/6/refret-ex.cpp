@@ -39,9 +39,8 @@ int main() {
     for (int i = 0; i != 10; ++i)
         get(ia, i) = i;  // call get to assign values to the elements
 
-    for (int i = 0; i != 10; ++i)  // print the elements
-		cout << ia[i] << " ";
-
+	for (auto i : ia)    // print the elements
+		cout << i << " ";
 	cout << endl;
 
 	return 0;

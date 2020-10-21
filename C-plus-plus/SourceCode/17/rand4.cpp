@@ -34,9 +34,9 @@ using std::time;
 using std::rand;
 
 #include <random>
-using std::tr1::uniform_int_distribution;
-using std::tr1::uniform_real_distribution;
 using std::default_random_engine;
+using std::uniform_int_distribution;
+using std::uniform_real_distribution;
 
 #include <iostream>
 using std::cerr; using std::cout; using std::endl;

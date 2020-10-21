@@ -42,12 +42,11 @@ int main()
 {
 	string s("Hello World!!!");
 	// punct_cnt has the same type that s.size returns
-	string::size_type punct_cnt = 0; 
+	decltype(s.size()) punct_cnt = 0; 
 	
 	// count the number of punctuation characters in s
-	// for every char in s
-	for (string::size_type c = 0; c != s.size(); ++c)
-		if (ispunct(s[c]))   // if the character is punctuation
+	for (auto c : s)         // for every char in s
+		if (ispunct(c))      // if the character is punctuation
 			++punct_cnt;     // increment the punctuation counter
 	
 	cout << punct_cnt 
@@ -55,13 +54,14 @@ int main()
 	
 	// convert s to uppercase
 	string orig = s;
-	for (string::size_type c = 0; c != s.size(); ++c)
-		s[c] = toupper(s[c]);
+	for (auto &c : s)   // for every char in s (note: c is a reference)
+		// c is a reference, so this assignment changes the char in s
+		c = toupper(c);
 	cout << s << endl;
 	
 	// convert first word in s to uppercase
 	s = orig;  // restore s to original case
-	string::size_type index = 0;
+	decltype(s.size()) index = 0;
 
 	// process characters in s until we run out of characters 
 	// or we hit a whitespace
@@ -69,11 +69,11 @@ int main()
 
 	    // s[index] returns a reference so we can change 
 		// the underlying character
-		s[index] = toupper(s[index]);
+	    s[index] = toupper(s[index]);
 
 		// increment the index to look at the next character 
 		// on the next iteration
-		++index; 
+		++index;
 	}
 	cout << s << endl;
 	

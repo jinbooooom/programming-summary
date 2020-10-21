@@ -1,5 +1,5 @@
 Although most programmers are familiar with data structures
-such as vectors and lists, many have never used an
+such as |vector|s and |list|s, many have never used an
 associative data structure.
 Before we look at the details of how the library supports
 these types, it will be helpful to start with

@@ -41,8 +41,8 @@ using std::size_t;
 template <typename T, size_t N>
 void print(T (&arr)[N])
 {
-    for (T *elem = arr; elem != arr + N; ++elem)
-        cout << *elem << endl;
+    for (auto elem : arr)
+        cout << elem << endl;
 }
 
 int main()

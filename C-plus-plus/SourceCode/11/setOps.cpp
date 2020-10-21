@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <set>
 using std::set; using std::multiset;
 
@@ -39,6 +41,11 @@ using std::vector;
 #include <iostream>
 using std::cout; using std::endl; 
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
 int main() 
 {
 	// define a vector with 20 elements, 
@@ -50,8 +57,8 @@ int main()
 	}
 	
 	// iset holds unique elements from ivec; miset holds all 20 elements
-	set<int> iset(ivec.begin(), ivec.end());
-	multiset<int> miset(ivec.begin(), ivec.end());
+	set<int> iset(ivec.cbegin(), ivec.cend());
+	multiset<int> miset(ivec.cbegin(), ivec.cend());
 	
 	cout << ivec.size() << endl;    // prints 20
 	cout << iset.size() << endl;    // prints 10
@@ -73,14 +80,18 @@ int main()
 	set1.insert("the");  // set1 now has one element
 	set1.insert("and");  // set1 now has two elements
 	
+#ifdef LIST_INIT
+	ivec = {2,4,6,8,2,4,6,8}; // ivec now has eight elements
 	set<int> set2;            // empty set
-	int temp[] = {2,4,6,8,2,4,6,8}; // temp has eight elements
-	 // set2 has four elements
-	set2.insert(temp, temp + sizeof(temp)/sizeof(*temp));
-
+	set2.insert(ivec.cbegin(), ivec.cend()); // set2 has four elements
+	set2.insert({1,3,5,7,1,3,5,7});      // set2 now has eight elements
+#else
+	set<int> set2;            // empty set
+	int temp[] = {2,4,6,8,2,4,6,8};
+	set2.insert(begin(temp), end(temp));
 	int temp2[] = {1,3,5,7,1,3,5,7};
-	// set2 now has eight elements
-	set2.insert(temp2, temp2 + sizeof(temp2)/sizeof(*temp2));
+	set2.insert(begin(temp2), end(temp2));
+#endif
 
 	return 0;
 }

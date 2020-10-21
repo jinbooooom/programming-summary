@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include "StrVec.h"
 
 #include <string>
@@ -39,10 +41,15 @@ using std::istream;
 #include <fstream>
 using std::ifstream;
 
+#ifndef INIT_LIST
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
 void print(const StrVec &svec)
 {
-	for (string *it = svec.begin(); it != svec.end(); ++it)
-		cout << *it << " " ;
+	for (auto it : svec)
+		cout << it << " " ;
 	cout <<endl;
 }
 
@@ -57,9 +64,12 @@ StrVec getVec(istream &is)
 	
 int main()
 {
+#ifdef LIST_INIT
+	StrVec sv = {"one", "two", "three"};
+#else
 	string temp[] = {"one", "two", "three"};
-	StrVec sv(temp, temp + sizeof(temp)/sizeof(*temp));
-
+	StrVec sv(begin(temp), end(temp));
+#endif
 	// run the string empty funciton on the first element in sv
 	if (!sv[0].empty()) 
 		sv[0] = "None"; // assign a new value to the first string 
@@ -72,7 +82,7 @@ int main()
 	in.close();
 
 	cout << "copy " << svec.size() << endl;
-	StrVec svec2 = svec;
+	auto svec2 = svec;
 	print(svec2);
 
 	cout << "assign" << endl;
@@ -91,6 +101,22 @@ int main()
 	string s = "some string or another";
 	vec.push_back(s);      // calls push_back(const string&)
 	vec.push_back("done"); // calls push_back(string&&)
+
+	// emplace member covered in chpater 16
+	s = "the end";
+#ifdef VARIADICS
+	vec.emplace_back(10, 'c'); // adds cccccccccc as a new last element
+	vec.emplace_back(s);  // uses the string copy constructor
+#else
+	vec.push_back(string(10, 'c')); // calls push_back(string&&)
+	vec.push_back(s);               // calls push_back(const string&)
+#endif
+	string s1 = "the beginning", s2 = s;
+#ifdef VARIADICS
+	vec.emplace_back(s1 + s2); // uses the move constructor
+#else
+	vec.push_back(string(s1 + s2)); // calls push_back(string&&)
+#endif
 
 	return 0;
 }

@@ -27,8 +27,13 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <algorithm>
 using std::find;
+
+#include <iterator>
+using std::begin; using std::end;
 
 #include <vector>
 using std::vector;
@@ -45,42 +50,46 @@ using std::cout; using std::endl;
 int main()
 {
 	int ia[] = {27, 210, 12, 47, 109, 83};
-	const int iaSz = sizeof(ia)/sizeof(*ia);
 	int val = 83;
-	int* result = find(ia, ia + iaSz, val);
+	int* result = find(begin(ia), end(ia), val);
 	cout << "The value " << val
-	     << (result == ia + iaSz
+	     << (result == end(ia)
 	           ? " is not present" : " is present") << endl;
 	
 	// search starting from ia[1] up to but not including ia[4]
 	result = find(ia + 1, ia + 4, val);
 	
-	 // initialize the vector with some values
-	vector<int> vec(ia, ia + sizeof(ia)/sizeof(*ia));
+	// initialize the vector with some values
+#ifdef LIST_INIT
+	vector<int> vec = {27, 210, 12, 47, 109, 83};
+#else
+	int temp[] = {27, 210, 12, 47, 109, 83};
+	vector<int> vec(begin(temp), end(temp));
+#endif
 	val = 42; // value we'll look for
 
 	// result2 will denote the element we want if it's in vec, 
-	// or vec.end() if not
-	vector<int>::const_iterator result2 = 
-			find(vec.begin(), vec.end(), val);
+	// or vec.cend() if not
+	auto result2 = find(vec.cbegin(), vec.cend(), val);
 
 	// report the result
 	cout << "The value " << val
-	     << (result2 == vec.end()
+	     << (result2 == vec.cend()
 	           ? " is not present" : " is present") << endl;
 	
 	// now use find to look in a list of strings
-	list<string> lst;
-	lst.push_back("val1");
-	lst.push_back("val2");
-	lst.push_back("val3");
+#ifdef LIST_INIT
+	list<string> lst = {"val1", "val2", "val3"};
+#else
+	string temp2[] = {"val1", "val2", "val3"};
+	list<string> lst(begin(temp2), end(temp2));
+#endif
 
 	string sval = "a value";  // value we'll look for
 	// this call to find looks through string elements in a list
-	list<string>::const_iterator result3 = 
-			find(lst.begin(), lst.end(), sval);
+	auto result3 = find(lst.cbegin(), lst.cend(), sval);
 	cout << "The value " << sval
-	     << (result3 == lst.end()
+	     << (result3 == lst.cend()
 	           ? " is not present" : " is present") << endl;
 
 	return 0;

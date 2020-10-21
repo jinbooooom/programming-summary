@@ -14,7 +14,7 @@
  * 
  * Permission is granted for this code to be used for educational purposes in
  * association with the book, given proper citation if and when posted or
- * reproduced. Any commercial use of this code requires the explicit written
+ * reproduced.Any commercial use of this code requires the explicit written
  * permission of the publisher, Addison-Wesley Professional, a division of
  * Pearson Education, Inc. Send your request for permission, stating clearly
  * what code you would like to use, and in what specific way, to the following
@@ -25,19 +25,15 @@
  * 	One Lake Street
  * 	Upper Saddle River, NJ  07458
  * 	Fax: (201) 236-3290
-*/
+*/ 
 
-/* this file defines a C++ 11 facility used by our
- * random number programs:
- *
- * tr1 also did not define lround function, which we define here
-*/
+#include <iostream>
+using std::cout; using std::endl;
+using std::hexfloat; using std::defaultfloat;
 
-#ifndef OURRANDOM_H
-#define OURRANDOM_H
-
-inline long lround(double d)
+int main()
 {
-    return (d >= 0) ?  long(d + 0.5) : long(d - 0.5);
+	double pi = 3.14;
+	cout << pi << " " << hexfloat << pi 
+	     << defaultfloat << " " << pi << endl;
 }
-#endif

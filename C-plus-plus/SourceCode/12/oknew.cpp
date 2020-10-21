@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <iostream>
 using std::cout; using std::endl;
 
@@ -62,23 +64,27 @@ int main()
 	// named initialized variables
 	int i(1024);             // value of i is 1024
 	string s(10, '9');       // value of s is "9999999999"
-	const int temp[] = {0,1,2,3,4,5,6,7,8,9};
-	vector<int> v(temp, temp + sizeof(temp)/sizeof(*temp));
+#ifdef LIST_INIT
+	vector<int> v = {0,1,2,3,4,5,6,7,8,9};
+#endif
 
 	// unnamed, initialized dynamically allocated objects
 	int *pi = new int(1024); // object to which pi points has value 1024
 	string *ps = new string(10, '9');   // *ps is "9999999999"
-	// can't list initialize in pre-C++ 11
-	vector<int> *pv = 
-			new vector<int>(temp, temp + sizeof(temp)/sizeof(*temp));
-	
+	// vector with ten elements with values from 0 to 9
+#ifdef LIST_INIT
+	vector<int> *pv = new vector<int>{0,1,2,3,4,5,6,7,8,9};
+#else
+	vector<int> *pv = new vector<int>; // empty vector
+	for (int i = 0; i != 10; ++i)
+		pv->push_back(i);              // add elements to the allocated vector
+#endif
 	cout << "*pi: " << *pi
 	     << "\ti: " << i << endl
 	     << "*ps: " << *ps
 	     << "\ts: " << s << endl;
 	
-	for (vector<int>::const_iterator b = pv->begin(); 
-			b != pv->end(); ++b)
+	for (auto b = pv->begin(); b != pv->end(); ++b)
 		cout << *b << " ";
 	cout << endl;
 

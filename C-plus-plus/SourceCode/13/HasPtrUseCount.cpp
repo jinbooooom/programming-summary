@@ -48,6 +48,13 @@ public:
 
 	~HasPtr();
 
+	// move constructor takes over the pointers from its argument
+	// and makes the argument safe to delete
+	HasPtr(HasPtr &&p): ps(p.ps), i(p.i), use(p.use) 
+		{ p.ps = 0; p.use = 0; }
+
+	HasPtr &operator=(HasPtr&&);
+
 private:
     std::string *ps;
     int    i;
@@ -60,6 +67,22 @@ HasPtr::~HasPtr()
 		delete ps;       // delete the string
 		delete use;      // and the counter
 	}
+}
+
+HasPtr &
+HasPtr::operator=(HasPtr &&rhs)
+{
+	if (this != &rhs) {
+		if (--*use == 0) {   // do the work of the destructor
+			delete ps;
+			delete use;
+		}
+		ps = rhs.ps;         // do the work of the move constructor
+		i = rhs.i;
+		use = rhs.use;
+		ps = 0; use = 0;
+	}
+	return *this;
 }
 
 HasPtr& HasPtr::operator=(const HasPtr &rhs) 

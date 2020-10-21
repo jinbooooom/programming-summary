@@ -31,7 +31,7 @@
 #include "TextQuery.h"
 
 #include <memory>
-using std::shared_ptr; 
+using std::shared_ptr; using std::make_shared;
 
 #include <set>
 using std::set;
@@ -48,28 +48,22 @@ using std::size_t;
 #include <iterator>
 using std::inserter; 
 
-#include <vector>
-using std::vector;
-
-#include <string>
-using std::string;
-
 // returns the lines not in its operand's result set
 QueryResult
 NotQuery::eval(const TextQuery& text) const
 {
     // virtual call to eval through the Query operand 
-    QueryResult result = query.eval(text);
+    auto result = query.eval(text);
 
 	// start out with an empty result set
-    shared_ptr<set<line_no> > ret_lines(new set<line_no>);
+    auto ret_lines = make_shared<set<line_no>>();
 
 	// we have to iterate through the lines on which our operand appears
-	QueryResult::line_it beg = result.begin(), end = result.end();
+	auto beg = result.begin(), end = result.end();
 
     // for each line in the input file, if that line is not in result,
     // add that line number to ret_lines
-	vector<string>::size_type sz = result.get_file()->size();
+	auto sz = result.get_file()->size();
     for (size_t n = 0; n != sz; ++n) {
 		// if we haven't processed all the lines in result
 		// check whether this line is present
@@ -86,10 +80,10 @@ QueryResult
 AndQuery::eval(const TextQuery& text) const
 {
     // virtual calls through the Query operands to get result sets for the operands
-    QueryResult left = lhs.eval(text), right = rhs.eval(text);
+    auto left = lhs.eval(text), right = rhs.eval(text);
 
 	// set to hold the intersection of left and right
-    shared_ptr<set<line_no> > ret_lines(new set<line_no>);  
+    auto ret_lines = make_shared<set<line_no>>();  
 
     // writes the intersection of two ranges to a destination iterator
     // destination iterator in this call adds elements to ret
@@ -105,11 +99,11 @@ OrQuery::eval(const TextQuery& text) const
 {
     // virtual calls through the Query members, lhs and rhs 
 	// the calls to eval return the QueryResult for each operand
-    QueryResult right = rhs.eval(text), left = lhs.eval(text);  
+    auto right = rhs.eval(text), left = lhs.eval(text);  
 
 	// copy the line numbers from the left-hand operand into the result set
-	shared_ptr<set<line_no> > 
-		ret_lines(new set<line_no>(left.begin(), left.end()));
+	auto ret_lines = 
+	     make_shared<set<line_no>>(left.begin(), left.end());
 
 	// insert lines from the right-hand operand
 	ret_lines->insert(right.begin(), right.end());

@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <algorithm>
 using std::find; 
 
@@ -36,27 +38,38 @@ using std::string;
 #include <list>
 using std::list;
 
+#include <forward_list>
+using std::forward_list;
+
 #include <vector>
 using std::vector; 
 
 #include <iostream>
 using std::cout; using std::endl;
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif 
+
 int main() 
 {
 	// lst has ten elements 0 ... 9 in value
-	int temp[] = {0,1,2,3,4,5,6,7,8,9};
-	list<int> lst(temp, temp + sizeof(temp)/sizeof(*temp));
+#ifdef LIST_INIT
+	list<int> lst = {0,1,2,3,4,5,6,7,8,9};
+#else
+	int lstarr[] = {0,1,2,3,4,5,6,7,8,9};
+	list<int> lst(begin(lstarr), end(lstarr));
+#endif
 
 	// print the initial values in lst
 	cout << "initial list: ";
-	for (list<int>::const_iterator it = lst.begin();
-			it != lst.end(); ++it)
-		cout << *it << " ";
+	for (auto it : lst)
+		cout << it << " ";
 	cout << endl;
 
 	// erase the odd elements in lst
-	list<int>::iterator it = lst.begin(); 
+	auto it = lst.begin(); 
 	while (it != lst.end())
 		if (*it % 2)             // if the element is odd
 			it = lst.erase(it);  // erase this element
@@ -65,15 +78,17 @@ int main()
 
 	// print the current contents of lst
 	cout << "after erasing odd elements from lst: ";
-	for (list<int>::const_iterator it = lst.begin();
-			it != lst.end(); ++it)
-		cout << *it << " ";
+	for (auto it : lst)
+		cout << it << " ";
 	cout << endl;
 	
-/* the remainder of this file uses forward_list, which
- * is a new library template defined in the C++ library
 	// repeat the same actions but on a forward_list
+#ifdef LIST_INIT
 	forward_list<int> flst = {0,1,2,3,4,5,6,7,8,9};
+#else
+	// lstarr was defined for the initialization of lst above
+	forward_list<int> flst(begin(lstarr), end(lstarr));
+#endif
 
 	// print the initial values in flst
 	cout << "initial list: ";
@@ -98,6 +113,6 @@ int main()
 	for (auto it : flst)
 		cout << it << " ";
 	cout << endl;
-*/
+
 	return 0;
 }

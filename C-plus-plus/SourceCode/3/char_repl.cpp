@@ -48,7 +48,7 @@ int main()
 
 	// equivalent code using iterators instead of subscripts
 	if (str.begin() != str.end()) { // make sure str is not empty
-		string::iterator it = str.begin(); // it denotes the first character in str
+		auto it = str.begin();  // it denotes the first character in str
 		*it = toupper(*it);     // make that character uppercase
 	}
 	cout << str << endl;
@@ -57,7 +57,7 @@ int main()
 
 	// four wasy to capitalize first word in str:
 	// 1. for loop with subscripts
-	for (string::size_type index = 0; 
+	for (decltype(str.size()) index = 0; 
 		 index != str.size() && !isspace(str[index]); ++index) 
     		str[index] = toupper(str[index]); // capitalize the current character
 	cout << str << endl;
@@ -65,14 +65,14 @@ int main()
 	str = orig; // restore str to its original value
 
 	// 2. for loop with iterators instead of subscripts
-	for (string::iterator it = str.begin(); it != str.end() && !isspace(*it); ++it)
+	for (auto it = str.begin(); it != str.end() && !isspace(*it); ++it)
 		*it = toupper(*it); // capitalize the current character
 	cout << str << endl;
 
 	str = orig; // restore str to its original value
 
 	// 3. while instead of a for with subscripts
-	string::size_type index = 0; // subscript to look at characters in str
+	decltype(str.size()) index = 0; // subscript to look at characters in str
 	while (index != str.size() && !isspace(str[index])) {
 		str[index] = toupper(str[index]);  // capitalize the current character
 		++index;        // advance the index to get the next character
@@ -80,7 +80,7 @@ int main()
 	cout << str << endl;
 
 	// 4. while loop with iterators
-	string::iterator beg = str.begin();
+	auto beg = str.begin();
 	while (beg != str.end() && !isspace(*beg)) {
 		*beg = toupper(*beg);
 		++beg;
@@ -91,23 +91,23 @@ int main()
 
 	// range for loop to process every character
 	// first a loop to print the characters in str one character to a line
-	for (string::const_iterator c = str.begin(); c != str.end(); ++c)
-		cout << *c << endl;  // print the current character followed by a newline
+	for (auto c : str)      // for every char in str
+		cout << c << endl;  // print the current character followed by a newline
 
 	// next change every character in str
-	for (string::iterator c = str.begin(); c != str.end(); ++c)
-		*c = '*';         // assign a new value to the underlying char in str
+	for (auto &c : str)  // note: c is a reference 
+		c = '*';         // assign a new value to the underlying char in str
 	cout << str << endl;
 	
 	str = orig;  // restore str to its original value
 
 	// equivalent code using traditional for loops
 	// first print the characters in str
-	for (string::size_type ix = 0; ix != str.size(); ++ix)
+	for (decltype(str.size()) ix = 0; ix != str.size(); ++ix)
 		cout << str[ix] << endl;  // print current character followd by a newline
 
 	// next change every character in str
-	for (string::size_type ix = 0; ix != str.size(); ++ix)
+	for (decltype(str.size()) ix = 0; ix != str.size(); ++ix)
 		str[ix] = '*';  // assigns a new value to the character in str
 	cout << str << endl;
 
@@ -115,11 +115,11 @@ int main()
 
 	// equivalent code using traditional for loops and iterators
 	// first print the characters in str
-	for (string::const_iterator beg = str.begin(); beg != str.end(); ++beg)
+	for (auto beg = str.begin(); beg != str.end(); ++beg)
 		cout << *beg << endl;  // print current character followd by a newline
 
 	// next change every character in str
-	for (string::iterator beg = str.begin(); beg != str.end(); ++beg)
+	for (auto beg = str.begin(); beg != str.end(); ++beg)
 		*beg = '*';  // assigns a new value to the character in str
 	cout << str << endl;
 	return 0;

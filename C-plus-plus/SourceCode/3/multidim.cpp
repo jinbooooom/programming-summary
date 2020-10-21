@@ -27,9 +27,13 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
+#include <iterator>
+using std::begin; using std::end;
+
 #include <vector>
 using std::vector;
-
 #include <iostream>
 using std::cout; using std::endl;
 
@@ -50,7 +54,7 @@ int main()
 	ia1[2][3] = arr[0][0][0];
 	
 	// binds row to the second four-element array in ia 
-	int (&row)[4] = ia1[1]; 
+	int (&row)[4] = ia1[1];
 	
 	// three elements, each element is an array of size 4
 	int ia2[3][4] = { 
@@ -73,7 +77,11 @@ int main()
 	// prints 9 0 0 
 	cout << ix[0][3] << ' ' << ix[1][0] << ' ' << ix[2][0] << endl;
 	
+#ifdef CONSTEXPR_VARS
+	constexpr size_t rowCnt = 3, colCnt = 4;
+#else
 	const size_t rowCnt = 3, colCnt = 4;
+#endif
 	int ia[rowCnt][colCnt];   // 12 uninitialized elements 
 	
     // for each row
@@ -85,43 +93,46 @@ int main()
 		}
 	}
 
-/* this loop uses a range for statement, which is a C++ 11 feature
 	// four ways to print the contents of ia
 	// 1. using nested range for loops
 	for (const auto &row : ia) // for every element in the outer array
 		for (auto col : row)   // for every element in the inner array
 			cout << col << endl; // print the element's value
     cout << ia[0][0] << ' ' << ia[2][3] << endl; // prints 0 11
-*/
+
 
 	// 2. using pointers and a traditional for loop
 	//    with pointer arithmetic to calculate the end pointers 
-	for (int(*p)[4] = ia; p != ia + rowCnt; ++p) {
+	for (auto p = ia; p != ia + rowCnt; ++p) {
 		// q points to the first element of an array of four ints; 
 		// that is, q points to an int
-	    for (int *q = *p; q != *p + colCnt; ++q)
+	    for (auto q = *p; q != *p + colCnt; ++q)
 	         cout << *q << ' ';
 		cout << endl;
 	}
 	
-/* begin and end functions are a c++ 11 feature
 	// 3. using pointers and a traditional for loop
 	//    with the library begin and end functions to manage the pointers
-	for (int *p = begin(ia); p != end(ia); ++p) {
+	for (auto p = begin(ia); p != end(ia); ++p) {
 		// q points to the first element in an inner array
-		for (int *q = begin(*p); q != end(*p); ++q)
+		for (auto q = begin(*p); q != end(*p); ++q)
 			cout << *q << ' ';  // prints the int value to which q points
 		cout << endl;
 	}
-*/
-	// 4.  using a type alias to declare the loop control variable
+	
+	// 4. using a type alias to declare the loop control variable
+#ifdef TYPE_ALIAS_DECLS
+	using int_array = int[4]; // new style type alias declaration 
+#else
 	typedef int int_array[4]; // equivalent typedef declaration
+#endif
+
 	for (int_array *p = ia; p != ia + 3; ++p) {
 	    for (int *q = *p; q != *p + 4; ++q)
 	         cout << *q << ' ';
 		cout << endl;
 	}
-/* these loops use a range for statement, which is a C++ 11 feature
+
 	// alternative way to assign positional index to elements 
 	// in a two-dimensional array
 	int alt_ia[rowCnt][colCnt]; // 12 uninitialized elements 
@@ -135,7 +146,6 @@ int main()
 	for (const auto &row : alt_ia) // for every element in the outer array
 		for (auto col : row)     // for every element in the inner array
 			cout << col << endl;
-*/
 
 	return 0;
 }

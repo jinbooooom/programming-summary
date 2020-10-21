@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <map>
 using std::multimap;
 
@@ -44,21 +46,27 @@ int main()
     // map from author to title; there can be multiple titles per author
     multimap<string, string> authors;
     // add data to authors
+#ifdef LIST_INIT
+authors.insert({"Alain de Botton", "On Love"});
+    authors.insert({"Alain de Botton", "Status Anxiety"});
+    authors.insert({"Alain de Botton", "Art of Travel"});
+    authors.insert({"Alain de Botton",
+                              "Architecture of Happiness"});
+#else
     authors.insert
-        (pair<string, string>("Alain de Botton", "On Love"));
+		(pair<string, string>("Alain de Botton", "On Love"));
     authors.insert
-        (pair<string, string>("Alain de Botton", "Status Anxiety"));
+		(pair<string, string>("Alain de Botton", "Status Anxiety"));
     authors.insert
-        (pair<string, string>("Alain de Botton", "Art of Travel"));
+		(pair<string, string>("Alain de Botton", "Art of Travel"));
     authors.insert
-        (pair<string, string>("Alain de Botton",
-                              "Architecture of Happiness"));
+		(pair<string, string>("Alain de Botton", 
+							  "Architecture of Happiness"));
+#endif
 
     string search_item("Alain de Botton"); // author we'll look for
-    multimap<string, string>::size_type entries = 
-			authors.count(search_item); // number of elements
-    multimap<string, string>::iterator iter = 
-			authors.find(search_item); // first entry for this author
+    auto entries = authors.count(search_item); // number of elements
+    auto iter = authors.find(search_item); // first entry for this author
 
     // loop through the number of entries there are for this author
     while(entries) {
@@ -69,19 +77,16 @@ int main()
 
     // definitions of authors and search_item as above
     // beg and end denote the range of elements for this author
-    for (multimap<string, string>::iterator beg = 
-			  authors.lower_bound(search_item),
+    for (auto beg = authors.lower_bound(search_item),
               end = authors.upper_bound(search_item);
 		 beg != end; ++beg)
         cout << beg->second << endl; // print each title
 
     // definitions of authors and search_item as above
     // pos holds iterators that denote the range of elements for this key
-    for (pair<multimap<string, string>::iterator,
-		      multimap<string, string>::iterator> pos = 
-		 authors.equal_range(search_item);
+    for (auto pos = authors.equal_range(search_item);
          pos.first != pos.second; ++pos.first)
-        	cout << pos.first->second << endl; // print each title
+        cout << pos.first->second << endl; // print each title
 
 	return 0;
 }

@@ -1,5 +1,5 @@
 # executable files for this directory
-OBJECTS = arrRet.exe count-calls.exe errMsg_initList.exe \
+OBJECTS = arrRet.exe count-calls.exe errMsg_initList.exe\
 		  fact.exe fcnptrRet.exe good_printmain.exe \
 		  inline_shorter.exe mainmath.exe mainret.exe \
 		  mk_plural.exe ref-fcn.exe refparms.exe refret-ex.exe  \

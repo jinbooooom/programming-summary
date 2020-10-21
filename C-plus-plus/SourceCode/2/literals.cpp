@@ -42,8 +42,8 @@ int main()
 	// three ways to print a capital M
 	std::cout << 'M' << " " << '\115' << " " << '\x4d' << std::endl;
 
-    unsigned long long bigVal = -1ULL;
-    std::cout << bigVal << std::endl;
+	unsigned long long bigVal = -1ULL;
+	std::cout << bigVal << std::endl;
 
     return 0;
 }

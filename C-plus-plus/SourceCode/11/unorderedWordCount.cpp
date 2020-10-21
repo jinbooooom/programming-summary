@@ -27,7 +27,7 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates unordered_map, which is a C++ 11 container
+#include "Version_test.h"
 
 #include <unordered_map>
 using std::unordered_map;
@@ -57,12 +57,10 @@ int main()
     while (cin >> word)
 		++word_count[word]; // fetch and increment the counter for word
 
-	for (unordered_map<string, size_t>::const_iterator 
-				w = word_count.begin();
-				w != word_count.end(); ++w) // for each element in the map
+	for (const auto &w : word_count) // for each element in the map
 		// print the results
-		cout <<  w->first << " occurs " << w->second 
-		     << ((w->second > 1) ? " times" : " time") << endl;
+		cout <<  w.first << " occurs " << w.second 
+		     << ((w.second > 1) ? " times" : " time") << endl;
 
 	return 0;
 }
@@ -78,10 +76,13 @@ bool eqOp(const Sales_data &lhs, const Sales_data &rhs)
 }
 
 // type alias using our functions in place of hash<key_type> and ==
-typedef unordered_multiset<
-         Sales_data, 
-         size_t(*)(const Sales_data&),
-         bool(*)(const Sales_data&, const Sales_data&)> SD_multiset;
+#ifdef TYPE_ALIAS_DECLS
+using SD_multiset = unordered_multiset<Sales_data, 
+                    decltype(hasher)*, decltype(eqOp)*>;
+#else
+typedef
+unordered_multiset<Sales_data, decltype(hasher)*, decltype(eqOp)*> SD_multiset;
+#endif
 
 // bookstore can hold multiple Sales_data with the same ISBN
 // arguments are the bucket size 
@@ -98,5 +99,5 @@ bool operator==(const Foo& l, const Foo&r) { return l.s == r.s; }
 size_t FooHash(const Foo& f) { return hash<string>()(f.s); }
 
 // use FooHash to generate the hash code; Foo must have an == operator
-unordered_set<Foo, size_t(*)(const Foo&)> fooSet(10, FooHash);
+unordered_set<Foo, decltype(FooHash)*> fooSet(10, FooHash);
 

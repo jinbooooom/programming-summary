@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <string>
 using std::string;
 
@@ -36,34 +38,51 @@ using std::vector;
 #include <iostream>
 using std::cin; using std::cout; using std::endl;
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
 int main()
 {
-	vector<int> v;
-	for (vector<int>::size_type i = 0; i != 10; ++i)
-		v.push_back(i);  // v has ten elements with values from 0 ... 9
-	vector<int>::size_type sz = v.size(), i = 0; 
+#ifdef LIST_INIT
+	vector<int> v = {0,1,2,3,4,5,6,7,8,9};
+#else
+	int temp[] = {0,1,2,3,4,5,6,7,8,9};
+	vector<int> v(begin(temp), end(temp));
+#endif
+	auto sz = v.size(); 
+	decltype(sz) i = 0;
 	// duplicate contents of v onto the back of v
 	while (i != sz) {
 		v.push_back(*v.begin() + i);
 		++i;
 	}
 	// prints 0...9 0...9
-	for (vector<int>::const_iterator it = v.begin(); it != v.end(); ++it)
-		cout << *it << " ";
+	for (auto it : v)
+		cout << it << " ";
 	cout << endl;
 	
+#ifdef LIST_INIT
 	// alternative way to stop when we get to the original last element
-	vector<int> alt_v(v.begin(), v.begin() + 10); // copy the original ten elements
-	for (vector<int>::size_type i = 0, sz = alt_v.size(); i != sz; ++i)
+	vector<int> alt_v = {0,1,2,3,4,5,6,7,8,9}; // vector with values 0...9
+#else
+	vector<int> alt_v(begin(temp), end(temp)); // copy the array into alt_v
+#endif
+	for (decltype(alt_v.size()) i = 0, sz = alt_v.size(); i != sz; ++i)
 		alt_v.push_back(alt_v[i]);
 
 	// prints 0...9 0...9
-	for (vector<int>::const_iterator it = alt_v.begin(); it != alt_v.end(); ++it)
-		cout << *it << " ";
+	for (auto it : alt_v)
+		cout << it << " ";
 	cout << endl;
 
-	vector<int> v2(v.begin(), v.begin() + 10); // copy the original ten elements
-	vector<int>::size_type ix = 0;   // we'll use ix to index the vector
+#ifdef LIST_INIT
+	vector<int> v2 = {0,1,2,3,4,5,6,7,8,9}; // vector with values 0...9
+#else
+	vector<int> v2(begin(temp), end(temp)); 
+#endif
+	decltype(v2.size()) ix = 0;   // we'll use ix to index the vector
 
 	// set the elements with values less than 5 to 0
 	while (ix != v2.size() && v2[ix] < 5) {
@@ -76,16 +95,19 @@ int main()
 		cout << v2[i] << " ";
 	cout << endl;
 
+#ifdef LIST_INIT
 	// equivalent but using iterators
-	vector<int> alt_v2(v.begin(), v.begin() + 10); // copy the original ten elements
+	vector<int> alt_v2 = {0,1,2,3,4,5,6,7,8,9}; // vector with values 0 ...9
+#else
+	vector<int> alt_v2(begin(temp), end(temp));
+#endif
 	// set the elements to 0 up to the first one that is 5 or greater
-	vector<int>::iterator it = alt_v2.begin();
+	auto it = alt_v2.begin();
 	while (it != alt_v2.end() && *it < 5) {
 		*it = 0;   // changes the value of the element in alt_v2
 		++it;      // advance the iterator to denote the next element
 	}
-	// it denotes first element in alt_v2
-	for (vector<int>::iterator it = alt_v2.begin(); 
+	for (auto it = alt_v2.begin(); // it denotes first element in alt_v2
 	          it != alt_v2.end();  // so long as it denotes an element
 	          ++it)          // increment the iterator to next element
 		cout << *it << " ";  // print element denoted by it from alt_v2

@@ -40,7 +40,7 @@ using std::string;
 using std::istream_iterator; using std::ostream_iterator;
 
 #include <fstream>
-using std::ofstream;
+using std::ifstream; using std::ofstream;
 
 #include <iostream>
 using std::cin; using std::cout; using std::endl;
@@ -59,5 +59,6 @@ int main()
 	ostream_iterator<int> out_iter(out_file, " ");
 	copy(v.begin(), v.end(), out_iter); 
 	out_file << endl;  // write a newline at end of the file
+
     return 0;
 }

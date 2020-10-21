@@ -15,8 +15,5 @@ sortSI.exe < data/book_sales
 use_find.exe < data/use_find
 use-istream-iter.exe < data/iostream_iter
 
-for %%i in ( equal.exe inserters.exe reverse.exe 
-		   rev-iters.exe ) do %%i 
-
-REM C++ 11 file:
-REM lambda.exe
+for %%i in ( equal.exe inserters.exe lambda.exe reverse.exe 
+		   rev-iters.exe ) do %%i

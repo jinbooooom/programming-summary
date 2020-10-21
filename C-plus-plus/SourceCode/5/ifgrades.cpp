@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <iostream>
 using std::endl; using std::cin; using std::cout;
 
@@ -36,7 +38,18 @@ using std::vector;
 #include <string>
 using std::string;
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
+#ifdef LIST_INIT
+const vector<string> scores = {"F", "D", "C", "B", "A", "A++"};
+#else
+// in this program just use an array instead of a vector,
+// we only use scores to fetch values so don't need the flexibility of a vector
 const string scores[] = {"F", "D", "C", "B", "A", "A++"};
+#endif
 vector<unsigned> grades;
 
 // these functions demonstrate alternative ways to handle the if tests
@@ -86,29 +99,28 @@ int main()
 		grades.push_back(grade);
 
 	// now process those grades
-	for (vector<unsigned>::const_iterator it = grades.begin();
-			it != grades.end(); ++it) {   // for each grade we read
-		cout << *it << " " ;    // print the grade
+	for (auto it : grades) {   // for each grade we read
+		cout << it << " " ;    // print the grade
 		string lettergrade;    // hold coresponding letter grade
 		// if failing grade, no need to check for a plus or minus
-		if (*it < 60)
+		if (it < 60)
 			lettergrade = scores[0];
 		else {
-			lettergrade = scores[(*it - 50)/10];  // fetch the letter grade
-			if (*it != 100)  // add plus or minus only if not already an A++
-				if (*it % 10 > 7)
+			lettergrade = scores[(it - 50)/10];  // fetch the letter grade
+			if (it != 100)  // add plus or minus only if not already an A++
+				if (it % 10 > 7)
 					lettergrade += '+';   // grades ending in 8 or 9 get a +
-				else if (*it % 10 < 3)
+				else if (it % 10 < 3)
 					lettergrade += '-';   // grades ending in 0, 1, or 2 get a -
 		}
 		cout << lettergrade << endl;
-		if (*it > 59 && *it !=100) {
-			cout << "alternative versions: " << *it << " ";
+		if (it > 59 && it !=100) {
+			cout << "alternative versions: " << it << " ";
 			// start over with just the basic grade, no + or -
-			lettergrade = scores[(*it - 50)/10];
-			cout << goodVers(lettergrade, *it) << " ";
-			cout << badVers(lettergrade, *it) << " ";
-			cout << rightVers(lettergrade, *it) << " ";
+			lettergrade = scores[(it - 50)/10];
+			cout << goodVers(lettergrade, it) << " ";
+			cout << badVers(lettergrade, it) << " ";
+			cout << rightVers(lettergrade, it) << " ";
 			cout << endl;
 		}
 	}

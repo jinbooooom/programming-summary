@@ -38,8 +38,8 @@ using std::istream;
 
 void print(const Vec<string> &svec)
 {
-	for (string *it = svec.begin(); it != svec.end(); ++ it)
-		cout << *it << " " ;
+	for (auto it : svec)
+		cout << it << " " ;
 	cout <<endl;
 }
 
@@ -58,7 +58,7 @@ int main()
 	print(svec);
 
 	cout << "copy " << svec.size() << endl;
-	Vec<string> svec2 = svec;
+	auto svec2 = svec;
 	print(svec2);
 
 	cout << "assign" << endl;

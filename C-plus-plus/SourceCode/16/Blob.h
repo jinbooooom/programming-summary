@@ -27,12 +27,19 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #ifndef BLOB_H
 #define BLOB_H
 
 #include <iterator>
 #include <string>
 #include <vector>
+
+#ifdef INITIALIZER_LIST
+#include <initializer_list>
+#endif
+
 #include <cstddef>
 #include <stdexcept>
 #include <utility>
@@ -60,13 +67,17 @@ public:
 
 	// constructors
 	Blob(); 
+#ifdef INITIALIZER_LIST  
+	Blob(std::initializer_list<T> il);
+// if no initializer_list support use the iterator constructor
+#endif
 	template <typename It> Blob(It b, It e); 
 	Blob(T*, std::size_t);
 
 	// return BlobPtr to the first and one past the last elements
 	BlobPtr<T> begin() { return BlobPtr<T>(*this); }
 	BlobPtr<T> end() 
-	    { BlobPtr<T> ret = BlobPtr<T>(*this, data->size()); 
+	    { auto ret = BlobPtr<T>(*this, data->size()); 
 	      return ret; }
 
 	// number of elements in the Blob
@@ -75,6 +86,7 @@ public:
 
 	// add and remove elements
 	void push_back(const T &t) {data->push_back(t);}
+	void push_back(T &&t) { data->push_back(std::move(t)); }
 	void pop_back();
 
 	// element access
@@ -89,7 +101,7 @@ public:
 
 	void swap(Blob &b) { data.swap(b.data); }
 private:
-	std::shared_ptr<std::vector<T> > data; 
+	std::shared_ptr<std::vector<T>> data; 
 
 	// throws msg if data[i] isn't valid
 	void check(size_type i, const std::string &msg) const;
@@ -98,16 +110,22 @@ private:
 // constructors
 template <typename T>
 Blob<T>::Blob(T *p, std::size_t n): 
-              data(new std::vector<T>(p, p + n)) { }
+              data(std::make_shared<std::vector<T>>(p, p + n)) { }
 
 template <typename T>
 Blob<T>::Blob():
-	          data(new std::vector<T>()) { }
+	          data(std::make_shared<std::vector<T>>()) { }
 
 template <typename T>     // type parameter for the class
 template <typename It>    // type parameter for the constructor
     Blob<T>::Blob(It b, It e):
-              data(new std::vector<T>(b, e)) { }
+              data(std::make_shared<std::vector<T>>(b, e)) { }
+
+#ifdef INITIALIZER_LIST  
+template <typename T>
+Blob<T>::Blob(std::initializer_list<T> il): 
+              data(std::make_shared<std::vector<T>>(il)) { }
+#endif
 
 // check member
 template <typename T>
@@ -223,20 +241,17 @@ public:
 	        wptr(a.data), curr(sz) { }
 
 	T &operator[](std::size_t i)
-	{ std::shared_ptr<std::vector<T> > p = 
-					check(i, "subscript out of range"); 
+	{ auto p = check(i, "subscript out of range"); 
 	  return (*p)[i];  // (*p) is the vector to which this object points
 	}
 
 	const T &operator[](std::size_t i) const
-	{ std::shared_ptr<std::vector<T> > p = 
-					check(i, "subscript out of range"); 
+	{ auto p = check(i, "subscript out of range"); 
 	  return (*p)[i];  // (*p) is the vector to which this object points
 	}
     
     T& operator*() const
-	{ std::shared_ptr<std::vector<T> > p = 
-					check(curr, "dereference past end"); 
+	{ auto p = check(curr, "dereference past end"); 
 	  return (*p)[curr];  // (*p) is the vector to which this object points
 	}
     T* operator->() const
@@ -253,11 +268,11 @@ public:
     
 private:
 	// check returns a shared_ptr to the vector if the check succeeds
-	std::shared_ptr<std::vector<T> > 
+	std::shared_ptr<std::vector<T>> 
 		check(std::size_t, const std::string&) const;
 
 	// store a weak_ptr, which means the underlying vector might be destroyed
-    std::weak_ptr<std::vector<T> > wptr;  
+    std::weak_ptr<std::vector<T>> wptr;  
     std::size_t curr;      // current position within the array
 };
 
@@ -277,11 +292,10 @@ bool operator!=(const BlobPtr<T> &lhs, const BlobPtr<T> &rhs)
 
 // check member
 template <typename T>
-std::shared_ptr<std::vector<T> > 
+std::shared_ptr<std::vector<T>> 
 BlobPtr<T>::check(std::size_t i, const std::string &msg) const
 {
-	std::shared_ptr<std::vector<T> > ret = 
-					wptr.lock();   // is the vector still around?
+	auto ret = wptr.lock();   // is the vector still around?
 	if (!ret)
 		throw std::runtime_error("unbound BlobPtr");
 	if (i >= ret->size()) 

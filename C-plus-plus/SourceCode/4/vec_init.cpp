@@ -45,7 +45,7 @@ int main()
     while (cnt > 0)
         ivec.push_back(cnt--);       // int postfix decrement
 
-    vector<int>::const_iterator iter = ivec.begin();
+    auto iter = ivec.begin();
     // prints 10 9 8 . . . 1 
     while (iter != ivec.end())
         cout << *iter++ << endl; // iterator postfix increment

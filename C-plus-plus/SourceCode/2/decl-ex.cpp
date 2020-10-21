@@ -27,11 +27,6 @@
  * 	Fax: (201) 236-3290
 */ 
 
-// This file illustrates delctype, which is a C++ 11 feature.
-// Many compilers implemented both auto and decltype before
-// the standard was ratified, so it is possible that your compiler
-// supports decltype.  Try compiling this file to see if it does.
-
 #include <iostream>
 using std::cout; using std::endl;
 

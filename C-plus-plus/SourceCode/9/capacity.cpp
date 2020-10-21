@@ -66,6 +66,12 @@ int main()
     cout << "ivec: size: " << ivec.size()
          << " capacity: "  << ivec.capacity() << endl;
 
-	return 0;
+	ivec.shrink_to_fit();  // ask for the memory to be returned
+
+    // size should be unchanged; capacity is implementation defined
+    cout << "ivec: size: " << ivec.size()
+         << " capacity: "  << ivec.capacity() << endl;
+
+return 0;
 }
 

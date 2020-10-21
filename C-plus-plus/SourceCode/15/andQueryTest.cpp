@@ -52,7 +52,7 @@ int main(int argc, char **argv)
         // find all the occurrences of the requested string
         Query andq = Query(sought1) & Query(sought2);
         cout << "\nExecuting query for: " << andq << endl;
-        QueryResult results = andq.eval(file);
+        auto results = andq.eval(file);
         // report matches
         print(cout, results);
     

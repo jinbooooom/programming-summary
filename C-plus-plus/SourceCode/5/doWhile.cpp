@@ -37,6 +37,7 @@ int main()
 {
     // repeatedly ask the user for a pair of numbers to sum
     string rsp;  // used in the condition; can't be defined inside the do
+
     do {
         cout << "please enter two values: ";
         int val1 = 0, val2 = 0;

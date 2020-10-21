@@ -27,21 +27,31 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <vector>
 using std::vector;
 
 #include <iostream>
 using std::cout; using std::endl; 
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
 int main()
 {
-	vector<int> v;
-	for (size_t i = 1; i != 10; ++i)  // give v elements with values from 1...9
-		v.push_back(i);
-	for (size_t i = 0; i != v.size(); ++i) // for each element in v
-		v[i] *= v[i];           // square the element value
-	for (size_t i = 0; i != v.size(); ++i) // for each element in v
-		cout << v[i] << " "; // print the element
+#ifdef LIST_INIT
+	vector<int> v{1,2,3,4,5,6,7,8,9};
+#else
+	int temp[] = {1,2,3,4,5,6,7,8,9};
+	vector<int> v(begin(temp), end(temp));
+#endif
+	for (auto &i : v) // for each element in v (note: i is a reference)
+		i *= i;           // square the element value
+	for (auto i : v)      // for each element in v
+		cout << i << " "; // print the element
 	cout << endl;
 
 	return 0;

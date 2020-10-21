@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include "debug_rep.h"
 
 #include <string>
@@ -38,10 +40,19 @@ using std::vector;
 #include <iostream>
 using std::cout; using std::endl;
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+#endif
+
 int main()
 {
+#ifdef LIST_INIT
+	vector<int> v = {1,2,3,4,5,6,7,8,9};
+#else
 	int temp[] = {1,2,3,4,5,6,7,8,9};
-	vector<int> v(temp, temp + sizeof(temp)/sizeof(*temp));
+	vector<int> v(begin(temp), end(temp));
+#endif
 	string s("hi");
 	cout << debug_rep(v) << endl;
 	cout << debug_rep(s) << endl; 
@@ -53,10 +64,16 @@ int main()
 
 	char carr[] = "bye";            // calls pointer version if no overloads
 	cout << debug_rep(carr) << endl;
-	const char *temp2[] = {"Proust", "Shakespeare", "Barth" } ;
-	vector<string> authors(temp2, temp2 + sizeof(temp2)/sizeof(*temp2));
+#ifdef LIST_INIT
+	vector<string> authors = {"Proust", "Shakespeare", "Barth"};
+	vector<const char*> authors2 = {"Proust", "Shakespeare", "Barth"}; 
+#else
+	string temp2[] = {"Proust", "Shakespeare", "Barth" };
+	vector<string> authors(begin(temp2), end(temp2));
+	const char* temp3[] = {"Proust", "Shakespeare", "Barth" };
+	vector<const char*> authors2(begin(temp3), end(temp3));
+#endif
 	cout << debug_rep(authors) << endl;
-	vector<const char*> authors2(temp2, temp2 + sizeof(temp2)/sizeof(*temp2));
 	cout << debug_rep(authors2) << endl;
 	cout << debug_rep(s) << endl;
 	s += "more stuff";

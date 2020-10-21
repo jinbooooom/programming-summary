@@ -43,11 +43,11 @@ extern BitMap& storeOn(BitMap &, Screen &);
 class Window_mgr {
 public:
 	// location ID for each screen on the window
-	typedef std::vector<Screen>::size_type ScreenIndex;
-
+	using ScreenIndex = std::vector<Screen>::size_type;
 	// add a Screen to the window and returns its index
-	ScreenIndex addScreen(const Screen&);
 
+	ScreenIndex addScreen(const Screen&);
+	
 	// reset the Screen at the given position to all blanks
 	void clear(ScreenIndex);
 

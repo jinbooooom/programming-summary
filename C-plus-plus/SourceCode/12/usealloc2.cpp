@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <cstddef>
 using std::size_t;
 
@@ -43,17 +45,26 @@ using std::allocator; using std::uninitialized_fill_n;
 #include <iostream>
 using std::cout; using std::endl;
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end; 
+#endif
+
 int main()
 {
+#ifdef LIST_INIT
+	vector<int> vi{1,2,3,4,5,6,7,8,9};
+#else
 	int temp[] = {1,2,3,4,5,6,7,8,9};
-	vector<int> vi(temp, temp + sizeof(temp)/sizeof(*temp));
+	vector<int> vi(begin(temp), end(temp));
+#endif
 
 	allocator<int> alloc;
 	// allocate twice as many elements as vi holds
-	int *p = alloc.allocate(vi.size() * 2);
+	auto p = alloc.allocate(vi.size() * 2);
 
 	// construct elements starting at p as copies of elements in vi
-	int *q = uninitialized_copy(vi.begin(), vi.end(), p); 
+	auto q = uninitialized_copy(vi.begin(), vi.end(), p); 
 
 	// initialize the remaining elements to 42
 	uninitialized_fill_n(q, vi.size(), 42);

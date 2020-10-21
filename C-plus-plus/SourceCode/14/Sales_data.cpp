@@ -31,7 +31,7 @@
 #include <string>
 using std::istream; using std::ostream;
 
-Sales_data::Sales_data(istream &is): units_sold(0), revenue(0.0)
+Sales_data::Sales_data(istream &is) 
 {
 	is >> *this; // read a transaction from is into this object
 }

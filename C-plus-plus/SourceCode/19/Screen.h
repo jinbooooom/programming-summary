@@ -30,6 +30,8 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include "Version_test.h"
+
 #include <string>
 
 class Screen {
@@ -38,7 +40,11 @@ public:
 
 	// Action is a type that can point to a member function of Screen
     // that returns a reference to a Screen and takes no arguments
-	typedef Screen&(Screen::*Action)();
+#ifdef TYPE_ALIAS_DECLS
+	using Action = Screen&(Screen::*)();
+#else
+	typedef Screen& (Screen::*Action)();
+#endif
 
     // constructor: build screen of given size containing all blanks
     Screen(pos ht = 0, pos wd = 0): contents(ht * wd, ' '), cursor(0), 

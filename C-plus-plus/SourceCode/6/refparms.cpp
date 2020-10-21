@@ -27,6 +27,8 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <iostream>
 using std::cin; using std::cout; using std::endl;
 
@@ -44,11 +46,10 @@ using std::size_t;
 string::size_type find_char(const string &s, char c, 
                            string::size_type &occurs)
 {
-    // position of the first occurrence, if any
-    string::size_type ret = s.size();
+    auto ret = s.size();   // position of the first occurrence, if any
     occurs = 0;            // set the occurrence count parameter 
 
-    for (string::size_type i = 0; i != s.size(); ++i) {
+    for (decltype(ret) i = 0; i != s.size(); ++i) {
         if (s[i] == c) {
             if (ret == s.size()) 
                 ret = i;   // remember the first occurrence of c
@@ -66,8 +67,7 @@ vector<int>::const_iterator find_val(
     int value,                        // the value we want
     vector<int>::size_type &occurs)   // number of times it occurs
 {
-	// res_iter will hold first occurrence, if any
-    vector<int>::const_iterator res_iter = end; 
+    auto res_iter = end; // res_iter will hold first occurrence, if any
     occurs = 0;          // set occurrence count parameter 
 
     for ( ; beg != end; ++beg)
@@ -87,7 +87,7 @@ int main()
 	string s;
 	getline(cin, s); 
 	size_t ctr = 0;
-	string::size_type index = find_char(s, 'o', ctr);
+	auto index = find_char(s, 'o', ctr);
 	cout << index << " " << ctr << endl;
 	
 	vector<int> ivec;
@@ -97,14 +97,17 @@ int main()
 		ivec.push_back(i);
 
 	// for each value in the list of ints
-	unsigned temp[] = {42, 33, 92};
-	for (size_t i = 0; i != sizeof(temp)/sizeof(*temp); ++i) {
-		vector<int>::const_iterator it = 
-			find_val(ivec.begin(), ivec.end(), temp[i], ctr);
+#ifdef LIST_INIT
+	for (auto i : {42, 33, 92}) {
+#else 
+	int arr[] = {42, 33, 92};  // define a local array to use
+	for (auto i : arr) {       // in place of the initializer_list<int>
+#endif
+		auto it = find_val(ivec.begin(), ivec.end(), i, ctr);
 		if (it == ivec.end())
-			cout << temp[i] << " is not in the input data" << endl;
+			cout << i << " is not in the input data" << endl;
 		else
-			cout << temp[i] << " was at position " 
+			cout << i << " was at position " 
 			     << it - ivec.begin() << endl;
 	}
 

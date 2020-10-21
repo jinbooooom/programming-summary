@@ -37,7 +37,7 @@ int main()
 {
 	string numbers("0123456789"), name("r2d2");
 	// returns 1, i.e., the index of the first digit in name
-	string::size_type pos = name.find_first_of(numbers);  
+	auto pos = name.find_first_of(numbers);  
 	if (pos != string::npos)
 		cout << "found number at index: " << pos 
 		     << " element is " << name[pos] << endl;
@@ -56,8 +56,8 @@ int main()
 	
 	string river("Mississippi");
 	
-	string::size_type first_pos = river.find("is");  // returns 1
-	string::size_type last_pos = river.rfind("is");  // returns 4
+	auto first_pos = river.find("is");  // returns 1
+	auto last_pos = river.rfind("is");  // returns 4
 	cout << "find returned: " << first_pos 
 	     << " rfind returned: " << last_pos << endl;
 	

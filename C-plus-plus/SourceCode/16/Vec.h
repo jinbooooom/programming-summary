@@ -30,21 +30,48 @@
 #ifndef VEC_H
 #define VEC_H
 
+#include "Version_test.h"
+
 #include <algorithm>
 #include <memory>
 #include <utility>
+
+#ifdef INITIALIZER_LIST
+#include <initializer_list>
+#endif
 
 // simplified-implementation of memory allocation strategy for a vector-like class
 template <typename T>
 class Vec {
 public:
-    Vec(): elements(0), first_free(0), cap(0) { }
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+    Vec() = default;
+#else
+    Vec(): elements(nullptr), first_free(nullptr), cap(nullptr) { }
+#endif
 	Vec(const Vec&);                 // copy constructor
 	Vec &operator=(const Vec&);      // copy assignment
-	~Vec();                          // destructor
+#ifdef NOEXCEPT
+	Vec(Vec&&) noexcept;             // move constructor
+	Vec &operator=(Vec&&) noexcept;  // move assignment
+	~Vec() noexcept;                 // destructor
+#else
+	Vec(Vec&&) throw();             // move constructor
+	Vec &operator=(Vec&&) throw();  // move assignment
+	~Vec() throw();                 // destructor
+#endif
+
+#ifdef INITIALIZER_LIST
+	// list assignment
+	Vec &operator=(std::initializer_list<T>);   
+#endif
 
 	// add elements
     void push_back(const T&);
+    void push_back(T&&);
+#ifdef VARIADICS
+	template <class... Args> void emplace_back(Args&&...);
+#endif
 	
 	// size and capacity
     size_t size() const { return first_free - elements; }
@@ -57,6 +84,7 @@ public:
 	// iterator interface
 	T *begin() const { return elements; }
 	T *end() const { return first_free; }
+    
 private:
     static std::allocator<T> alloc; // allocates the elements
 	// used by functions that add elements to the Vec
@@ -67,9 +95,15 @@ private:
 	  alloc_n_copy(const T*, const T*);
 	void free();
     void reallocate(); // get more space and copy existing elements
+#ifdef IN_CLASS_INITS
+    T* elements = nullptr;   // pointer to first element in the array
+    T* first_free = nullptr; // pointer to first free element in the array
+    T* cap = nullptr;        // pointer to one past the end of the array
+#else
     T* elements;   // pointer to first element in the array
     T* first_free; // pointer to first free element in the array
     T* cap;        // pointer to one past the end of the array
+#endif
 };
 
 
@@ -78,15 +112,37 @@ template <typename T> std::allocator<T> Vec<T>::alloc;
 
 template <typename T>
 inline
-Vec<T>::~Vec() { free(); }
+#ifdef NOEXCEPT
+Vec<T>::~Vec() noexcept { free(); }
+#else
+Vec<T>::~Vec() throw() { free(); }
+#endif
 
 template <typename T>
 inline
 std::pair<T*, T*> 
 Vec<T>::alloc_n_copy(const T *b, const T *e) 
 {
-	T* data = alloc.allocate(e - b);
+	auto data = alloc.allocate(e - b);
+#ifdef LIST_INIT
+	return {data, uninitialized_copy(b, e, data)};
+#else
 	return std::make_pair(data, uninitialized_copy(b, e, data));
+#endif
+}
+
+template <typename T>
+inline
+#ifdef NOEXCEPT
+Vec<T>::Vec(Vec &&s) noexcept : 
+#else
+Vec<T>::Vec(Vec &&s) throw() : 
+#endif
+	// take over resources from s
+	elements(s.elements), first_free(s.first_free), cap(s.cap)
+{
+	// leave s in a state in which it is safe to run the destructor
+	s.elements = s.first_free = s.cap = nullptr;
 }
 
 template <typename T>
@@ -94,7 +150,7 @@ inline
 Vec<T>::Vec(const Vec &s)
 {
 	// call copy to allocate exactly as many elements as in s
-	std::pair<T*, T*> newdata = alloc_n_copy(s.begin(), s.end()); 
+	auto newdata = alloc_n_copy(s.begin(), s.end()); 
 	elements = newdata.first; 
 	first_free = cap = newdata.second;
 }
@@ -104,7 +160,7 @@ inline
 void Vec<T>::free()
 {
     // destroy the old elements in reverse order
-	for (T *p = first_free; p != elements; /* empty */)
+	for (auto p = first_free; p != elements; /* empty */)
 		alloc.destroy(--p);  // destroy elements in reverse order
     
     // deallocate cannot be called on a 0 pointer
@@ -112,12 +168,51 @@ void Vec<T>::free()
 		alloc.deallocate(elements, cap - elements);
 }
 	
+#ifdef INITIALIZER_LIST
+template <typename T>
+inline
+Vec<T> &Vec<T>::operator=(std::initializer_list<T> il)
+{
+	// copy allocates space and copies elements from the given range
+	auto data = alloc_n_copy(il.begin(), il.end());
+
+	free();   // destroy the elements in this object and free the space
+
+	elements = data.first; // update data members to point to the new space
+	first_free = cap = data.second;
+
+	return *this;
+}
+#endif
+
+template <typename T>
+inline
+#ifdef NOEXCEPT
+Vec<T> &Vec<T>::operator=(Vec &&rhs) noexcept
+#else
+Vec<T> &Vec<T>::operator=(Vec &&rhs) throw()
+#endif
+{
+	// direct test for self-assignment
+	if (this != &rhs)
+		free();  // free existing elements if appropriate
+
+	elements = rhs.elements;  // take over resources from rhs
+	first_free = rhs.first_free;
+	cap = rhs.cap;
+
+	// leave rhs in a destructible state
+	rhs.elements = rhs.first_free = rhs.cap = nullptr;
+
+	return *this;
+}
+
 template <typename T>
 inline
 Vec<T> &Vec<T>::operator=(const Vec &rhs)
 {
 	// call copy to allocate exactly as many elements as in rhs
-	std::pair<T*, T*> data = alloc_n_copy(rhs.begin(), rhs.end());
+	auto data = alloc_n_copy(rhs.begin(), rhs.end());
 	free();
 	elements = data.first;
 	first_free = cap = data.second;
@@ -129,16 +224,16 @@ inline
 void Vec<T>::reallocate()
 {
     // we'll allocate space for twice as many elements as current size
-    size_t newcapacity = size() ? 2 * size() : 2;
+    auto newcapacity = size() ? 2 * size() : 2;
 
 	// allocate new space
-	T *first = alloc.allocate(newcapacity);
-	T *dest = first;
-	T *elem = elements;
+	auto first = alloc.allocate(newcapacity);
+	auto dest = first;
+	auto elem = elements;
 
-	// copy the elements
+	// move the elements
 	for (size_t i = 0; i != size(); ++i)
-		alloc.construct(dest++, *elem++);
+		alloc.construct(dest++, std::move(*elem++));
 	free();  // free the old space once we've moved the elements
 
     // update our data structure point to the new elements
@@ -156,4 +251,23 @@ void Vec<T>::push_back(const T& s)
     alloc.construct(first_free++, s);  
 }
 
+template <typename T>
+inline
+void Vec<T>::push_back(T&& s) 
+{
+    chk_n_alloc(); // reallocates the Vec if necessary
+	alloc.construct(first_free++, std::move(s));
+}
+
+#ifdef VARIADICS
+template <typename T>
+template <class... Args>
+inline
+void Vec<T>::emplace_back(Args&&... args)
+{
+    // any space left?
+    chk_n_alloc(); // reallocates the Vec if necessary
+	alloc.construct(first_free++, std::forward<Args>(args)...);
+}
+#endif
 #endif

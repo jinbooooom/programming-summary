@@ -39,8 +39,8 @@ using std::size_t;
 using std::bitset;
 int main() 
 {
-	bitset<32> bitvec(1ULL); // 32 bits; low-order bit is 1, 
-	                        // remaining bits are 0
+	bitset<32> bitvec(1U); // 32 bits; low-order bit is 1, 
+	                       // remaining bits are 0
 	bool is_set = bitvec.any();      // true, one bit is set
 	bool is_not_set = bitvec.none(); // false, one bit is set
 	bool all_set = bitvec.all();     // false, only one bit is set
@@ -67,7 +67,7 @@ int main()
 		bitvec.set(index); 
 	
 	// bitvec is unchanged
-	bitset<32> b2 = ~bitvec; // b2 is a copy of bitvec with every bit flipped
+	auto b2 = ~bitvec;  // b2 is a copy of bitvec with every bit flipped
 
 	// assign value of last bit in bitvec to the first bit in b2
 	b2[0] = bitvec[bitvec.size() - 1]; 
@@ -143,13 +143,13 @@ int main()
 	
 	cout << "bitvec3: " << bitvec3 << endl;
 	
-	// pre C++ 11 has a constructor from string but not from const char*
-	bitset<32> bitvec4(string("1100")); // bits 2 and 3 are 1, all others are 0
+	
+	bitset<32> bitvec4("1100"); // bits 2 and 3 are 1, all others are 0
 	
 	cout << "strval: " << "1100" << endl;
 	cout << "bitvec4: " << bitvec4 << endl;
 	
-	string str(string("1111111000000011001101"));
+	string str("1111111000000011001101");
 	bitset<32> bitvec5(str, 5, 4); // four bits starting at str[5], 1100
 	bitset<32> bitvec6(str, str.size()-4); // use last four characters 
 	
@@ -170,7 +170,7 @@ int main()
 	
 	cout << "bitvec8: " << bitvec8 << endl;
 	
-	bitset<16> chk(string("111100110011001100000"));
+	bitset<16> chk("111100110011001100000");
 	cout << "chk: " << chk << endl;
 	
 	bitset<16> bits;

@@ -27,11 +27,18 @@
  * 	Fax: (201) 236-3290
 */ 
 
+#include "Version_test.h"
+
 #include <string>
 using std::string;
 
 #include <iostream>
 using std::cout; using std::endl;
+
+#ifndef INITIALIZER_LIST
+#include <iterator>
+using std::begin; using std::end;
+#endif
 
 #include "Blob.h"
 
@@ -40,14 +47,18 @@ int main()
 	Blob<string> b1; // empty Blob
 	cout << b1.size() << endl;
 	{  // new scope
+#ifdef INITIALIZER_LIST
+		Blob<string> b2 = {"a", "an", "the"};
+#else
 		string temp[] = {"a", "an", "the"};
-		Blob<string> b2(temp, temp + sizeof(temp)/sizeof(*temp));
+		Blob<string> b2(begin(temp), end(temp));
+#endif
 		b1 = b2;  // b1 and b2 share the same elements
 		b2.push_back("about");
 		cout << b1.size() << " " << b2.size() << endl;
 	} // b2 is destroyed, but the elements it points to must not be destroyed
 	cout << b1.size() << endl;
-	for(BlobPtr<string> p = b1.begin(); p != b1.end(); ++p)
+	for(auto p = b1.begin(); p != b1.end(); ++p)
 		cout << *p << endl;
 	
 	return 0;

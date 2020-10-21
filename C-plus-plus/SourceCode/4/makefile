@@ -8,4 +8,4 @@ OBJECTS = arith-ex.exe arraysizeof.exe cond.exe \
 # defines general rules for making .obj and .exe files
 include ..\MS_makefile_template
 
-LOCFLAGS = /I..\2
+LOCFLAGS = -I..\2

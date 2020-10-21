@@ -59,7 +59,7 @@ int main()
 {
 	T arg;
 	while (cin >> arg) {
-		Foo *p = use_factory(arg);
+		auto p = use_factory(arg);
 		delete p; // remember to delete the memory from use_factory
 	}
 	

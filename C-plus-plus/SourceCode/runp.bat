@@ -1,3 +1,3 @@
 cd %1
-call runpgms
+call runpgms 
 cd ..

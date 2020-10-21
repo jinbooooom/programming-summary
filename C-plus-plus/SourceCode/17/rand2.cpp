@@ -27,7 +27,7 @@
  * 	Fax: (201) 236-3290
 */ 
 
-#include "ourRandom.h"   // for lround
+#include "Version_test.h"
 
 #include <ctime>
 using std::time;
@@ -36,9 +36,9 @@ using std::time;
 using std::rand;
 
 #include <random>
-using std::tr1::uniform_int_distribution;
-using std::tr1::normal_distribution;
 using std::default_random_engine;
+using std::uniform_int_distribution;
+using std::normal_distribution;
 
 #include <iostream>
 using std::cerr; using std::cout; using std::endl;
@@ -54,6 +54,11 @@ using std::max_element;
 
 #include <numeric>
 using std::accumulate;
+
+#ifdef LROUND    // Version_test.h defines lround if LROUND is not defined
+#include <cmath>
+using std::lround;
+#endif
 
 int main()
 {
@@ -74,7 +79,7 @@ int main()
 	default_random_engine e2;  // restart the sequence
 	normal_distribution<> n(15,5); // mean 15, standard deviation 5
 	for (size_t i = 0; i != 100; ++i) {
-		size_t v = lround(n(e2));
+		size_t v = lround(n(e));
 		if (v < vals.size())
 			++vals[v];         // count how often each number appears
 		else

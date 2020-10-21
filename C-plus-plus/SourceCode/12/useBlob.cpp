@@ -26,11 +26,19 @@
  * 	Upper Saddle River, NJ  07458
  * 	Fax: (201) 236-3290
 */
+
+#include "Version_test.h"
+
 #include <iostream>
 using std::cout; using std::endl;
 
+#ifndef LIST_INIT
+#include <iterator>
+using std::begin; using std::end;
+
 #include <string>
 using std::string;
+#endif
 
 #include "StrBlob.h"
 
@@ -38,15 +46,19 @@ int main()
 {
 	StrBlob b1; 
 	{
+#ifdef INIT_LIST
+	    StrBlob b2 = { "a", "an", "the" };
+#else
 		string temp[] = { "a", "an", "the" };
-	    StrBlob b2(temp, temp + sizeof(temp)/sizeof(*temp));
+		StrBlob b2(begin(temp), end(temp));
+#endif
 	    b1 = b2;  
 	    b2.push_back("about");
 		cout << b2.size() << endl;
 	}
 	cout << b1.size() << endl;
 
-	for (StrBlobPtr it = b1.begin(); neq(it, b1.end()); it.incr())
+	for (auto it = b1.begin(); neq(it, b1.end()); it.incr())
 		cout << it.deref() << endl;
 
 	return 0;

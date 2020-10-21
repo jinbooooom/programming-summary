@@ -27,15 +27,12 @@
  * 	Fax: (201) 236-3290
 */ 
 
-#include "StrConvs.h"
-
-// This file illustrates numeric to string conversion functions
-// that are part of the C++ 11 library
-#include <iostream>
-using std::cout; using std::endl;
-
 #include <string>
 using std::string;
+using std::to_string; using std::stod;
+
+#include <iostream>
+using std::cout; using std::endl;
 
 int main()
 {

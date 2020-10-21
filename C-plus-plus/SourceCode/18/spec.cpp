@@ -27,29 +27,44 @@
  * 	Fax: (201) 236-3290
 */ 
 
-#include <string>
+#include "Version_test.h"
 
-class Sales_data {
-public:
-	// other members and constructors as before
-	// declaration equivalent to the synthesized copy constructor
-	Sales_data(const Sales_data &rhs): bookNo(rhs.bookNo), 
-				units_sold(rhs.units_sold), revenue(rhs.revenue) { }
+// if noexcept isn't supported, do nothing
+#ifdef NOEXCEPT
 
-	// alternative definition for Sales_data default constructor
-	Sales_data(): bookNo(10, '9'), units_sold(0), revenue(0.0) {}
+#include <iostream>
+using std::cout; using std::endl;
 
-	Sales_data(const std::string &book, unsigned cnt, double price): 
-    		bookNo(book), units_sold(cnt), revenue(cnt * price) { }
-private:
-    std::string bookNo;
-    int units_sold;
-    double revenue;
-};
+#include <exception>
+using std::exception;
 
-// equivalent to the copy constructor that would be synthesized for Sales_data
-Sales_data::Sales_data(const Sales_data &orig):
-    bookNo(orig.bookNo),         // uses the string copy constructor 
-    units_sold(orig.units_sold), // copies orig.units_sold 
-    revenue(orig.revenue)        // copies orig.revenue
-    {    }                       // empty body
+// this function will compile, even though it clearly violates its exception specification
+void f() noexcept       // promises not to throw any exception
+{
+    throw exception();  // violates the exception specification
+}
+
+void g() { }
+void h() noexcept(noexcept(f())) { f(); }
+void i() noexcept(noexcept(g())) { g(); }
+int main()
+{
+    try {
+		cout << "f: " << std::boolalpha << noexcept(f()) << endl;
+		cout << "g: " << std::boolalpha << noexcept(g()) << endl;
+		cout << "h: " << std::boolalpha << noexcept(h()) << endl;
+		cout << "i: " << std::boolalpha << noexcept(i()) << endl;
+        f();
+    } catch (exception &e) {
+        cout << "caught " << e.what() << endl;
+    }
+	
+	return 0;
+}
+
+#else
+
+//do nothing
+int main() { return 0; }
+#endif
+

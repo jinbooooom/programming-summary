@@ -2,14 +2,20 @@
 
 # /EHsc Enable exception handling
 # /nologo suppresses copyright notice
+# /I.. needed to find "Version_test.h" which is used to determine
+# whether the current compiler defines various features used in the code
 CPP = cl
-CPPFLAGS = /EHsc /nologo $(LOCFLAGS)
+CPPFLAGS = /EHsc /nologo /I.. $(LOCFLAGS)
 
 # Some programs include headers defined in earlier chapters
 # LOCFLAGS used to set tell the compiler where to find a
 # header that is not in the same directory as the source file itself
 # LOCFLAGS will be set in directory level makefiles as needed
 LOCFLAGS =
+
+# An additional option is required to compile code using 
+# runtime type information (covered in chapter 18).
+# See the makefile in directory 18
 
 ####### To compile without using a makefile
 # To compile an object file from a source file you could execute

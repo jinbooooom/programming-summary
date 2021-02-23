@@ -92,7 +92,7 @@ endl 除了写 '\n' 之外，还调用 flush 函数，刷新缓冲区，把缓�
 
 #### system("pause")
 
-包含头文件 stdlib.h，并在主程序中加入 `system("pause");` 可以在程序运行完以后使黑框暂停显示，等待输入，而不是闪退。
+包含头文件 stdlib.h，并在主程序中加入 `system("pause");` 可以在程序运行完以后使黑框暂停显示，等待输入，而不是闪退。linux环境下运行该程序需去掉该语句。
 
 #### cout 与 printf()
 
@@ -248,7 +248,43 @@ g++ main.cpp -o a
 
 - clog流也是标准错误流，作用和cerr一样，区别在于cerr不经过缓冲区，直接向显示器输出信息，而clog中的信息存放在缓冲区，缓冲区满或者遇到endl时才输出。clog用的少。
 
+### 变量
+
+#### 勿混用带符号类型和无符号类型
+
+一个算术表达式中既有无符号又有有符号时，如int，那个int就会转换为无符号数
+
+```C++
+unsigned u = 10;
+int i = -42;
+std::cout << i + i << std::endl; // 输出-84
+std::cout << u + i << std::endl; // 如果int占32位，输出4294967264
+```
+
+#### 无符号数不会小于0这一事实关系到循环的写法
+
+【PRIMER 34】
+
+```C++
+// WRONG: u can never be less than 0; the condition will always succeed
+for (unsigned u = 10; u >= 0; --u)
+    std::cout << u << std::endl;
+```
+
+当*u*等于0时，*--u*的结果将会是4294967295。一种解决办法是用`while`语句来代替`for`语句，前者可以在输出变量前先减去1。
+
+```c++
+unsigned u = 11;    // start the loop one past the first element we want to print
+while (u > 0)
+{
+    --u;    // decrement first, so that the last iteration will print 0
+    std::cout << u << std::endl;
+}
+```
+
 ### 初始化
+
+初始化不等于赋值（assignment）。初始化的含义是创建变量时赋予其一个初始值，而赋值的含义是把对象的当前值擦除，再用一个新值来替代。【PRIMER 39】
 
 ```C++
 int a(5);  // 构造函数语法，比如复数需要初始化两个值
@@ -257,7 +293,7 @@ int b = 6;  // C 风格的运算符（=）初始化
 
 //关于指针
 int arr[5] = {1, 2, 3, 4, 5};
-int *p = arr; // 合法
+int *p = arr; // 合法，数组名即首地址
 cout << p[1] << endl;
 
 vector<int> vec(arr, arr + 5);
@@ -308,6 +344,10 @@ if (p && *p != 1024)  // 如果 p 地址不为零，才能有 *p 操作
 - 指针变量未初始化时不会自动成为 nullptr，而是一个随机值；
 - 指针指向的内存被释放后，指针未赋值为 nullptr；
 - 指针操作超越变量的作用域，比如函数返回栈内存的指针或引用。
+
+建议初始化所有指针。
+
+`void*`是一种特殊的指针类型，可以存放任意对象的地址，但不能直接操作`void*`指针所指的对象。
 
 #### 指针与数组名的区别
 
@@ -761,12 +801,18 @@ c++ 变量有两个属性非常重要：作用域和生存周期。
     {
         cout << a << endl; //for 中定义的 a 作用域在花括号内，屏蔽 for 外定义的 a
     }
-    cout << a << endl;
+    cout << a << endl; // 打印外花括号的 a
 /* 打印
 2
 1
 */
 ```
+
+【PRIMER 44】
+
+作用域中一旦声明了某个名字，在它所嵌套着的所有作用域中都能访问该名字。同时，允许在内层作用域中重新定义外层作用域已有的名字，此时内层作用域中新定义的名字将屏蔽外层作用域的名字。
+
+可以用作用域操作符`::`来覆盖默认的作用域规则。因为全局作用域本身并没有名字，所以当作用域操作符的左侧为空时，会向全局作用域发出请求获取作用域操作符右侧名字对应的变量。
 
 #### 内存分配
 
@@ -972,6 +1018,8 @@ typedef struct Student				// 定义了一个 ST 类型的结构体，下次定�
 
 ### decltype 类型指示符
 
+【PRIMER 62】
+
 C++11新增`decltype`类型指示符，作用是选择并返回操作数的数据类型，此过程中编译器不实际计算表达式的值。
 
 ```c++
@@ -1045,8 +1093,136 @@ d = red;	// d = 0
 #### 结构体与联合体（共用体）的区别
 
 - 结构和联合都是由多个不同的数据类型成员组成, 但在任何同一时刻, 联合中只存放了一个被选中的成员（所有成员共用一块地址空间）, 而结构体的所有成员都存在（不同成员的存放地址不同）。 （在 struct 中，各成员都占有自己的内存空间，它们是同时存在的。一个 struct 变量的总长度等于所有成员长度之和。在 Union 中，所有成员不能同时占用它的内存空间，它们不能同时存在。Union 变量的长度等于最长的成员的长度。）
-
 - 对联合体不同成员赋值, 将会对其它成员重写, 原来成员的值就不存在了, 而对于结构的不同成员赋值是互不影响的。
+
+### 类型转换
+
+【PRIMER 142-146】
+
+无须程序员介入，会自动执行的类型转换叫做隐式转换（implicit conversions）。
+
+#### 算术转换
+
+（Integral Promotions）
+
+把一种算术类型转换成另一种算术类型叫做算术转换。
+
+整型提升（integral promotions）负责把小整数类型转换成较大的整数类型。
+
+#### 其他隐式类型转换
+
+（Other Implicit Conversions）
+
+在大多数表达式中，数组名字自动转换成指向数组首元素的指针。
+
+常量整数值0或字面值`nullptr`能转换成任意指针类型；指向任意非常量的指针能转换成`void*`；指向任意对象的指针能转换成`const void*`。
+
+任意一种算术类型或指针类型都能转换成布尔类型。如果指针或算术类型的值为0，转换结果是`false`，否则是`true`。
+
+指向非常量类型的指针能转换成指向相应的常量类型的指针。
+
+#### 显式转换
+
+（Explicit Conversions）
+
+显式类型转换也叫做强制类型转换（cast）。虽然有时不得不使用强制类型转换，但这种方法本质上是非常危险的。建议尽量避免强制类型转换。
+
+命名的强制类型转换（named cast）形式如下：
+
+```c++
+cast-name<type>(expression);
+```
+
+其中*type*是转换的目标类型，*expression*是要转换的值。如果*type*是引用类型，则转换结果是左值。*cast-name*是`static_cast`、`dynamic_cast`、`const_cast`和`reinterpret_cast`中的一种，用来指定转换的方式。
+
+- `dynamic_cast`支持运行时类型识别。
+- 任何具有明确定义的类型转换，只要不包含底层`const`，都能使用`static_cast`。
+- `const_cast`只能改变运算对象的底层`const`，不能改变表达式的类型。同时也只有`const_cast`能改变表达式的常量属性。`const_cast`常常用于函数重载。
+- `reinterpret_cast`通常为运算对象的位模式提供底层上的重新解释。
+
+早期版本的C++语言中，显式类型转换包含两种形式：
+
+```C++
+type (expression);    // function-style cast notation
+(type) expression;    // C-language-style cast notation
+```
+
+#### 类型安全
+
+类型安全是指同一段内存在不同的地方，会被强制要求使用相同的办法来解释(内存中的数据是用类型来解释的)。
+
+Java 语言是类型安全的，除非强制类型转换。
+
+C 语言不是类型安全的，因为同一段内存可以用不同的数据类型来解释，比如 1 用 int 来解释就是 1，用 boolean来解释就是 true。
+
+C++ 也不是绝对类型安全的，但使用得当，它将远比 C 更有类型安全性。
+
+**C++提供了一些新的机制保障类型安全：**
+
+- 操作符 new 返回的指针类型严格与对象匹配，而不是 void
+- C 中很多以 void* 为参数的函数可以改写为 C++ 模板函数，而模板是支持类型检查的；
+- 引入 const 关键字代替 #define constants，它是有类型、有作用域的，而 #define constants 只是简单的文本替换；
+- 一些 #define 宏可被改写为 inline 函数，结合函数的重载，可在类型安全的前提下支持多种类型，当然改写为模板也能保证类型安全；
+- C++ 提供了 dynamic_cast 关键字，使得转换过程更加安全，因为 dynamic_cast 比 static_cast 涉及更多具体的类型检查。
+
+### try语句块和异常处理
+
+【PRIMER 172】
+
+异常（exception）是指程序运行时的反常行为，这些行为超出了函数正常功能的范围。当程序的某一部分检测到一个它无法处理的问题时，需要使用异常处理（exception handling）。
+
+异常处理机制包括`throw`表达式（throw expression）、`try`语句块（try block）和异常类（exception class）。
+
+- 异常检测部分使用`throw`表达式表示它遇到了无法处理的问题（`throw`引发了异常）。
+- 异常处理部分使用`try`语句块处理异常。`try`语句块以关键字`try`开始，并以一个或多个`catch`子句（catch clause）结束。`try`语句块中代码抛出的异常通常会被某个`catch`子句处理，`catch`子句也被称作异常处理代码（exception handler）。
+- 异常类用于在`throw`表达式和相关的`catch`子句之间传递异常的具体信息。
+
+#### throw表达式
+
+`throw`表达式包含关键字`throw`和紧随其后的一个表达式，其中表达式的类型就是抛出的异常类型。
+
+#### try语句块
+
+`try`语句块的通用形式：
+
+```c++
+try
+{
+    program-statements
+}
+catch (exception-declaration)
+{
+    handler-statements
+}
+catch (exception-declaration)
+{
+    handler-statements
+} // . . .
+```
+
+`try`语句块中的*program-statements*组成程序的正常逻辑，其内部声明的变量在块外无法访问，即使在`catch`子句中也不行。`catch`子句包含关键字`catch`、括号内一个对象的声明（异常声明，exception declaration）和一个块。当选中了某个`catch`子句处理异常后，执行与之对应的块。`catch`一旦完成，程序会跳过剩余的所有`catch`子句，继续执行后面的语句。
+
+如果最终没能找到与异常相匹配的`catch`子句，程序会执行名为`terminate`的标准库函数。该函数的行为与系统有关，一般情况下，执行该函数将导致程序非正常退出。类似的，如果一段程序没有`try`语句块且发生了异常，系统也会调用`terminate`函数并终止当前程序的执行。
+
+#### 标准异常
+
+异常类分别定义在4个头文件中：
+
+- 头文件*exception*定义了最通用的异常类`exception`。它只报告异常的发生，不提供任何额外信息。
+
+- 头文件*stdexcept*定义了几种常用的异常类。
+
+  ![5-2](assert/C-plus-plus/5-2.png)
+
+- 头文件*new*定义了`bad_alloc`异常类。
+
+- 头文件*type_info*定义了`bad_cast`异常类。
+
+标准库异常类的继承体系：
+
+![5-3](assert/C-plus-plus/5-3.png)
+
+只能以默认初始化的方式初始化`exception`、`bad_alloc`和`bad_cast`对象，不允许为这些对象提供初始值。其他异常类的对象在初始化时必须提供一个`string`或一个C风格字符串，通常表示异常信息。`what`成员函数可以返回该字符串的`string`副本。
 
 ## 类 & 对象
 
@@ -1472,10 +1648,48 @@ const Stock &Stock::topval(const Stock & s) const
 
 该函数显式的访问一个对象（参数），又隐式的访问另一个对象（调用的对象），并返回其中一个对象的引用。参数中的 const 表明，该函数不会修改被显式访问的对象（不会修改参数指针指向的内容），而括号后的 const 表明，该函数不会修改被隐式地访问的对象（该类方法 Stock::topval() 不会修改类里的数据），最前面的 const 表明函数的返回值不能被修改。
 
+#### const形参和实参
+
+当形参有顶层`const`时，传递给它常量对象或非常量对象都是可以的。
+
+可以使用非常量对象初始化一个底层`const`形参，但是反过来不行。
+
+把函数不会改变的形参定义成普通引用会极大地限制函数所能接受的实参类型，同时也会给别人一种误导，即函数可以修改实参的值。
+
+顶层cosnt作形参，不会重载。如：
+
+```C++
+void fun(const int *i) { do_something };
+void fun(int *i) { do_something }; // 错误，重复定义了fun(int)
+```
+
+【PRIMER 191， 207】
+
 #### 函数返回引用
 
 返回引用能节省调用拷贝（复制）构造函数生成的副本所需的时间和析构函数删除副本所需的时间。但并不总是可以返回引用，函数不能返回在函数中创建的临时对象的引用，因为当函数结束，临时对象就消失了。
 【PLUS 526】
+
+引用返回左值【PRIMER 202】
+
+一般地：可以取地址，有名字的就是左值；反之，右值。
+
+```C++
+char &get_val (string &str, string::size_type ix)
+{
+    return str[ix];
+}
+int main()
+{
+    string s("a value");
+    get_val(s, 0) = 'A'; // 函数返回引用可作为左值（如果是常量引用则不可），将s[0]的值改为A
+    return 0;
+}
+```
+
+
+
+
 
 #### const作用
 
@@ -1486,8 +1700,25 @@ const Stock &Stock::topval(const Stock & s) const
 - 修饰函数引用参数，即避免了拷贝，又避免了函数对引用值的修改；
 
   如`void fun(A const &a);`A是用户自定义类型。相比于值传递减少了临时对象的构造、复制、析构过程，用 const 修饰引用，避免函数通过引用修改 a。
+  
 - 修饰函数返回值，说明该返回值不能被修改，且该返回值只能赋值给加 const 修饰的同类型变量
+
 - 修饰类的成员函数，说明在该成员函数内不能修改成员变量。
+
+*默认情况下，`const`对象被设定成仅在文件内有效。当多个文件中出现了同名的`const`变量时，其实等同于在不同文件中分别定义了独立的变量。【PRIMER 54】*
+
+如果想在多个文件间共享`const`对象：
+
+- 若`const`对象的值在编译时已经确定，则应该定义在头文件中。其他源文件包含该头文件时，不会产生重复定义错误。
+
+- 若`const`对象的值直到运行时才能确定，则应该在头文件中声明，在源文件中定义。此时`const`变量的声明和定义前都应该添加`extern`关键字。
+
+  ```c++
+  // file_1.cc 定义并初始化一个常量，该常量能被其它文件访问
+  extern const int bufSize = fcn();
+  // file_1.h
+  extern const int bufSize;   // 与file_1.cc中定义的是同一个
+  ```
 
 **const使用**
 
@@ -1538,25 +1769,64 @@ int* const function7();     // 返回一个指向变量的常指针，使用：i
 
 #### const修饰指针
 
-指针本身是一个独立的对象，它又可以指向另一个对象。所以指针和 const 同时使用时，有两种情况：
+指针本身是一个独立的对象，它又可以指向另一个对象。所以指针和 const 同时使用时，有两种情况：【PRIMER 57】
 
 ```cpp
 int i = 0;
-int *const j = &i;
+int *const j = &i; // 顶层 const
 // 指针常量,指向不可变地址的指针，但可以对它指向的内容进行修改。
 // 指针j指向i，const修饰指针j本身，
 // 所以不允许修改j，但可以通过j修改i的值
-const int *k = &i;
+const int *k = &i; // 底层 const
 // 常量指针，指向常量的指针，该指针指向的地址里的内容不可变。
 // 指针k指向i，const修饰k指向的i，
 // 所以可以修改k，但不可以通过k修改i的值
-int const *p = &i;
+int const *p = &i; // 底层 const
 // 即 const int *p，同上，为常量指针。
 // const 修饰离右边最近的那一个，int const *p 等价于 const int *p
 // 都可以理解为 const 修饰（*p）而不是 p，那么 p 可变,p 指向的值不可变
 const int * const p = &i;
 // p 只能指向 i，且 p 指向的 i 也不可变
 ```
+
+#### constexpr和常量表达式
+
+【PRIMER 58】
+
+*常量表达式（constant expressions）指值不会改变并且在编译过程就能得到计算结果的表达式。*
+
+一个对象是否为常量表达式由它的数据类型和初始值共同决定。
+
+```c++
+const int max_files = 20;           // max_files is a constant expression
+const int limit = max_files + 1;    // limit is a constant expression
+int staff_size = 27;        // staff_size is not a constant expression
+const int sz = get_size();  // sz is not a constant expression
+```
+
+C++11允许将变量声明为`constexpr`类型以便由编译器来验证变量的值是否是一个常量表达式。
+
+```c++
+constexpr int mf = 20;          // 20 is a constant expression
+constexpr int limit = mf + 1;   // mf + 1 is a constant expression
+constexpr int sz = size();      // ok only if size is a constexpr function
+```
+
+指针和引用都能定义成`constexpr`，但是初始值受到严格限制。`constexpr`指针的初始值必须是0、`nullptr`或者是存储在某个固定地址中的对象。
+
+函数体内定义的普通变量一般并非存放在固定地址中，因此`constexpr`指针不能指向这样的变量。相反，函数体外定义的变量地址固定不变，可以用来初始化`constexpr`指针。
+
+*在`constexpr`声明中如果定义了一个指针，限定符`constexpr`仅对指针本身有效，与指针所指的对象无关。`constexpr`把它所定义的对象置为了顶层`const`。*
+
+```c++
+const int *p = &i;			// p是一个指向整型常量的指针：底层const，p可变，但p指向的内存里的值不可被修改。
+constexpr int *p2 = &i;     // p2是指向整数的常量指针：顶层const，p2不可变，但可通过p2修改其指向的内存里面的值
+constexpr const int *p3 = &i;   // p3是指向const int的const指针，可以理解为const int *const p3 = &i;
+```
+
+`const`和`constexpr`限定的值都是常量。但`constexpr`对象的值必须在编译期间确定，而`const`对象的值可以延迟到运行期间确定。
+
+建议使用`constexpr`修饰表示数组大小的对象，因为数组的大小必须在编译期间确定且不能改变。
 
 #### const 与 #define
 
@@ -1843,24 +2113,6 @@ Person sleep
 
 【总结】多重继承的优点是对象可以调用多个基类中的接口，但是容易出现继承向上的二义性。
 
-### 类型安全
-
-类型安全是指同一段内存在不同的地方，会被强制要求使用相同的办法来解释(内存中的数据是用类型来解释的)。
-
-Java 语言是类型安全的，除非强制类型转换。
-
-C 语言不是类型安全的，因为同一段内存可以用不同的数据类型来解释，比如 1 用 int 来解释就是 1，用 boolean来解释就是 true。
-
-C++ 也不是绝对类型安全的，但使用得当，它将远比 C 更有类型安全性。
-
-**C++提供了一些新的机制保障类型安全：**
-
-- 操作符 new 返回的指针类型严格与对象匹配，而不是 void
-- C 中很多以 void* 为参数的函数可以改写为 C++ 模板函数，而模板是支持类型检查的；
-- 引入 const 关键字代替 #define constants，它是有类型、有作用域的，而 #define constants 只是简单的文本替换；
-- 一些 #define 宏可被改写为 inline 函数，结合函数的重载，可在类型安全的前提下支持多种类型，当然改写为模板也能保证类型安全；
-- C++ 提供了 dynamic_cast 关键字，使得转换过程更加安全，因为 dynamic_cast 比 static_cast 涉及更多具体的类型检查。
-
 ## STL
 
 STL包括两部分内容：容器和算法。重要的还有融合这二者的迭代器。
@@ -2104,3 +2356,21 @@ int main(int argc, char* argv[]) {
 //	2 3 4 5 6 7 1 1 1 1
 ```
 
+#### 处理多维数组
+
+使用范围`for`语句处理多维数组时，为了避免数组被自动转换成指针，语句中的外层循环控制变量必须声明成引用类型。
+
+```c++
+for (const auto &row : ia)  // for every element in the outer array
+    for (auto col : row)    // for every element in the inner array
+        cout << col << endl;
+```
+
+如果*row*不是引用类型，编译器初始化*row*时会自动将数组形式的元素转换成指向该数组内首元素的指针，这样得到的*row*就是`int*`类型，而之后的内层循环则试图在一个`int*`内遍历，程序将无法通过编译。
+
+```c++
+for (auto row : ia)
+    for (auto col : row)
+```
+
+使用范围`for`语句处理多维数组时，除了最内层的循环，其他所有外层循环的控制变量都应该定义成引用类型。

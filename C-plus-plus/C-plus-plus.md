@@ -1342,6 +1342,78 @@ Person::Person( double name, double age, double job): Name(name), Age(age), Job(
 
 【PLUS 524，525，527】
 
+### 委托构造函数
+
+C++11扩展了构造函数初始值功能，可以定义委托构造函数。委托构造函数使用它所属类的其他构造函数执行它自己的初始化过程。【PRIMER 261】
+
+```c++
+class Sales_data
+{
+public:
+    // defines the default constructor as well as one that takes a string argument
+    Sales_data(std::string s = ""): bookNo(s) { }
+    // remaining constructors unchanged
+    Sales_data(std::string s, unsigned cnt, double rev):
+        bookNo(s), units_sold(cnt), revenue(rev*cnt) { }
+    Sales_data(std::istream &is) { read(is, *this); }
+    // remaining members as before
+}
+```
+
+### = default和=  delete
+
+在C++中，声明自定义的类型之后，编译器会默认生成一些成员函数，这些函数被称为默认函数。其中包括：
+
+（1）（默认）构造函数
+
+（2）拷贝（复制）构造函数
+
+（3）拷贝（复制）赋值运算符
+
+（4）移动构造函数
+
+（5）移动赋值运算符
+
+（6）析构函数
+
+另外，编译器还会默认生成一些操作符函数，包括：
+
+（7）operator ,
+
+（8）operator &
+
+（9）operator &&
+
+（10）operator *
+
+（11）operator ->
+
+（12）operator ->*
+
+（13）operator new
+
+（14）operator delete
+
+#### = default 显示缺省函数
+
+只有当类没有声明任何构造函数时，编译器才会自动生成默认构造函数。一旦类定义了其他构造函数，那么除非再显式地定义一个默认的构造函数，否则类将没有默认构造函数。【PRIMER 236】
+
+在C++11中，如果类需要默认的函数行为，可以通过在参数列表后面添加`=default`来要求编译器生成构造函数。其中`=default`既可以和函数声明一起出现在类的内部，也可以作为定义出现在类的外部。和其他函数一样，如果`=default`在类的内部，则默认构造函数是内联的。
+
+```C++
+Sales_data() = default;
+```
+
+#### = delete 显示删除函数
+
+另一方面，有时候可能需要限制一些默认函数的生成。
+
+例如：需要禁止拷贝构造函数的使用。以前通过把拷贝构造函数声明为private访问权限，这样一旦使用编译器就会报错。
+
+而在 C++11 中，只要在函数的定义或者声明后面加上`= delete`就能实现这样的效果。这种方式不容易犯错，且更容易理解。
+
+在C ++ 11之前，操作符delete 只有一个目的，即释放已动态分配的内存。而C ++ 11标准引入了此操作符的另一种用法，即：禁用成员函数的使用。这是通过附加`= delete`说明符到该函数声明的结尾。
+
 ### 拷贝（复制）构造函数
 
 ```C++
@@ -1715,6 +1787,25 @@ int main()
   // file_1.h
   extern const int bufSize;   // 与file_1.cc中定义的是同一个
   ```
+
+使用关键字`mutable`可以声明可变数据成员（mutable data member）。可变数据成员永远不会是`const`的，即使它在`const`对象内。因此`const`成员函数可以修改可变成员的值。
+
+```C++
+class Screen 
+{
+public:
+    void some_member() const;
+private:
+    mutable size_t access_ctr;  // may change even in a const object
+    // other members as before
+};
+
+void Screen::some_member() const
+{
+    ++access_ctr;   // keep a count of the calls to any member function
+    // whatever other work this member needs to do
+}
+```
 
 **const使用**
 

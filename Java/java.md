@@ -248,3 +248,118 @@ class Employee
 
 ```
 
+## 继承
+
+- Java中所有类都是公有继承，不向C++中还有私有继承和 保护继承。C++默认继承方式是私有继承。
+
+- Java中使用super调用超类方法，而C++中使用超类名加::操作符的方式。【i158】
+
+- 在C++中如果希望实现动态绑定，应将成员函数声明为`virtual`，在Java中，动态绑定是默认的，不果不希望一个方法是虚的，可以将它标记为`final`。
+
+- 对于private方法、static方法、final方法或者构造器，编译器可以准确地知道该调用哪个方法，这被称为静态绑定。对于动态绑定，先找子类的方法，找不到再去父类找，以此类推。每次调用方法都要完成这个搜索过程，时间开销很大，因此虚拟机预先为每个类计算了一个方法表（有些像C++中的虚函数表）。【i164】
+
+- 有时希望阻止人们使用某个类定义子类，不允许扩展的类被称为final类。
+
+  类中某个方法也可以声明为final，这样子类就不能覆盖这个方法（final类中所有的方法自动成为final，而字段不会。）【i165，166】
+
+- 访问控制总结【i174】
+
+  - 仅对本类可见 ：private
+  - 对外部完全可见：public
+  - 对本包的所有子类可见：protected。这点与C++不同，Java中的protected的安全性比C++中要差。
+  - 对本包可见，这是Java默认的，不需要修饰符。
+
+- Java中数组是对象，它继承了object类。在Java中只有基本类型，如数值、字符和布尔类型的值不是对象。【i174】
+
+### 代码
+
+- [继承](./mine/v1ch05/inheritanc/ManagerTest.java)
+- [抽象类](./mine/v1ch05/abstractClasses)
+- [相等测试](mine/v1ch05/equals)
+- [泛型数组](mine/v1ch05/arrayList)
+- [枚举](mine/v1ch05/enums)
+
+### QA
+
+#### [Java中static静态方法可以继承吗？可以被重写吗?](https://www.cnblogs.com/yangjunhe460/p/12935956.html)
+
+1.可以被继承，但是不能被重写，如果父子类静态方法名相同，则会隐藏derive类方法（调用base类的方法）
+
+2.静态方法是编译时绑定的，方法重写是运行时绑定的。
+
+#### c++ static能否被继承?
+
+不能。子类可以访问父类的static变量，但受访问控制（若父类中的static是private就无法访问）。子类和父类的static变量是同一变量，共享同一存储空间。
+
+而继承关系，子类和父类是分别有自己的存储空间的。且static 成员没有this指针。
+
+可以把static成员函数理解为访问控制的全局函数。
+
+#### [Java继承中重写（覆盖）和重载的简单实例](https://blog.csdn.net/qq_20151269/article/details/52874558)
+
+```java
+public class OverrideTest{
+    public static void main(String[] args){
+        A a = new A();
+        a.p(10);
+        a.p(10.0);
+        a.p("siend");
+    }
+}
+
+class B {
+    public void p(double i)
+    {
+        System.out.println(i*2);
+    }
+}
+
+class A extends B{
+    public void p(String i)//重载   让class A 可以输出字符串 
+    {
+        System.out.println(i);//重写  覆盖   让class A的输出改变为 i 
+    }
+    public void p(int i)//重载  让class A 可以输出整形
+    {
+        System.out.println(i*5);//重写  覆盖   让class A的输出改变为 i *5
+    }
+}
+
+运行结果：
+50
+20.0
+siend
+```
+
+结论 ： 
+
+- 重载：在子类中重新定义父类中的方法的**参数**
+- 重写（覆盖）：在子类中重新定义父类中的方法的**方法体**
+
+## 接口、lambda表达式与内部类
+
+- 在接口声明中，访问权限默认是public，但在实现接口时，必须把方法声明为public，否则编译器认为该方法为包可见性。
+
+  接口中的字段总是public static final
+
+### 程序
+
+- [接口](mine/v1ch06/interfaces)
+
+- [接口与回调](mine/v1ch06/timer)
+
+- [对象克隆](mine/v1ch06/clone)
+
+- [lambda表达式](mine/v1ch06/lambda)
+
+- [内部类](mine/v1ch06/innerClass)
+
+- [局部内部类](mine/v1ch06/localInnerClass)
+
+- [匿名内部类](mine/v1ch06/anonymousInnerClass) 
+
+  android中经常使用。程序员习惯用匿名内部类实现事件监听和其他回调。【i265】提倡最好使用lambda表达式。
+
+- [静态内部类](mine/v1ch06/staticInnerClass)
+
+  有时候使用内部类只是为了把一个类隐藏在另一个类的内部，并不需要内部类有外围对象的一个引用，这时，就可以把内部类声明为static，就不会产生那个引用。

@@ -16,7 +16,7 @@ void show1(void) {
 void show2(void) {
 	cout << "second exit main()" << endl;
 }
-
+`
 int main(int argc, char* argv[]) {
 	atexit(show1);
     atexit(show2);
@@ -109,7 +109,6 @@ cout 流速度较慢，如果速度过慢可以用 <stdio.h> 库中的 printf() 
 
 ```C
 int main(int argc, char* argv[])//这里使用char* argv[]
-
 int main(int argc, char** argv)//这里使用char **argv
 ```
 
@@ -1285,17 +1284,17 @@ catch (exception-declaration)
 ```C++
 class Line
 {
-	private:
-	double length;
-	
-	public:
-		void setLength(double len);
-		Line(double len); 	// 构造函数的名称与类的名称完全相同。不会返回任何类型，也不会返回 void，常用于赋初值
-		~Line();  			// 析构函数，函数名与类完全相同，只是在前面加了一个波浪号（~）作为前缀，它不会返回任何值，也不会返回void，也不能带有任何参数。析构函数有助于在跳出程序（比如关闭文件、释放内存等）前释放资源。
-		double Line::getLength(void)  //方法可以定义在类中
-        {
-			return length;
-		}
+private:
+    double length;
+
+public:
+    void setLength(double len);
+    Line(double len); 	// 构造函数的名称与类的名称完全相同。不会返回任何类型，也不会返回 void，常用于赋初值
+    ~Line();  			// 析构函数，函数名与类完全相同，只是在前面加了一个波浪号（~）作为前缀，它不会返回任何值，也不会返回void，也不能带有任何参数。析构函数有助于在跳出程序（比如关闭文件、释放内存等）前释放资源。
+    double Line::getLength(void)  //方法可以定义在类中
+    {
+        return length;
+    }
 };
 
 Line::Line(double len) // 方法也可以通过范围解析运算符定义在类外，这是构造函数的具体实现，注意函数前无类型
@@ -1313,7 +1312,7 @@ Line::~Line(void)
 也可以使用初始化列表来初始属性
 
 ```C++
-Line::Line( double len): length(len)
+Line::Line(double len): length(len)
 {
     cout << "Object is being created, length = " << len << endl;
 }
@@ -1342,23 +1341,13 @@ Person::Person( double name, double age, double job): Name(name), Age(age), Job(
 
 【PLUS 524，525，527】
 
+不同于其他函数，构造函数不能被声明为`const`。当我们创建类的一个`const`对象时，直到构造函数完成初始化过程，对象才真正取得其常亮属性。因此，构造函数在`const`对象的构造过程中可以向其写值。
+
+【PRIMER 235】
+
 ### 委托构造函数
 
 C++11扩展了构造函数初始值功能，可以定义委托构造函数。委托构造函数使用它所属类的其他构造函数执行它自己的初始化过程。【PRIMER 261】
-
-```c++
-class Sales_data
-{
-public:
-    // defines the default constructor as well as one that takes a string argument
-    Sales_data(std::string s = ""): bookNo(s) { }
-    // remaining constructors unchanged
-    Sales_data(std::string s, unsigned cnt, double rev):
-        bookNo(s), units_sold(cnt), revenue(rev*cnt) { }
-    Sales_data(std::istream &is) { read(is, *this); }
-    // remaining members as before
-}
-```
 
 ### = default和=  delete
 
@@ -1408,7 +1397,7 @@ Sales_data() = default;
 
 另一方面，有时候可能需要限制一些默认函数的生成。
 
-例如：需要禁止拷贝构造函数的使用。以前通过把拷贝构造函数声明为private访问权限，这样一旦使用编译器就会报错。
+例如：需要禁止拷贝构造函数的使用。以前通过把拷贝构造函数声明为`private`访问权限，这样一旦使用编译器就会报错。
 
 而在 C++11 中，只要在函数的定义或者声明后面加上`= delete`就能实现这样的效果。这种方式不容易犯错，且更容易理解。
 
@@ -1608,26 +1597,98 @@ class foo {
 };
 ```
 
-### 友元函数
+### 友元
 
-类的友元函数是定义在类外部，但与成员函数有相同的权限，所以可以访问类的所有私有（private）成员和保护（protected）成员。尽管友元函数的原型有在类的定义中出现过，但是友元函数并不是成员函数。
+#### 友元函数
+
+友元函数声明只能出现在类定义的内部，在类内部出现的位置不限（一般在类定义的开始或结束前的位置集中声明友元）。友元不是类的成员函数，也不受它所在区域访问控制级别的约束。
+
+友元声明仅仅指定了访问权限，而并非一个通常意义上的函数声明。如果希望类的用户能调用某个友元函数，就必须在友元声明之外再专门对函数进行一次声明（部分编译器没有该限制）。
+
+为了使友元对类的用户可见，通常会把友元的声明（类的外部）与类本身放在同一个头文件中。
+
+友元函数的定义在类外部，但与成员函数有相同的权限，所以可以访问类的所有私有（private）成员和保护（protected）成员。
 
 友元可以是一个函数，该函数被称为友元函数。友元也可以是一个类，该类被称为友元类，在这种情况下，整个类及其所有成员都是友元。
 
+【PRIMER 241, 242】
+
 ```C++
-class Box
+// Sales_data.h
+class Sales_data 
 {
-	double width;
-	public:
-		friend void printWidth( Box box );  // printwidth 能够调用 Box 类的所有私有（private）成员和保护（protected）成员
-		void setWidth( double wid );
+    // friend declarations for nonmember Sales_data operations added
+    friend Sales_data add(const Sales_data&, const Sales_data&);
+    friend std::istream &read(std::istream&, Sales_data&);
+    friend std::ostream &print(std::ostream&, const Sales_data&);
+    
+    // other members and access specifiers as before
+public:
+    Sales_data() = default;
+    Sales_data(const std::string &s, unsigned n, double p):
+    bookNo(s), units_sold(n), revenue(p*n) { }
+    Sales_data(const std::string &s): bookNo(s) { }
+    Sales_data(std::istream&);
+    std::string isbn() const { return bookNo; }
+    Sales_data &combine(const Sales_data&);
+    
+private:
+    std::string bookNo;
+    unsigned units_sold = 0;
+    double revenue = 0.0;
 };
-void printWidth( Box box )  // printWidth() 不是任何类的成员函数
-{
-   /* 因为 printWidth() 是 Box 的友元，它可以直接访问该类的任何成员 */
-   cout << "Width of box : " << box.width << endl;
-}
+
+// declarations for nonmember parts of the Sales_data interface
+Sales_data add(const Sales_data&, const Sales_data&);
+std::istream &read(std::istream&, Sales_data&);
+std::ostream &print(std::ostream&, const Sales_data&);
 ```
+
+#### 友元类
+
+除了普通函数，类还可以把其他类或其他类的成员函数声明为友元。友元类的成员函数可以访问此类包括非公有成员在内的所有成员。
+
+```c++
+class Screen 
+{
+    // Window_mgr members can access the private parts of class Screen
+    friend class Window_mgr;
+    // ... rest of the Screen class
+};
+```
+
+友元关系不存在传递性。
+
+把其他类的成员函数声明为友元时，必须明确指定该函数所属的类名。
+
+如果类想把一组重载函数声明为友元，需要对这组函数中的**每一个分别声明**。
+
+```c++
+class Screen
+{
+    // Window_mgr::clear must have been declared before class Screen
+    friend void Window_mgr::clear(ScreenIndex);
+    // ... rest of the Screen class
+};
+```
+
+友元函数可以直接定义在类的内部，这种函数是隐式内联的。但是必须在类外部提供相应声明令函数可见。如下：
+
+```c++
+struct X
+{
+    friend void f() { /* friend function can be defined in the class body */ }
+    X() { f(); }   // error: no declaration for f
+    void g();
+    void h();
+};
+
+void X::g() { return f(); }     // error: f hasn't been declared
+void f();   // declares the function defined inside X
+void X::h() { return f(); }     // ok: declaration for f is now in scope
+```
+
+【PRIMER 250~252】
 
 ### 内联函数
 
@@ -1926,6 +1987,27 @@ const float pi = 3.1415926;
 - 宏定义是直接替换，它的生命周期止于编译期，不会分配内存，存储于程序的代码段中；
   const 常量存在于程序的数据段，并分配了实际的内存。
 
+### mutable
+
+使用关键字`mutable`可以声明可变数据成员（mutable data member）。可变数据成员永远不会是`const`的，即使它在`const`对象内。因此`const`成员函数可以修改可变成员的值。
+
+```c++
+class Screen 
+{
+public:
+    void some_member() const;
+private:
+    mutable size_t access_ctr;  // may change even in a const object
+    // other members as before
+};
+
+void Screen::some_member() const
+{
+    ++access_ctr;   // keep a count of the calls to any member function
+    // whatever other work this member needs to do
+}
+```
+
 ### 存储类
 
 #### auto
@@ -1966,7 +2048,7 @@ auto x1 = 5, x2 = 5.0, x3 = 'r';  	// 报错！
 
 - 修饰成员变量：静态成员变量用来表示唯一的、可共享的成员变量。它可以在同一个类的所有对象中被访问。静态成员变量只有唯一的一份实体。不需要生成对象就可以访问该成员。
 
-  static 成员变量必须**在类声明的外部进行初始化，以示与普通数据成员的区别**。
+  static 成员变量必须**在类声明的外部进行初始化，以示与普通数据成员的区别**。在类外部定义静态成员时，不能重复`static`关键字，其只能用于类内部的声明语句。【PRIMER 270】
 
   例如：`int Class_name::static_val = 5;`
 

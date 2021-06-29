@@ -2404,11 +2404,15 @@ map内部是红黑树，在插入元素时会自动排序，而无序容器 unor
 
 - algorithm 中的 remove 只是简单的把要 remove 的元素移到了容器最后面，然后其余元素前移，是逻辑上的删除，此时容器的 size 不变化。因为 algorithm 通过迭代器操作，不知道容器的内部结构，所以无法做到真正删除。
 
-### 智能指针
+## 智能指针
 
-智能指针主要用于管理在堆上分配的内存，它将普通的指针封装为一个栈对象。当栈对象的生存周期结束后，会在析构函数中释放掉申请的内存，从而防止内存泄漏。C++  11中最常用的智能指针类型为shared_ptr，它采用引用计数的方法，记录当前内存资源被多少个智能指针引用。该引用计数的内存在堆上分配。当新增一个时引用计数加 1 ，当过期时引用计数减一。只有引用计数为 0 时，智能指针才会自动释放引用的内存资源。对shared_ptr进行初始化时不能将一个普通指针直接赋值给智能指针，因为一个是指针，一个是类，可以通过构造函数传入普通指针。 
+智能指针主要用于管理在堆上分配的内存，它将普通的指针封装为一个栈对象。当栈对象的生存周期结束后，会在析构函数中释放掉申请的内存，从而防止内存泄漏。C++  11中最常用的智能指针类型为`shared_ptr`，它采用引用计数的方法，记录当前内存资源被多少个智能指针引用。该引用计数的内存在堆上分配。当新增一个时引用计数加 1 ，当过期时引用计数减一。只有引用计数为 0 时，智能指针才会自动释放引用的内存资源。对shared_ptr进行初始化时不能将一个普通指针直接赋值给智能指针，因为一个是指针，一个是类，可以通过构造函数传入普通指针。（ 从`auto_ptr`也带一点，虽然C++ 11已经遗弃）
 
 `std::auto_ptr<string> ptr(new string);`
+
+`std::shared_ptr<string> p1;`    
+
+`std::shared_ptr<list<int>> p2;`  
 
 ```C++
 auto_ptr<char*> ap(new char*);
@@ -2438,7 +2442,7 @@ int main(int argc, char* argv[]) {
 }
 ```
 
-- auto_ptr 是C++98提供的解决方案，C++11已经摒弃，并提供了以下几种方案
+- **auto_ptr 是C++98提供的解决方案，C++11已经摒弃，并提供了以下几种方案**
 
 - shared_ptr 被称为共享指针，用于管理多个智能指针共同拥有的动态分配对象， 
 
@@ -2448,13 +2452,13 @@ int main(int argc, char* argv[]) {
 
 -  weak_ptr 是为了配合shared_ptr而引入的一种智能指针，因为它不具有普通指针的行为，没有重载operator*和->,它的最大作用在于协助shared_ptr工作，像旁观者那样观测资源的使用情况。 
 
-#### 智能指针的内存泄露以及解决方法
+### 智能指针的内存泄露以及解决方法
 
-当两个对象相互使用一个 shared_ptr 成员变量指向对方，会造成循环引用，使引用计数失效，从而导致内存泄漏。
+当两个对象相互使用一个 `shared_ptr` 成员变量指向对方，会造成循环引用，使引用计数失效，从而导致内存泄漏。
 
-为了解决循环引用导致的内存泄漏，引入了 weak_ptr 弱指针，weak_ptr 的构造函数不会修改引用计数的值，从而不会对对象的内存进行管理，其类似一个普通指针，但不指向引用计数的共享内存，但是其可以检测到所管理的对象是否已经被释放，从而避免非法访问。  
+为了解决循环引用导致的内存泄漏，引入了 `weak_ptr` 弱指针，`weak_ptr` 的构造函数不会修改引用计数的值，从而不会对对象的内存进行管理，其类似一个普通指针，但不指向引用计数的共享内存，但是其可以检测到所管理的对象是否已经被释放，从而避免非法访问。  
 
-#### 为什么摒弃 auto_ptr
+### 为什么摒弃 auto_ptr
 
 ```C++
 auto_ptr<string> p1(new string("hello"));
@@ -2478,7 +2482,7 @@ int main(int argc, char* argv[]) {
 	cout << *p1 << endl;  // 编译通过，但运行时报错，因为试图提领空指针
 	getchar();
 }
-//	将 auto_ptr 换成 unique_ptr，编译器认为 p2 = p1; 非法，在编译阶段报错（因为 p1 不是临时右值）。 
+//	将 auto_ptr 换成 unique_ptr，编译器认为语句 p2 = p1; 非法，在编译阶段报错（因为 p1 不是临时右值）。 
 //	将 auto_ptr 换成 shared_ptr，编译运行阶段都没问题，正常打印。
 //	shared_ptr 采用的策略是引用计数，赋值时，计数加一，过期时，计数减一。仅当最后一个指针过期时，才调用 delete。
 ```
@@ -2507,7 +2511,143 @@ int main(int argc, char* argv[]) {
 
 [左值，右值](https://www.jianshu.com/p/d19fc8447eaa)
 
-### 基于范围的 for 循环
+### 更多用法（C++ 11）
+
+`shared_ptr`和`unique_ptr`都支持的操作：
+
+![12-1](assets/C-plus-plus/12-1.png)
+
+`shared_ptr`独有的操作：
+
+![12-2](assets/C-plus-plus/12-2.png)
+
+`make_shared`函数（定义在头文件*memory*中）在动态内存中分配一个对象并初始化它，返回指向此对象的`shared_ptr`。
+
+### 智能指针与普通指针的转换
+
+```c++
+void show(string s)
+{
+    cout << s << endl;
+}
+
+int main()
+{
+    std::shared_ptr<std::string> s = std::make_shared<std::string>("hello\n");
+    show(*s.get()); // s.get() 获得内置指针 string *，需要解引用传到show()中
+    // 特别注意，不要使用get()初始化另一个智能指针或为智能指针赋值。
+    return 0;
+}
+```
+
+```c++
+shared_ptr<int> p(new int(42));    // reference count is 1
+int *q = p.get();   // ok: but don't use q in any way that might delete its pointer
+{   // new block
+    // undefined: two independent shared_ptrs point to the same memory
+    shared_ptr<int>(q);
+} // block ends, q is destroyed, and the memory to which q points is freed
+int foo = *p;   // undefined; the memory to which p points was freed
+
+```
+
+智能指针的`get`函数返回一个内置指针，指向智能指针管理的对象。主要用于向不能使用智能指针的代码传递内置指针。使用`get`返回指针的代码不能`delete`此指针。
+
+不要使用`get`初始化另一个智能指针或为智能指针赋值。
+
+【PRIMER 414】
+
+### unique_ptr
+
+与`shared_ptr`不同，同一时刻只能有一个`unique_ptr`指向给定的对象。当`unique_ptr`被销毁时，它指向的对象也会被销毁。
+
+`make_unique`函数（C++14新增，定义在头文件*memory*中）在动态内存中分配一个对象并初始化它，返回指向此对象的`unique_ptr`。
+
+```c++
+unique_ptr<int> p1(new int(42));
+// C++14
+unique_ptr<int> p2 = make_unique<int>(42);
+```
+
+由于`unique_ptr`独占其指向的对象，因此`unique_ptr`不支持普通的拷贝或赋值操作。
+
+`unique_ptr`操作：
+
+![12-4](assets/C-plus-plus/12-4.png)
+
+`release`函数返回`unique_ptr`当前保存的指针并将其置为空。
+
+`reset`函数成员接受一个可选的指针参数，重新设置`unique_ptr`保存的指针。如果`unique_ptr`不为空，则它原来指向的对象会被释放。
+
+```c++
+// 将所有权从 p1 (which points to the string Stegosaurus) 转移给 p2
+unique_ptr<string> p2(p1.release());    // release makes p1 null
+unique_ptr<string> p3(new string("Trex"));
+// transfers ownership from p3 to p2
+p2.reset(p3.release()); // reset deletes the memory to which p2 had pointed
+```
+
+调用`release`会切断`unique_ptr`和它原来管理的对象之间的联系。`release`返回的指针通常被用来初始化另一个智能指针或给智能指针赋值。如果没有用另一个智能指针保存`release`返回的指针，程序就要负责资源的释放。
+
+```c++
+p2.release();   // WRONG: p2 won't free the memory and we've lost the pointer
+auto p = p2.release();   // ok, but we must remember to delete(p)
+```
+
+不能拷贝`unique_ptr`的规则有一个例外：可以拷贝或赋值一个即将被销毁的`unique_ptr`（移动构造、移动赋值）。
+
+```c++
+unique_ptr<int> clone(int p)
+{
+    unique_ptr<int> ret(new int (p));
+    // . . .
+    return ret;
+}
+```
+
+老版本的标准库包含了一个名为`auto_ptr`的类，
+
+类似`shared_ptr`，默认情况下`unique_ptr`用`delete`释放其指向的对象。`unique_ptr`的删除器同样可以重载，但`unique_ptr`管理删除器的方式与`shared_ptr`不同。定义`unique_ptr`时必须在尖括号中提供删除器类型。创建或`reset`这种`unique_ptr`类型的对象时，必须提供一个指定类型的可调用对象（删除器）。
+
+```c++
+// p points to an object of type objT and uses an object of type delT to free that object
+// it will call an object named fcn of type delT
+unique_ptr<objT, delT> p (new objT, fcn);
+
+void f(destination &d /* other needed parameters */)
+{
+    connection c = connect(&d);  // open the connection
+    // when p is destroyed, the connection will be closed
+    unique_ptr<connection, decltype(end_connection)*> p(&c, end_connection);
+    // use the connection
+    // when f exits, even if by an exception, the connection will be properly closed
+} // 当 p 被摧毁时，自动调用 end_connection 函数
+```
+
+### weak_ptr（weak_ptr）
+
+`weak_ptr`是一种不控制所指向对象生存期的智能指针，它指向一个由`shared_ptr`管理的对象。将`weak_ptr`绑定到`shared_ptr`不会改变`shared_ptr`的引用计数。如果`shared_ptr`被销毁，即使有`weak_ptr`指向对象，对象仍然有可能被释放。
+
+![12-5](assets/C-plus-plus/12-5.png)
+
+创建一个`weak_ptr`时，需要使用`shared_ptr`来初始化它。
+
+```c++
+auto p = make_shared<int>(42);
+weak_ptr<int> wp(p);    // wp weakly shares with p; use count in p is unchanged
+```
+
+使用`weak_ptr`访问对象时，必须先调用`lock`函数。该函数检查`weak_ptr`指向的对象是否仍然存在。如果存在，则返回指向共享对象的`shared_ptr`，否则返回空指针。
+
+```c++
+if (shared_ptr<int> np = wp.lock())
+{
+    // true if np is not null
+    // inside the if, np shares its object with p
+}
+```
+
+## 基于范围的 for 循环
 
 ```C++
 int main(int argc, char* argv[]) {
@@ -2525,7 +2665,7 @@ int main(int argc, char* argv[]) {
 //	2 3 4 5 6 7 1 1 1 1
 ```
 
-#### 处理多维数组
+### 处理多维数组
 
 使用范围`for`语句处理多维数组时，为了避免数组被自动转换成指针，语句中的外层循环控制变量必须声明成引用类型。
 

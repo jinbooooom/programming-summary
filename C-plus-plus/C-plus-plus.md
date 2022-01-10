@@ -16,7 +16,7 @@ void show1(void) {
 void show2(void) {
 	cout << "second exit main()" << endl;
 }
-`
+
 int main(int argc, char* argv[]) {
 	atexit(show1);
     atexit(show2);
@@ -109,6 +109,7 @@ cout 流速度较慢，如果速度过慢可以用 <stdio.h> 库中的 printf() 
 
 ```C
 int main(int argc, char* argv[])//这里使用char* argv[]
+
 int main(int argc, char** argv)//这里使用char **argv
 ```
 
@@ -294,6 +295,14 @@ int b = 6;  // C 风格的运算符（=）初始化
 int arr[5] = {1, 2, 3, 4, 5};
 int *p = arr; // 合法，数组名即首地址
 cout << p[1] << endl;
+
+// 如果要对数组求址，就需要定义一个数组指针，指向一个包含5个元素的数组
+int(*pa)[5] = &arr; 
+cout << "arr[0] = " << **pa << ", arr[2] = " << (*pa)[2] << endl;
+cout << "p[1] - [p0] = " << pa[1] - pa[0] << endl; 
+// 输出：
+// arr[0] = 1, arr[2] = 3
+// p[1] - [p0] = 5，表明数组指针包含 5 个元素
 
 vector<int> vec(arr, arr + 5);
 vector<int> *pv = &vec;  // 合法
@@ -621,8 +630,8 @@ p +(或-) n * sizeof(type);
 #### sizeof 计算普通变量与指针所占空间的大小
 
 ```C++
-// 用 sizeof 计算下列变量所占空间的大小，环境在 win32 操作系统上
-// win32上，char:1，short:2, int:4，long:4
+// 在32 位操作系统上，用 sizeof 计算下列变量所占空间的大小
+// 32位，char:1，short:2, int:4，long:4
 char str[] = "hello";  		// 6
 char *p = str;         		// 4
 int n = 10;            		// 4
@@ -637,8 +646,8 @@ void *p = malloc(100);		// 4, p 指向 100 个字节的堆内存，但本质上�
 
 ```C++
 class A {};
-cout << sizeof A << endl;	// 1
-// 空类不包含任何信息，本来求 sizeof 的时候应该是 0，但是当我们声明该类型的实例的时候，它必须在内存中占用空间，否则无法使用。至于占多少空间由编译器来决定，在 vs 中占 1 个字节
+cout << sizeof(A) << endl;	// 1
+// 空类不包含任何信息，本来求 sizeof 的时候应该是 0，但是当我们声明该类型的实例的时候，它必须在内存中占用空间，否则无法使用。至于占多少空间由编译器来决定，使用 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04) 编译打印 1。
 ```
 
 ```C++
@@ -648,15 +657,19 @@ public:
 	A() {};
 	~A() {};
 	// virtual void f() {};  //【1】
+  // static int a; // 【2】
 };
-cout << sizeof A << endl;
-// 无虚函数，依旧占用空间 1 字节
-// 如果去点【1】处注释，含虚函数，得占用内存 4。有虚函数时，默认有一个指针指向虚函数表。该指针占 4 字节。
+cout << sizeof(A) << endl;
+// 注释【1】【2】，无虚函数，依旧占用空间 1 字节
+// 只注释【1】，因为 static 变量不属于类，且无虚函数，依旧占用空间 1 字节
+// 如果去掉【1】处注释，含虚函数，得占用内存 4。有虚函数时，默认有一个指针指向虚函数表。该指针占 4 字节。
 // 普通成员函数不占用类的空间。类的函数是该类所有实例共享的，调用时通过隐藏的 this 指针和类的实例相关联，
 // 普通成员函数代码编译后存储在程序代码区，根本就不在类实例中，所以不占实例空间。
 ```
 
 #### sizeof 计算类对象与结构体、联合体所占空间的大小
+
+在 32 位操作系统上，占用空间 char:1，short:2, int:4，long:4
 
 ```C++
 class A				// 1
@@ -684,10 +697,10 @@ public:
 class D				// 1 + 填充3 + 4 + 1 + 填充1 + 2 = 12
 {
 public:
-	char c1;
-	int i;
+    char c1;
+    int i;
     char c2;
-	short j;
+    short j;
 };
 // 【注意】类 C，D 的区别在于变量定义的顺序不一样
 D d;
@@ -817,7 +830,7 @@ c++ 变量有两个属性非常重要：作用域和生存周期。
 
 一个程序将操作系统分配给其运行的内存块分为 5 个区域：
 
-- 静态区（全局区）：存放程序的全局变量和静态变量。初始化的全局变量和静态变量在一个区域， 未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。程序结束后由系统释放。
+- 静态区（全局区）：存放程序的全局变量和静态变量。初始化的全局变量和静态变量在一个区域， 未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。程序结束后由系统释放。（在以前的C语言中，全局变量又分为初始化的和未初始化的，在C++里面没有这个区分了，他们共同占用同一块内存区。）
 
 - 堆区：存放程序的动态数据。
 
@@ -895,8 +908,8 @@ int *p1 = new int;  // 未初始化
 int *p2 = new int(1024); // 指定初值, p2 指向一个 int 对象，其值为 1024
 int *p3 = new int[1024]; // 从 heap 中分配一个数组，含有1024个元素，p3 指向数组第一个元素
 delete p1;
-delete p2;  //  对于普通数据类型， delete p 与 delete [] p 作用效果一样。
-delete [] p3  // 复杂对象，必须用 delete [] p 来释放内存
+delete p2;  
+delete [] p3  // new[] 与 delete[] 要一一对应
 // 如果不使用 delete，由 heap 分配而来的对象就永远不会被释放，这被称之为内存泄漏。
 ```
 
@@ -940,7 +953,7 @@ int main() {
 ### 头文件
 
 - 头文件的扩展名习惯上是.h，标准库例外。
-- 函数的定义只能有一份，倒是可以有多份声明。我们不能把函数的定义放在头文件，因为一个程序的多个代码文件可能都会包含这个头文件。但只定义一份的规则有一个例外，内联函数。为了能够扩展内联函数的内容，以便在每个调用点上，编译器都取得其定义，必须将内联函数的定义放在头文件中，而不是放在各个不同程序代码文件中（如果两个函数在定义时函数名和参数列表都一样(返回类型可以不一样)，则会出错，因为重载要保证参数列表不一样）。
+- 函数的定义只能有一份，倒是可以有多份声明。我们不能把函数的定义放在头文件，因为一个程序的多个代码文件可能都会包含这个头文件。但只定义一份的规则有一个例外，内联函数。**为了能够扩展内联函数的内容，以便在每个调用点上，编译器都取得其定义，必须将内联函数的定义放在头文件中，而不是放在各个不同程序代码文件中**（如果两个函数在定义时函数名和参数列表都一样(返回类型可以不一样)，则会出错，因为重载要保证参数列表不一样）。
 - 一个对象和变量同函数一样，也只能在程序中定义一次，因此也应该将定义放在程序代码文件中，而不是头文件中。一般地，加上 extern 就可以放在头文件中作为声明了。
 
 ```C++
@@ -1038,6 +1051,12 @@ decltype(cj) z;     // error: z is a reference and must be initialized
 
 `decltype((var))`的结果永远是引用，而`decltype(var)`的结果只有当*var*本身是一个引用时才会是引用。
 
+```C++
+int i = 42;
+decltype((i)) d1 = i; // d1 has type int&
+decltype(i) d2 = i;   // d2 has type int
+```
+
 ### 枚举类型
 
 如果一个变量只有几种可能的值，可以定义为枚举(enumeration)类型。每个枚举元素在声明时被分配一个整型值，默认从 0 开始，逐个加 1。也可以在声明时将枚举元素的值一一列举出来。
@@ -1086,8 +1105,8 @@ d = red;	// d = 0
 
 **C++ 中结构体与类**
 
-- 相同之处： 结构体中也可以包含函数；也可以定义 public、private、protected 数据成员；定义了结构体之后，可以用结构体名来创建对象。也就是说在 C++ 当中，结构体中可以有成员变量，可以有成员函数，可以从别的类继承，也可以被别的类继承，可以有虚函数。总的一句话：class 和 struct 的语法基本相同，从声明到使用，都很相似，但是 struct 的约束要比 class 多，理论上，struct 能做到的 class 都能做到，但 class 能做到的 stuct 却不一定做的到。
-- 区别：对于成员访问权限和继承方式，class 中默认的是 private，而 struct 中则是 public。class 还可以用于表示模板类型，struct 则不行。
+- 相同之处： 结构体中也可以包含函数；也可以定义 public、private、protected 数据成员；定义了结构体之后，可以用结构体名来创建对象。也就是说在 C++ 当中，结构体中可以有成员变量，可以有成员函数，可以从别的类继承，也可以被别的类继承，可以有虚函数。总的一句话：class 和 struct 的语法基本相同，从声明到使用，都很相似。
+- 区别：对于成员**访问权限和继承方式**，class 中默认的是 private，而 struct 中则是 public。class 还可以用于表示模板类型，struct 则不行。
 
 #### 结构体与联合体（共用体）的区别
 
@@ -1154,7 +1173,7 @@ Java 语言是类型安全的，除非强制类型转换。
 
 C 语言不是类型安全的，因为同一段内存可以用不同的数据类型来解释，比如 1 用 int 来解释就是 1，用 boolean来解释就是 true。
 
-C++ 也不是绝对类型安全的，但使用得当，它将远比 C 更有类型安全性。
+C++ 也**不是**绝对类型安全的，但使用得当，它将远比 C 更有类型安全性。
 
 **C++提供了一些新的机制保障类型安全：**
 
@@ -1284,17 +1303,17 @@ catch (exception-declaration)
 ```C++
 class Line
 {
-private:
-    double length;
-
-public:
-    void setLength(double len);
-    Line(double len); 	// 构造函数的名称与类的名称完全相同。不会返回任何类型，也不会返回 void，常用于赋初值
-    ~Line();  			// 析构函数，函数名与类完全相同，只是在前面加了一个波浪号（~）作为前缀，它不会返回任何值，也不会返回void，也不能带有任何参数。析构函数有助于在跳出程序（比如关闭文件、释放内存等）前释放资源。
-    double Line::getLength(void)  //方法可以定义在类中
-    {
-        return length;
-    }
+	private:
+	double length;
+	
+	public:
+		void setLength(double len);
+		Line(double len); 	// 构造函数的名称与类的名称完全相同。不会返回任何类型，也不会返回 void，常用于赋初值
+		~Line();  			// 析构函数，函数名与类完全相同，只是在前面加了一个波浪号（~）作为前缀，它不会返回任何值，也不会返回void，也不能带有任何参数。析构函数有助于在跳出程序（比如关闭文件、释放内存等）前释放资源。
+		double Line::getLength(void)  //方法可以定义在类中
+        {
+			return length;
+		}
 };
 
 Line::Line(double len) // 方法也可以通过范围解析运算符定义在类外，这是构造函数的具体实现，注意函数前无类型
@@ -1312,7 +1331,7 @@ Line::~Line(void)
 也可以使用初始化列表来初始属性
 
 ```C++
-Line::Line(double len): length(len)
+Line::Line( double len): length(len)
 {
     cout << "Object is being created, length = " << len << endl;
 }
@@ -1341,7 +1360,7 @@ Person::Person( double name, double age, double job): Name(name), Age(age), Job(
 
 【PLUS 524，525，527】
 
-不同于其他函数，构造函数不能被声明为`const`。当我们创建类的一个`const`对象时，直到构造函数完成初始化过程，对象才真正取得其常亮属性。因此，构造函数在`const`对象的构造过程中可以向其写值。
+不同于其他函数，构造函数不能被声明为`const`。当我们创建类的一个`const`对象时，直到构造函数完成初始化过程，对象才真正取得其常量属性。因此，构造函数在`const`对象的构造过程中可以向其写值。
 
 【PRIMER 235】
 
@@ -1520,11 +1539,11 @@ strcpy(c2.p, c1.p);
 
 ### 初始化列表
 
-#### 使用初始化列表的原因
+#### [使用初始化列表的原因](https://www.cnblogs.com/graphics/archive/2010/07/04/1770900.html)
 
 初始化类的成员有两种方式，一是使用初始化列表，二是在构造函数体内进行赋值操作。
 
-主要是性能问题，对于内置类型，如 int, float 等，使用初始化列表和在构造函数体内初始化差别不是很大，但是对于类类型来说，最好使用初始化列表，因为使用初始化列表少了一次调用默认构造函数的过程，这对于数据密集型的类来说，是非常高效的。
+主要是性能问题，对于内置类型，如 int, float 等，使用初始化列表和在构造函数体内初始化差别不是很大，但是对于类类型来说，最好使用初始化列表，**因为使用初始化列表少了一次调用默认构造函数的过程**，这对于数据密集型的类来说，是非常高效的（参考下文代码段例1）。
 
 #### 必须使用初始化列表的情况
 
@@ -1538,13 +1557,64 @@ strcpy(c2.p, c1.p);
 
 - 引用类型，引用必须在定义的时候初始化，并且不能重新赋值，所以也要写在初始化列表里面；
 
-- 没有默认构造函数的类类型（比如构造函数为私有），因为使用初始化列表可以不必调用默认构造函数来初始化，而是直接调用拷贝构造函数初始化。（有一点迷惑）
+- 没有默认构造函数的类类型（比如构造函数为私有），因为使用初始化列表可以不必调用默认构造函数来初始化，而是直接调用拷贝构造函数初始化。（参考下文代码段例1）
 
-  如果在子类的构造函数中需要初始化父类的 private 成员。直接对其赋值是不行的，只有调用父类的构造函数才能完成对它的初始化。
+  如果在子类的构造函数中需要初始化父类的 private 成员。直接对其赋值是不行的，只有调用父类的构造函数才能完成对它的初始化。（参考下文代码段例2）
 
 【总结】当类中含有 const 常量、reference 成员变量；基类的构造函数都需要初始化列表。
 
+```c++
+// 例1
+class A
+{
+public:
+    int num;
+    A() // 无参构造函数
+    {
+        cout << "Construct A" << endl;
+    }
+
+    A(const A &obj) // 拷贝构造函数
+    {
+        cout << "Copy constructor for A" << endl;
+        this->num = obj.num;
+    }
+
+    A &operator=(const A &obj) // 赋值运算符
+    {
+        cout << "assignment for A" << endl;
+        this->num = obj.num;
+        return *this;
+    }
+};
+
+class B
+{
+public:
+    A a;
+    B(A &obj) { a = obj; } // 【1】
+    //B(A &obj) : a(obj) {}  // 【2】
+};
+
+int main()
+{
+    A a;
+    B b(a);
+    return 0;
+}
+/**
+ * 开放【1】注释【2】打印
+ * Construct A
+ * Construct A // 因为在 class B 中，语句 A a 调用了默认构造函数，使用列表初始化就不调用它，转而去调用拷贝构造函数
+ * assignment for A
+ * 开放【2】注释【1】打印
+ * Construct A
+ * Copy constructor for A
+*/
+```
+
 ```C++
+// 例2
 class A
 {
 private:
@@ -1720,7 +1790,7 @@ void clobber(Base &b) { b.prot_mem = 0; }
 
 ### 内联函数
 
-C++ 内联函数是通常与类一起使用。如果一个函数是内联的，那么在编译时，编译器会把该函数的代码副本放置在每个调用该函数的地方。在类中定义的函数都是内联函数，即使不用 inline 说明符。
+C++ 内联函数是通常与类一起使用。如果一个函数是内联的，那么在编译时，编译器会把该函数的代码副本放置在每个调用该函数的地方。**在类中定义的函数都是内联函数，即使不用 inline 说明符**。定义不在类里面，且声明和定义都没有inline，就不会隐式内联。[C++类里面的哪些成员函数是内联函数？](https://blog.csdn.net/qq_18343569/article/details/83755202)
 
 引入内联函数的目的是为了解决程序中函数调用的效率问题，因为编译器使用相同的函数代码代替函数调用，对于内联代码，程序无需跳转到另一个位置执行代码，再跳回来。因此内联函数的运行速度比常规函数稍快，但代价是需要占用更多的内存。如果在程序的多个不同的地方调用内联函数，该程序将包含该内联函数的多个副本。总的来说就是用空间换时间。所以内联函数一般都是1-5行的小函数。关于内联函数可以总结为：
 
@@ -1728,7 +1798,7 @@ C++ 内联函数是通常与类一起使用。如果一个函数是内联的，�
 - 相当于不用执行进入函数的步骤，直接执行函数体；
 - 相当于宏，却比宏多了类型检查，真正具有函数特性；
 - 不能包含循环、递归、switch 等复杂操作；
-- 在类声明中定义的函数，除了虚函数的其他函数都会自动隐式地当成内联函数。在类外定义需要显式内联；
+- **在类声明中定义的函数，除了虚函数的其他函数都会自动隐式地当成内联函数。在类外定义需要显式内联**；
   使用内联函数不过是向编译器提出一种申请，编译器可以拒绝你的申请。
 
 #### 内联函数与宏的区别
@@ -1743,6 +1813,8 @@ C++ 内联函数是通常与类一起使用。如果一个函数是内联的，�
 
 volatile 关键字是一种类型修饰符，用它声明的类型变量表示这个变量可能被意想不到的修改（比如：操作系统、硬件或者其它线程等）。遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问。当要求使用 volatile 声明的变量的值的时候，系统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。
 
+[聊聊C++的mutable和volatile](https://www.jb51.net/article/195277.htm#:~:text=C%2B%2B%E4%B8%AD%E4%BF%AE%E9%A5%B0%E6%95%B0%E6%8D%AE%E5%8F%AF%E5%8F%98%E7%9A%84%E5%85%B3%E9%94%AE%E5%AD%97%E6%9C%89%E4%B8%89%E4%B8%AA%EF%BC%9A%20const%20%E3%80%81%20volatile%20%E5%92%8C%20mutable%20%E3%80%82%20const,mutable%20%E6%81%B0%E5%A5%BD%E7%9B%B8%E5%8F%8D%EF%BC%8C%E6%8C%87%E7%A4%BA%E6%95%B0%E6%8D%AE%E6%80%BB%E6%98%AF%E5%8F%AF%E5%8F%98%E7%9A%84%E3%80%82%20mutable%20%E5%92%8C%20volatile%20%E5%9D%87%E5%8F%AF%E4%BB%A5%E5%92%8C%20const%20%E6%90%AD%E9%85%8D%E4%BD%BF%E7%94%A8%EF%BC%8C%E4%BD%86%E4%B8%A4%E8%80%85%E5%9C%A8%E4%BD%BF%E7%94%A8%E4%B8%8A%E6%9C%89%E6%AF%94%E8%BE%83%E5%A4%A7%E5%B7%AE%E5%88%AB%E3%80%82)
+
 ### explicit
 
 普通函数是能够被隐式调用（如使用=），而 explicit 构造函数只能被显式调用。
@@ -1753,49 +1825,59 @@ explicit 是用来防止隐式转换的，它只对一个实参的构造函数�
 class Test1
 {
 public:
-	int num;
-	char *str;
-	Test1(int n, char *s)
-	{
-		num = n, str = s;
-		cout << "call Test1(int n, char *s)\n";
-	}
+    int num;
+    char *str;
+    Test1(int n, char *s)
+    {
+        num = n, str = s;
+        cout << "call Test1(int n, char *s)\n";
+    }
 };
 
 class Test2
 {
 public:
-	int num;
-	char *str;
-	string type_info;
-    
-	explicit Test2(int n, char *s) : num(n), str(s) 
-    { cout << "call explicit Test2(int n, char *s)\n"; }
-    
-	explicit Test2(string) : type_info("call explicit Test2(string)\n") 
-    { cout << type_info; }
-    
-	explicit Test2(char) : type_info("call explicit Test2(char)\n") 
-    { cout << type_info; }
-    
-	Test2(int) : type_info("call explicit Test2(int)\n") { cout << type_info; }
-    
-	explicit Test2(short) : type_info("call explicit Test2(short)\n") 
-    { cout << type_info; }
+    int num;
+    char *str;
+    string type_info;
+
+    explicit Test2(int n, char *s) : num(n), str(s)
+    {
+        cout << "call explicit Test2(int n, char *s)\n";
+    }
+
+    explicit Test2(string) : type_info("call explicit Test2(string)\n")
+    {
+        cout << type_info;
+    }
+
+    explicit Test2(char) : type_info("call explicit Test2(char)\n")
+    {
+        cout << type_info;
+    }
+
+    Test2(int) : type_info("call explicit Test2(int)\n") { cout << type_info; }
+
+    explicit Test2(short) : type_info("call explicit Test2(short)\n")
+    {
+        cout << type_info;
+    }
 };
 
-int main(int argc, char* argv[]) {
-	Test1 t1 = { 12, "hello..." };			// 隐式调用成功
-	//Test2 t2 = { 12, "hello..." };		// 编译错误，不能隐式调用其构造函数
-	Test2 t3(12, "hello...");				// 显式调用成功
-	short n = 42;
-	Test2 t4 = n;							// 虽然 n 是 short 类型，但因为 explicit Test2(short) 不能隐式调用，故退而求其次把 n 转换成 int 调用 Test2(int)
-	system("pause");
+int main(int argc, char *argv[])
+{
+    Test1 t1 = {12, "hello..."}; // 隐式调用成功
+    //Test2 t2 = { 12, "hello..." };		// 编译错误，不能隐式调用其构造函数
+    Test2 t3(12, "hello..."); // 显式调用成功
+    short n = 42;
+    Test2 t4 = n; // 虽然 n 是 short 类型，但因为 explicit Test2(short) 不能隐式调用，故退而求其次把 n 转换成 int 调用 Test2(int)
+    Test2 t5(n);  // 显示调用 explicit Test2(short)
 }
 /* 打印
 call Test1(int n, char *s)
 call explicit Test2(int n, char *s)
 call explicit Test2(int)
+call explicit Test2(short)
 */
 ```
 
@@ -1876,25 +1958,6 @@ int main()
   // file_1.h
   extern const int bufSize;   // 与file_1.cc中定义的是同一个
   ```
-
-使用关键字`mutable`可以声明可变数据成员（mutable data member）。可变数据成员永远不会是`const`的，即使它在`const`对象内。因此`const`成员函数可以修改可变成员的值。
-
-```C++
-class Screen 
-{
-public:
-    void some_member() const;
-private:
-    mutable size_t access_ctr;  // may change even in a const object
-    // other members as before
-};
-
-void Screen::some_member() const
-{
-    ++access_ctr;   // keep a count of the calls to any member function
-    // whatever other work this member needs to do
-}
-```
 
 **const使用**
 
@@ -2207,10 +2270,10 @@ struct D2 : B
     // 从 B 继承 f2() 和 f3(),覆盖 f1(int)
     void f1(int) const final;   // 不允许后续的其他类覆盖 f1(int)
 };
-struct D3 ; D2
+struct D3 : D2
 {
     void f2();	// 正确：覆盖从 B 继承而来的 f2()
-    void f1(int) const;	// 错误：D2 已经将 f2 声明成 final。
+    void f1(int) const;	// 错误：D2 已经将 f1 声明成 final。
 }
 ```
 
@@ -2321,7 +2384,7 @@ public:
 
 - C++标准并没有明确规定派生类的对象在内存中如何分布，**一个对象中继承自基类的部分和派生类自定义的部分不一定是连续存储的**。
 
-- 每个类控制它自己的成员初始化过程，派生类必须使用基类的构造函数来初始化它的基类部分。派生类的构造函数通过构造函数初始化列表来将实参传递给基类构造函数。
+- 每个类控制它自己的成员初始化过程，派生类必须使用基类的构造函数来初始化它的基类部分。**派生类的构造函数通过构造函数初始化列表来将实参传递给基类构造函数**。
 
 ```c++
 // class Bulk_quote : public Quote
@@ -2336,7 +2399,7 @@ Bulk_quote(const std::string& book, double p,
 
 派生类可以访问基类的公有成员和受保护成员。
 
-如果基类定义了一个静态成员，则在整个继承体系中只存在该成员的唯一定义。如果某静态成员是可访问的，则既能通过基类也能通过派生类使用它。
+**如果基类定义了一个静态成员，则在整个继承体系中只存在该成员的唯一定义。如果某静态成员是可访问的，则既能通过基类也能通过派生类使用它。**
 
 只有声明并定义的类才能被用作基类。
 
@@ -2385,6 +2448,8 @@ class Bad2 : Last { /* */ };        // error: Last is final
 
 友元关系不能继承，每个类负责控制各自成员的访问权限。
 
+[c++ 派生类向基类转换的可访问性](https://www.cnblogs.com/FdWzy/p/12596238.html)
+
 #### 改变成员的可访问性
 
 使用`using`声明可以改变派生类继承的某个名字的访问级别。新的访问级别由该`using`声明之前的访问说明符决定。
@@ -2419,7 +2484,7 @@ protected:
 
 之所以存在派生类向基类的隐式转换，是因为每个派生类对象都包含一个基类部分，而基类的引用或指针可以绑定到该基类部分上。一个基类既可以独立存在，也可以作为派生类的一部分存在。如果基类对象不是派生类对象的一部分，则它只含有基类定义的成员，而不含有派生类定义的成员，所以用基类的指针去访问派生类中基类没有的方法或成员，必然出现错误。（**承诺过多**）【PRIMER 534】
 
-#### 多重继承
+#### 多重继承与虚继承
 
 ```C++
 class Person
@@ -2457,7 +2522,6 @@ int main(int argc, char* argv[]) {
 	//pa.eat();						// 标记【3】编译错误
 	pa.Person::eat();
 	pa.Programmer::sleep();
-	system("pause");
 	return 0;
 }
 /* 打印
@@ -2482,7 +2546,7 @@ Person sleep
   class Programmer : virtual public Person	// 标记【2】
   ```
 
-【总结】多重继承的优点是对象可以调用多个基类中的接口，但是容易出现继承向上的二义性。
+【总结】多重继承的优点是对象可以调用多个基类中的接口，但是容易出现继承上的二义性。
 
 ### 右值引用
 
@@ -2505,16 +2569,15 @@ int &&rr2 = i * 42;        // ok: 将右值引用 rr2 绑定到右值上
 
 ```c++
 int &&rr1 = 42;     // ok: rr1 是右值引用
-int &&rr2 = rr1;    // error: 但此时作为表达式的 rr1 是左值，而 rr2 却是右值引用
+//int &&rr2 = rr1;    // error: 但此时作为表达式的 rr1 是左值，而 rr2 却是右值引用
+int &&rr3 = std::move(rr1);
+int &&rr4 = rr1 * 1;
+rr1 = 5;
+cout << "rr1 =" << rr1 << "   rr3 = " << rr3 << "   rr4 = " << rr4 << endl;
+// 打印: rr1 =5   rr3 = 5   rr4 = 42
 ```
 
 调用`move`函数可以获得绑定在左值上的右值引用，此函数定义在头文件*utility*中。
-
-```c++
-int &&rr3 = std::move(rr1);
-```
-
-调用`move`函数的代码应该使用`std::move`而非`move`，这样做可以避免潜在的名字冲突。
 
 #### 左值与右值
 
@@ -2795,7 +2858,6 @@ int *q = p.get();   // ok: but don't use q in any way that might delete its poin
     shared_ptr<int>(q);
 } // block ends, q is destroyed, and the memory to which q points is freed
 int foo = *p;   // undefined; the memory to which p points was freed
-
 ```
 
 智能指针的`get`函数返回一个内置指针，指向智能指针管理的对象。主要用于向不能使用智能指针的代码传递内置指针。使用`get`返回指针的代码不能`delete`此指针。

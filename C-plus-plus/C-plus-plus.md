@@ -48,6 +48,30 @@ main 函数的返回值是返回给主调进程，使主调进程得知被调用
 
 atexit() 在一个程序中最多可以注册32个处理函数，这些处理函数的调用顺序与注册顺序相反，即后注册的函数先被调用。
 
+有必要补充一下，main函数执行之前会做什么？**全局对象的构造函数会在main函数之前执行**。例
+
+```C++
+class C
+{
+public:
+    C() { std::cout << "call C()" << std::endl; };
+};
+
+C c0; //全局变量
+
+int main()
+{
+    std::cout << "main() start" << std::endl;
+    C c1; // call C()
+    return 0;
+}
+/**
+call C()
+main() start
+call C()
+*/
+```
+
 #### "\n" 与 endl 的区别
 
 在 C++ 中，终端输出换行时，用 cout<<......<<endl 与 "\n" 都可以，这是初级的认识。但二者有小小的区别，用 endl 时会刷新缓冲区，使得栈中的东西刷新一次，但用 "\n" 不会刷新，它只会换行，栈内数据没有变化。但一般情况，二者的区别是很小的，建议用 endl 来换行。  
@@ -1123,8 +1147,10 @@ d = red;	// d = 0
 
 **C++ 中结构体与类**
 
-- 相同之处： 结构体中也可以包含函数；也可以定义 public、private、protected 数据成员；定义了结构体之后，可以用结构体名来创建对象。也就是说在 C++ 当中，结构体中可以有成员变量，可以有成员函数，可以从别的类继承，也可以被别的类继承，可以有虚函数。总的一句话：class 和 struct 的语法基本相同，从声明到使用，都很相似。
+- 相同之处： 结构体中也可以包含函数；也可以定义 public、private、protected 数据成员；定义了结构体之后，可以用结构体名来创建对象。**也就是说在 C++ 当中，结构体中可以有成员变量，可以有成员函数，可以从别的类继承，也可以被别的类继承，可以有虚函数**。总的一句话：class 和 struct 的语法基本相同，从声明到使用，都很相似。
 - 区别：对于成员**访问权限和继承方式**，class 中默认的是 private，而 struct 中则是 public。class 还可以用于表示模板类型，struct 则不行。
+
+实际上`C++`中保留`struct`关键字是为了使`C++`编译器能够兼容`C`语言开发的程序
 
 #### 结构体与联合体（共用体）的区别
 
@@ -1270,6 +1296,29 @@ catch (exception-declaration)
 
 【PLUS 353】
 
+### 类对象声明
+
+```c++
+class C
+{
+public:
+    C() { std::cout << "call C()" << std::endl; };
+    C(int _m) : m(_m) { std::cout << "call C(int m)" << std::endl; };
+
+private:
+    int m;
+};
+
+int main()
+{
+    C c1;    // call C()
+    C c2();  // 仅仅声明了一个函数 c2，它返回 C 类型，所以不要乱加括号
+    C c3(1); // call C(int m)
+
+    return 0;
+}
+```
+
 ### 类访问修饰符
 
 - public：公有成员在程序中类的外部是可访问的。可以不使用任何成员函数来设置和获取公有变量的值。
@@ -1327,7 +1376,7 @@ class Line
 	public:
 		void setLength(double len);
 		Line(double len); 	// 构造函数的名称与类的名称完全相同。不会返回任何类型，也不会返回 void，常用于赋初值
-		~Line();  			// 析构函数，函数名与类完全相同，只是在前面加了一个波浪号（~）作为前缀，它不会返回任何值，也不会返回void，也不能带有任何参数。析构函数有助于在跳出程序（比如关闭文件、释放内存等）前释放资源。
+		~Line();  			// 析构函数，函数名与类完全相同，只是在前面加了一个波浪号（~）作为前缀，它不会返回任何值，也不会返回void，也不能带有任何参数（所以不可以被重载）。析构函数有助于在跳出程序（比如关闭文件、释放内存等）前释放资源。
 		double Line::getLength(void)  //方法可以定义在类中
         {
 			return length;
@@ -1381,6 +1430,8 @@ Person::Person( double name, double age, double job): Name(name), Age(age), Job(
 不同于其他函数，构造函数不能被声明为`const`。当我们创建类的一个`const`对象时，直到构造函数完成初始化过程，对象才真正取得其常量属性。因此，构造函数在`const`对象的构造过程中可以向其写值。
 
 【PRIMER 235】
+
+构造函数可以被重载，**析构函数不可以被重载**。因为析构函数只能有一个且不带参数。
 
 ### 委托构造函数
 
@@ -1555,6 +1606,61 @@ strcpy(c2.p, c1.p);
 
 让 c2.p 指向 new 出来的空间，这时 c1.p 里的内容改变了也不会影响 c2.p。
 
+#### 编译器与默认的 copy constructor
+
+- 如果用户定义了一个构造函数（不是拷贝构造函数），且此时在代码中用到了拷贝构造函数，那么编译器会生成默认的拷贝构造函数；如果没有使用，编译器就不会生成默认的拷贝构造函数；
+- 如果用户定义了拷贝构造函数，则编译器就不会再生成拷贝构造函数。
+
+#### 为什么复制构造函数可以访问参数对象的私有成员
+
+**封装是编译期的概念，是针对类型而非对象的，在类的成员函数中可以访问同类型实例对象的私有成员变量。**
+
+参考：https://blog.csdn.net/ganwenbo2011/article/details/100919900
+
+#### 拷贝构造函数与赋值函数的区别
+
+```C++
+A (const A&other) // 拷贝构造函数重载声明
+A& operator = (const A& other) // 赋值函数重载声明
+```
+
+- 一般来说在数据成员包含指针对象的时候，需要考虑两种不同的处理需求：一种是复制指针对象，另一种是引用指针对象。拷贝构造函数大多数情况下是复制，而赋值函数是引用对象。
+
+- 拷贝构造函数是一个对象初始化一块内存区域，这块内存就是新对象的内存区。赋值构造函数则是把一个对象赋值给一个原有的对象，所以，对于赋值函数，如果原来的对象中有内存分配，就要先把内存释放掉，而且还要检查一下两个对象是不是同一个对象，如果是的话就不做任何检测。
+
+```C++
+class A;
+A a;
+A b = a;   // 调用拷贝构造函数（b 不存在）
+A c(a) ;   // 调用拷贝构造函数
+A d;
+d = a;     // 调用赋值函数（d 已初始化）
+```
+
+以字符串的为例子，理解拷贝构造函数和赋值函数
+
+```c++
+String::String(const String &other) //拷贝构造函数
+{
+    cout << "copy construct" << endl;
+    m_string = new char[strlen(other.m_string) + 1]; //分配空间并拷贝
+    strcpy(m_string, other.m_string);
+}
+
+String &String::operator=(const String &other) //赋值运算符
+{
+    cout << "operator =funtion" << endl;
+    if (this == &other) //如果对象和other是用一个对象，直接返回本身
+    {
+        return *this;
+    }
+    delete[] m_string; //先释放原来的内存
+    m_string = new char[strlen(other.m_string) + 1];
+    strcpy(m_string, other.m_string);
+    return *this;
+}
+```
+
 ### 初始化列表
 
 #### [使用初始化列表的原因](https://www.cnblogs.com/graphics/archive/2010/07/04/1770900.html)
@@ -1622,7 +1728,7 @@ int main()
 }
 /**
  * 开放【1】注释【2】打印
- * Construct A
+ * Construct A // main 函数里的 A a 打印
  * Construct A // 因为在 class B 中，语句 A a 调用了默认构造函数，使用列表初始化就不调用它，转而去调用拷贝构造函数
  * assignment for A
  * 开放【2】注释【1】打印

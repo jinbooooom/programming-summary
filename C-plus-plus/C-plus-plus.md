@@ -1327,13 +1327,13 @@ int main()
 
 ### 封装继承多态
 
-**封装**
+#### **封装**
 
 封装是实现面向对象程序设计的第一步，封装就是将数据或函数等集合在一个个的单元中（称之为类）。
 
 封装的意义在于保护或者防止代码（数据）被无意中破坏。
 
-**继承**
+#### **继承**
 
 继承主要实现代码重用，节省开发时间。子类可以继承父类的一些东西。
 
@@ -1351,7 +1351,7 @@ int main()
 
 - protected 成员可以被派生类访问。
 
-**多态**
+#### **多态**
 
 同一个方法在派生类和基类中的行为是不同的，即方法的行为取决于调用该方法的对象。有两种重要的机制可以实现多态公有继承：
 
@@ -1360,10 +1360,91 @@ int main()
 
 【注意】在派生类中重新定义基类的方法，会导致基类方法被隐藏（函数隐藏），这不是重载，重载是一个类中的方法与另一个方法同名，但是参数表不同，这种方法称之为重载方法。
 
-**重载与重写**
+#### **重载与重写**
+
+- 重写（overried，覆盖、覆写）：是指子类重新定义父类虚函数的方法。与多态有关。
 
 - 重载（overload）：是指允许存在多个同名函数，而这些函数的参数列表不同（或许参数个数不同，或许参数类型不同，或许两者都不同）返回值类型随意。与多态无关。
-- 重写（overried，覆盖、覆写）：是指子类重新定义父类虚函数的方法。与多态有关。
+
+  - [`C++`中 `const` 用于函数重载](https://www.cnblogs.com/qingergege/p/7609533.html)。常成员函数不能更新类的成员变量，也不能调用该类中没有用`const`修饰的成员函数，只能调用常成员函数。非常量对象可以调用常成员函数和非常成员函数，但是如果有重载的非常成员函数则会调用非常成员函数。
+
+    ```c++
+    class C
+    {
+    public:
+        C(int v) : mValue(v){};
+        void fun() const { std::cout << "void fun() const" << std::endl; };
+        void fun() { std::cout << "void fun()" << std::endl; };
+    
+    private:
+        int mValue;
+    };
+    
+    int main()
+    {
+        const C c1(1);
+        C c2(2);
+        c1.fun();
+        c2.fun();
+        return 0;
+    }
+    /* 打印
+    void fun() const
+    void fun()
+    **/
+    ```
+
+  - 顶层`const`是不支持重载的，因为函数调用的时候，存在形实结合的过程，所以不管有没有`const`都不会改变实参的值。
+
+    ```c++
+    void fun(char *s)
+    {
+        std::cout << "non-const fun() " << s << std::endl;
+    }
+    
+    void fun(char *const s) // 顶层 const 不支持重载
+    {
+        std::cout << "const fun() " << s << std::endl;
+    }
+    /** 编译出错
+    test.cpp:21:6: error: redefinition of ‘void fun(char*)’
+     void fun(char *const s)
+          ^~~
+    test.cpp:16:6: note: ‘void fun(char*)’ previously defined here
+     void fun(char *s)
+          ^~~
+    */
+    ```
+
+  - ​	底层`const`支持重载
+
+    ```c++
+    void fun(char *s)
+    {
+        std::cout << "non-const fun() " << s << std::endl;
+    }
+    
+    void fun(const char *s) // 底层 const 支持重载
+    {
+        std::cout << "const fun() " << s << std::endl;
+    }
+    
+    int main()
+    {
+        char *ptr1 = "hello";
+        const char *ptr2 = "world";
+        fun(ptr1);
+        fun(ptr2);
+        return 0;
+    }
+    /**
+    non-const fun() hello
+    const fun() world
+    */
+    // 对于引用也是同样的道理，如
+    // void fun(int &i) 和 void fun(const int &i) 也是可以重载的。
+    // 原因是第一个 i 引用的是一个变量，而第二个 i 引用的是一个常量，两者是不一样的，类似于上面的指向变量的指针和指向常量的指针。
+    ```
 
 ### 构造函数与析构函数
 
@@ -1660,6 +1741,90 @@ String &String::operator=(const String &other) //赋值运算符
     return *this;
 }
 ```
+
+### 临时对象的复制与析构
+
+```C++
+class C
+{
+public:
+    C() : mValue(0)
+    {
+        std::cout << "default constructor, value = " << mValue << std::endl;
+    };
+    C(const C &c)
+    {
+        mValue = c.mValue;
+        std::cout << "copy constructor, value = " << mValue << ", this = " << std::hex << this << std::endl;
+    };
+    C &operator=(const C &c)
+    {
+        if (this == &c)
+            return *this;
+        mValue = c.mValue;
+        std::cout << "assignment function, value = " << mValue << ", this = " << std::hex << this << std::endl;
+        return *this;
+    };
+    C(int v) : mValue(v)
+    {
+        std::cout << "constructed by parameter: " << std::dec << mValue << ", this = " << std::hex << this << std::endl;
+    };
+    virtual ~C()
+    {
+        std::cout << "destructor, value = " << mValue << ", this = " << std::hex << this << std::endl;
+    };
+
+private:
+    int mValue;
+};
+
+C create(C c)
+{
+    std::cout << "start creat" << std::endl;
+    return c;
+}
+
+int main()
+{
+    C c1 = create(5);
+    std::cout << "finish creat c1" << std::endl;
+    C c2 = create(c1);
+    std::cout << "finish creat c2" << std::endl;
+    C c3 = create(8);
+    std::cout << "finish creat c3" << std::endl;
+    C c4 = 12;
+    std::cout << "finish creat c4" << std::endl;
+    c4 = c1;
+    return 0;
+}
+// g++ test.cpp -o test -std=c++11 -m32
+/* 打印
+constructed by parameter: 5, this = 0xffb5a528 // create 函数值传递，调用带参数的构造函数，生成临时对象
+start creat
+copy constructor, value = 5, this = 0xffb5a520 // return 值，调用拷贝构造函数，生成临时对象
+destructor, value = 5, this = 0xffb5a528       // 析构值传递所产生的临时对象（形参）
+finish creat c1
+copy constructor, value = 5, this = 0xffb5a530 // create 函数值传递，调用拷贝构造函数，生成临时对象
+start creat
+copy constructor, value = 5, this = 0xffb5a518 // return 值，调用拷贝构造函数，生成临时对象
+destructor, value = 5, this = 0xffb5a530       // 析构值传递所产生的临时对象（形参）
+finish creat c2
+constructed by parameter: 8, this = 0xffb5a538 // create 函数值传递，调用带参数的构造函数，生成临时对象
+start creat
+copy constructor, value = 8, this = 0xffb5a510 // return 值，调用拷贝构造函数，生成临时对象
+destructor, value = 8, this = 0xffb5a538       // 析构值传递所产生的临时对象（形参）
+finish creat c3
+constructed by parameter: 12, this = 0xffb5a508 // 隐式转换，调用带参数的构造函数
+finish creat c4
+assignment function, value = 5, this = 0xffb5a508 // 调用赋值函数，将 c1 赋给 c4
+destructor, value = 5, this = 0xffb5a508 // c4 析构
+destructor, value = 8, this = 0xffb5a510 // c3 析构
+destructor, value = 5, this = 0xffb5a518 // c2 析构
+destructor, value = 5, this = 0xffb5a520 // c1 析构
+*/
+```
+
+
 
 ### 初始化列表
 

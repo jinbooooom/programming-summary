@@ -2102,3 +2102,11 @@ std::list<T> f(std::list<T> v) {
 
 * FP 不仅是并发编程的典范，还是 CSP（Communicating Sequential Processer）的典范。CSP 中的线程理论上是分开的，没有共享数据，但 communication channel 允许消息在不同线程间传递，这被 Erlang 所采用，并在 MPI（Message Passing Interface） 上常用来做 C 和 C++ 的高性能计算
 
+# 协程（Coroutine）
+
+协程是C++ 20 标准里的概念。
+
+协程是一种可以被挂起和恢复的函数，C++ 20 规定，具有co_await、co_return、co_yield 3个关键字中的任意一个的函数就是协程。
+
+main 函数不能为协程。
+

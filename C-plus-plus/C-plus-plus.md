@@ -1639,7 +1639,7 @@ class A
 };
 ```
 
-这6个函数的实现例子，以string为例，可以[参考这个](https://blog.csdn.net/qq_34581491/article/details/52704856)
+这6个函数的实现例子，以string为例，[查看实现](./sources/mine/MyString.cpp)
 
 另外，编译器还会默认生成一些操作符函数，包括：
 

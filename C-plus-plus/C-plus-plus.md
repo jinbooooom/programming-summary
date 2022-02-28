@@ -3444,3 +3444,63 @@ for (auto row : ia)
 ```
 
 使用范围`for`语句处理多维数组时，除了最内层的循环，其他所有外层循环的控制变量都应该定义成引用类型。
+
+## std::bind
+
+std::bind可以绑定普通函数，但不能区分重载，也可以绑定类内成员函数。也可以通过占位符方便更换形参。
+
+```C++
+#include <functional>
+#include <iostream>
+
+class Foo
+{
+public:
+    Foo() = default;
+
+    void add(const int &lhs, const int &rhs)
+    {
+        std::cout << __PRETTY_FUNCTION__ << " sum = " << (lhs + rhs) << std::endl;
+    }
+};
+
+void f(int n) { std::cout << "void f(int n)" << std::endl; }
+void f(double n) { std::cout << "void f(double n)" << std::endl; }
+
+int main()
+{
+    auto g1 = [] { f(1); };    // OK
+    auto g11 = [] { f(1.0); }; // OK
+    //auto g2 = std::bind(f, 2); // 错误，因为无法确定要绑定哪个重载的 f()
+    auto g3 = std::bind(static_cast<void (*)(int)>(f), 3.0); // OK，强行转换为 void f(int n)，即使传的形参是 double
+
+    g1();
+    g11();
+    g3();
+
+    Foo foo;
+    auto g4 = std::bind(&Foo::add, &foo, 1, 2); // std::_Bind<void (Foo::*(Foo *, int, int)> g4
+    auto g5 = std::bind(&Foo::add, &foo, std::placeholders::_1, std::placeholders::_2);
+    auto g6 = std::bind(&Foo::add, &foo, 1, std::placeholders::_2);
+
+    g4();         // 1 + 2 = 3
+    g4(100);      // 1 + 2 = 3
+    g4(100, 200); // 1 + 2 = 3
+    g5(3, 4);     // 3 + 4 = 7
+    g6(3, 4);     // 1 + 4 = 5
+    // g6(3);        // error
+
+    return 0;
+}
+/*
+void f(int n)
+void f(double n)
+void f(int n)
+void Foo::add(const int&, const int&) sum = 3
+void Foo::add(const int&, const int&) sum = 3
+void Foo::add(const int&, const int&) sum = 3
+void Foo::add(const int&, const int&) sum = 7
+void Foo::add(const int&, const int&) sum = 5
+*/
+```
+

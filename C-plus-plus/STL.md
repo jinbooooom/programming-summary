@@ -301,7 +301,7 @@ move element to the end
 - queue: 队列
 - priority queue: 优先队列
 
-<img src="sources\qe_vec.png" style="zoom: 100%;" />
+<img src="assets/STL/qe_vec.png" style="zoom: 80%;" />
 
 #### vector
 

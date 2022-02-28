@@ -342,7 +342,70 @@ vector<int> *pv = &vec;  // 合法
 cout << vec[1] << endl;  // 注意与数组的差别
 ```
 
-new 与 vector 定义多维变长数组并初始化可以访问该目录下的[cpp/init.cpp](./cpp/init.cpp)
+new 与 vector 定义多维变长数组并初始化
+
+```C++
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+	int row = 2;
+	int col = 3;
+	int **p = new int*[row];
+	for (int i = 0; i < row; ++i)
+	{
+		p[i] = new int[col];
+		for (int j = 0; j < col; ++j)
+		{
+			p[i][j] = i * col + j;
+		}
+	}
+	for (int i = 0; i < row; ++i)
+		for (int j = 0; j < col; ++j)
+			printf("p[%d][%d] = %d\n", i, j, p[i][j]);
+
+
+	cout << "--------------------" << endl;
+	int *p1 = new int[5];  // 未初始化， p 指向含 5 的整数的堆内存空间的首地址
+	cout << p1[0] << " " << p1[1] << " " << *p1 << endl;
+	int *p2 = new int(5);   // 初始化一个值，p 指向一个数
+	cout << p2[0] << " " << p2[1] << " " << *p2 << endl;
+
+
+	cout << "----------------------" << endl;
+	int a = 2, b = 2, c = 3;
+	vector<vector<vector<int> > > v(a, vector<vector<int> >(b, vector<int>(c, 5)));
+	for (int i = 0; i < v.size(); ++i)
+		for (int j = 0; j < v[0].size(); ++j)
+			for (int k = 0; k < v[0][0].size(); ++k)
+				printf("v[%d][%d][%d] = %d\n", i, j, k, v[i][j][k]);
+
+	cout << "-------------------------" << endl;
+	vector<int> v1(c, 6);
+	vector<vector<int> >v2(b, v1);
+	vector<vector<vector<int> > >v3(a, v2);
+	for (int i = 0; i < v.size(); ++i)
+		for (int j = 0; j < v[0].size(); ++j)
+			for (int k = 0; k < v[0][0].size(); ++k)
+				printf("v3[%d][%d][%d] = %d\n", i, j, k, v3[i][j][k]);
+
+	cout << "-------------------------" << endl;
+	int* pmalloc = (int *)malloc(sizeof(int) * row * col);
+	for (int i = 0; i < row; ++i)
+		for (int j = 0; j < col; ++j)
+			pmalloc[i * col + j] = i * col + j;
+	for (int i = 0; i < row; ++i)
+		for (int j = 0; j < col; ++j)
+			printf("pmalloc[%d * %d + %d] = %d\n", i, col, j, pmalloc[i * col + j]);
+	free(pmalloc);
+}
+```
+
+
 
 ### 逗号表达式
 
@@ -1305,7 +1368,7 @@ catch (exception-declaration)
 
 - 头文件*stdexcept*定义了几种常用的异常类。
 
-  ![5-2](assert/C-plus-plus/5-2.png)
+  ![](assets/C-plus-plus/5-2.png)
 
 - 头文件*new*定义了`bad_alloc`异常类。
 
@@ -1313,7 +1376,7 @@ catch (exception-declaration)
 
 标准库异常类的继承体系：
 
-![5-3](assert/C-plus-plus/5-3.png)
+![](assets/C-plus-plus/5-3.png)
 
 只能以默认初始化的方式初始化`exception`、`bad_alloc`和`bad_cast`对象，不允许为这些对象提供初始值。其他异常类的对象在初始化时必须提供一个`string`或一个C风格字符串，通常表示异常信息。`what`成员函数可以返回该字符串的`string`副本。
 

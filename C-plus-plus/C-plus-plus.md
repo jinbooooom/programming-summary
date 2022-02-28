@@ -2778,6 +2778,7 @@ delete pe;  // 先调用 ~Singer() 再调用 ~Employee()，
 - 友元不能是虚函数，因为友元不是类成员，只有类成员才能是虚函数
 - 如果派生类没有重新定义函数，将使用该函数的基类版本。如果派生类位于派生链中，则将使用最新的虚函数版本
 - 如果派生类重新定义函数，将隐藏同名基类方法，这不同于重载
+- 模板函数不能是虚函数。因为，类会在`vtbl`中存放类中的所有的虚函数的函数指针，而一个模板函数如果设计为虚函数是无法获悉这个模板函数会被实例化为哪些具体的函数。
 
 【PLUS 503，504】
 
@@ -3188,7 +3189,7 @@ int foo = *p;   // undefined; the memory to which p points was freed
 
 ### shared_ptr是否线程安全
 
-std::shared_ptr的引用计数本身是安全且无锁的，但对象的读写则不是。也就是说std::shared_ptr对象的创建析构是线程安全的，但是多线程读写std::shared_ptr对象不是线程安全的。std::shared_ptr 内存是由于两个组成部分： 指向管理对象的指针 和 引用计数器。在读/写时，是直接对两个变量操作，不可能是原子类型的。因为 std::shared_ptr 有两个数据成员，读写操作不能原子化.使得多线程读写同一个 std::shared_ptr 对象需要加锁.
+`std::shared_ptr`的引用计数本身是安全且无锁的，但对象的读写则不是。也就是说`std::shared_ptr`对象的创建析构是线程安全的，但是多线程读写`std::shared_ptr`对象不是线程安全的。`std::shared_ptr` 内存是由于两个组成部分： 指向管理对象的指针 和 引用计数器。在读/写时，是直接对两个变量操作，不可能是原子类型的。因为 `std::shared_ptr` 有两个数据成员，读写操作不能原子化。使得多线程读写同一个 std::shared_ptr 对象需要加锁。
 
 ### unique_ptr
 
@@ -3257,13 +3258,13 @@ void f(destination &d /* other needed parameters */)
 } // 当 p 被摧毁时，自动调用 end_connection 函数
 ```
 
-### weak_ptr（weak_ptr）
+### weak_ptr
 
 `weak_ptr`是一种不控制所指向对象生存期的智能指针，它指向一个由`shared_ptr`管理的对象。将`weak_ptr`绑定到`shared_ptr`不会改变`shared_ptr`的引用计数。如果`shared_ptr`被销毁，即使有`weak_ptr`指向对象，对象仍然有可能被释放。
 
 ![12-5](assets/C-plus-plus/12-5.png)
 
-创建一个`weak_ptr`时，需要使用`shared_ptr`来初始化它。
+创建一个`weak_ptr`时，需要使用`shared_ptr`来初始化它。`weak_ptr`只能配合`std::shared_ptr`使用，不能单独使用。
 
 ```c++
 auto p = make_shared<int>(42);
@@ -3279,6 +3280,133 @@ if (shared_ptr<int> np = wp.lock())
     // inside the if, np shares its object with p
 }
 ```
+
+#### 使用weak_ptr防止循环引用
+
+```C++
+#include <memory>
+#include <iostream>
+
+class Foo : public std::enable_shared_from_this<Foo>
+{
+public:
+    Foo() { std::cout << __PRETTY_FUNCTION__ << std::endl; }
+    ~Foo() { std::cout << __PRETTY_FUNCTION__ << std::endl; }
+
+    void self()
+    {
+        mPtr = shared_from_this();
+    }
+
+private:
+    // std::shared_ptr<Foo> mPtr; // 【1】由于循环引用，不会调用析构函数，改 mPtr 为 std::weak_ptr 类型即可
+    std::weak_ptr<Foo> mPtr; //【2】
+};
+
+int main()
+{
+    {
+        std::shared_ptr<Foo> c = std::make_shared<Foo>();
+        c->self();
+    }
+    return 0;
+}
+/**
+注释【1】打开【2】，打印
+Foo::Foo()
+Foo::~Foo()
+注释【2】打开【1】，打印
+Foo::Foo()
+由于循环引用，不会调用析构函数
+*/
+```
+
+`std::enable_shared_from_this<T>::shared_from_this` 是个侵入式设计。为的解决传入`this`导致对象被析构两次的问题。    
+
+什么情况下需要使用 `shared_from_this()`? 用于返回当前对象 `this`的`std::shared_ptr`类型指针时：
+
+```cpp
+#include <memory>
+#include <iostream>
+
+class Foo : public std::enable_shared_from_this<Foo>
+{
+public:
+    Foo() { std::cout << "Foo()\n"; }
+    ~Foo() { std::cout << "~Foo()\n"; }
+
+    std::shared_ptr<Foo> getSelf()
+    {
+        return shared_from_this();
+    }
+};
+
+int main()
+{
+    Foo *foo = new Foo;
+    std::shared_ptr<Foo> sp1(foo);
+    std::shared_ptr<Foo> sp2 = sp1->getSelf(); // 【1】为了对 foo对象进行共享
+    //std::shared_ptr<Foo> sp2(foo); // 【2】
+
+    // std::boolalpha 的作用是使 bool 型变量按照 false、true 的格式输出。如不使用该标识符，那么结果会按照 1、0 的格式输出
+    std::cout << std::boolalpha << (sp2.get() == foo) << std::endl;
+    std::cout << sp1.use_count() << "    " << sp2.use_count() << std::endl;
+}
+/* 打印
+Foo()
+true
+2    2
+~Foo()
+*/
+```
+
+如果注释【1】打开【2】，则会析构两次，产生未定义的行为，打印如下
+
+```
+Foo()
+true
+1    1
+~Foo()
+~Foo()
+free(): double free detected in tcache 2
+已放弃 (核心已转储)
+```
+
+尽管`sp1`和`sp2`都指向了`foo`，但是却不共享计数，当析构的时候就会被析构两次，产生未定义行为。
+`std::weak_ptr`可以接受`std::shared_ptr`参数来构造自己，`std::shared_ptr`也具有接受`std::weak_ptr`参数来构造自己。 
+
+enable_shared_from_this 函数原型
+
+```cpp
+    template<typename _Tp>
+    class enable_shared_from_this {
+    protected:
+        ...
+    public:
+        shared_ptr<_Tp>
+        shared_from_this() { 
+            return shared_ptr<_Tp>(this->_M_weak_this); 
+        }
+
+        shared_ptr<const _Tp>
+        shared_from_this() const { 
+            return shared_ptr<const _Tp>(this->_M_weak_this); 
+        }
+    private:
+        ...
+        mutable weak_ptr<_Tp>  _M_weak_this;
+    }
+```
+
+ `enable_shared_from_this`的子类需要返回自身的`std::shared_ptr`指针，那么就需要继承这个类。 
+
+成员变量为什么是`weak_ptr`类型  
+因为如果是`std::shared_ptr`类型，那么就永远无法析构对象自身。   
+
+  这个`_M_weak_this`不是这个类中初始化，而是在`shared_ptr`中初始化，初始化的值就是`this`。因此如果智能指针类型是`std::shared_ptr`，那么这个类对象一旦创建，引用计数就是1，那么永远也无法析构。
+
+为什么不直接传回`this`  
+`std::shared_ptr`的引用计数增加是需要用`operator=`实现的。
 
 ## 基于范围的 for 循环
 

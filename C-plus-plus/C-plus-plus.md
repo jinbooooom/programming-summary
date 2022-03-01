@@ -3443,7 +3443,97 @@ for (auto row : ia)
 
 使用范围`for`语句处理多维数组时，除了最内层的循环，其他所有外层循环的控制变量都应该定义成引用类型。
 
-## std::bind
+## lambda 表达式
+
+`find_if`函数接受两个迭代器参数和一个谓词参数。迭代器参数用于指定序列范围，之后对序列中的每个元素调用给定谓词，并返回第一个使谓词返回非0值的元素。如果不存在，则返回尾迭代器。
+
+对于一个对象或表达式，如果可以对其使用调用运算符`()`，则称它为可调用对象（callable object）。可以向算法传递任何类别的可调用对象。
+
+一个`lambda`表达式表示一个可调用的代码单元，类似未命名的内联函数，但可以定义在函数内部。其形式如下：
+
+```c++
+[capture list] (parameter list) -> return type { function body }
+```
+
+其中，*capture list*（捕获列表）是一个由`lambda`所在函数定义的局部变量的列表（通常为空）。*return type*、*parameter list*和*function body*与普通函数一样，分别表示返回类型、参数列表和函数体。但与普通函数不同，`lambda`必须使用尾置返回类型，且不能有默认实参。
+
+定义`lambda`时可以省略参数列表和返回类型，但必须包含捕获列表和函数体。省略参数列表等价于指定空参数列表。省略返回类型时，若函数体只是一个`return`语句，则返回类型由返回表达式的类型推断而来。否则返回类型为`void`。
+
+```c++
+auto f = [] { return 42; };
+cout << f() << endl;    // prints 42
+```
+
+`lambda`可以使用其所在函数的局部变量，但必须先将其包含在捕获列表中。捕获列表只能用于局部非`static`变量，`lambda`可以直接使用局部`static`变量和其所在函数之外声明的名字。
+
+```c++
+// get an iterator to the first element whose size() is >= sz
+auto wc = find_if(words.begin(), words.end(),
+                    [sz](const string &a) { return a.size() >= sz; });
+```
+
+`for_each`函数接受一个输入序列和一个可调用对象，它对输入序列中的每个元素调用此对象。
+
+```c++
+// print words of the given size or longer, each one followed by a space
+for_each(wc, words.end(),
+            [] (const string &s) { cout << s << " "; });
+```
+
+### lambda捕获变量和返回
+
+**被`lambda`捕获的变量的值是在`lambda`创建时拷贝，而不是调用时拷贝。在`lambda`创建后修改局部变量不会影响`lambda`内对应的值。**
+
+```c++
+size_t v1 = 42; // local variable
+// copies v1 into the callable object named f
+auto f = [v1] { return v1; };
+// auto f = [v1] { return ++v1; }; // error: increment of read-only variable ‘v1’，不可以修改 v1 
+// auto f = [v1] () mutable { return ++v1; }; // 在参数列表后加 mutable 就可以解决问题。返回 43
+v1 = 0;
+auto j = f();   // j is 42; f stored a copy of v1 when we created it
+```
+
+**默认情况下，对于值方式捕获的变量，`lambda`不能修改其值。如果希望修改，就必须在参数列表后添加关键字`mutable`。**
+
+```c++
+size_t v1 = 42; // local variable
+// f can change the value of the variables it captures
+auto f = [v1] () mutable { return ++v1; };
+v1 = 0;
+auto j = f();   // j is 43
+```
+
+`lambda`可以以引用方式捕获变量，但必须保证`lambda`执行时变量存在。
+
+```c++
+size_t v1 = 42; // local variable
+// the object f2 contains a reference to v1
+auto f2 = [&v1] { return ++v1; };
+v1 = 0;
+auto j = f2();  // j is 1; f2 refers to v1; it doesn't store it
+```
+
+**可以让编译器根据`lambda`代码隐式捕获函数变量，方法是在捕获列表中写一个`&`或`=`符号。`&`为引用捕获，`=`为值捕获。**
+
+可以混合使用显式捕获和隐式捕获。混合使用时，捕获列表中的第一个元素必须是`&`或`=`符号，用于指定默认捕获方式。显式捕获的变量必须使用与隐式捕获不同的方式。
+
+```c++
+// os implicitly captured by reference; c explicitly captured by value
+for_each(words.begin(), words.end(),
+            [&, c] (const string &s) { os << s << c; });
+// os explicitly captured by reference; c implicitly captured by value
+for_each(words.begin(), words.end(),
+            [=, &os] (const string &s) { os << s << c; });
+```
+
+`lambda`捕获列表形式：
+
+![10-2](assets/C-plus-plus/10-2.png)
+
+本小节在【PRIMER 350~354】
+
+### 参数绑定
 
 `std::bind`可以绑定普通函数，但不能区分重载，也可以绑定类内成员函数。也可以通过占位符方便更换形参。
 
@@ -3503,4 +3593,177 @@ void Foo::add(const int&, const int&) sum = 7
 void Foo::add(const int&, const int&) sum = 5
 */
 ```
+
+`bind`函数定义在头文件*functional*中，相当于一个函数适配器，它接受一个可调用对象，生成一个新的可调用对象来适配原对象的参数列表。一般形式如下：
+
+```c++
+auto newCallable = bind(callable, arg_list);
+```
+
+其中，*newCallable*本身是一个可调用对象，*arg_list*是一个以逗号分隔的参数列表，对应给定的*callable*的参数。之后调用*newCallable*时，*newCallable*会再调用*callable*，并传递给它*arg_list*中的参数。*arg_list*中可能包含形如`_n`的名字，其中*n*是一个整数。这些参数是占位符，表示*newCallable*的参数，它们占据了传递给*newCallable*的参数的位置。数值*n*表示生成的可调用对象中参数的位置：`_1`为*newCallable*的第一个参数，`_2`为*newCallable*的第二个参数，依次类推。这些名字都定义在命名空间*placeholders*中，它又定义在命名空间*std*中，因此使用时应该进行双重限定。
+
+```c++
+using std::placeholders::_1;
+using namespace std::placeholders;
+bool check_size(const string &s, string::size_type sz);
+
+// check6 is a callable object that takes one argument of type string
+// and calls check_size on its given string and the value 6
+auto check6 = bind(check_size, _1, 6);
+string s = "hello";
+bool b1 = check6(s);    // check6(s) calls check_size(s, 6)
+```
+
+`bind`函数可以调整给定可调用对象中的参数顺序。
+
+```c++
+// sort on word length, shortest to longest
+sort(words.begin(), words.end(), isShorter);
+// sort on word length, longest to shortest
+sort(words.begin(), words.end(), bind(isShorter, _2, _1));
+```
+
+默认情况下，`bind`函数的非占位符参数被拷贝到`bind`返回的可调用对象中。但有些类型不支持拷贝操作。
+
+如果希望传递给`bind`一个对象而又不拷贝它，则必须使用标准库的`ref`函数。`ref`函数返回一个对象，包含给定的引用，此对象是可以拷贝的。`cref`函数生成保存`const`引用的类。
+
+```c++
+ostream &print(ostream &os, const string &s, char c);
+for_each(words.begin(), words.end(), bind(print, ref(os), _1, ' '));
+```
+
+【PRIMER 354~356】
+
+## 函数调用运算符
+
+### 重载operator()运算符
+
+函数调用运算符必须定义为成员函数。一个类可以定义多个不同版本的调用运算符，相互之间必须在参数数量或类型上有所区别。
+
+该类也可以称为可调用对象，或函数对象。
+
+```c++
+class PrintString
+{
+public:
+    PrintString(ostream &o = cout, char c = ' '):
+        os(o), sep(c) { }
+    void operator()(const string &s) const
+    {
+        os << s << sep;
+    }
+
+private:
+    ostream &os;   // 用于写入的目的流
+    char sep;      // 用于将不同输出隔开的字符
+};
+
+PrintString printer;  // uses the defaults; prints to cout
+printer(s);     // prints s followed by a space on cout
+```
+
+如果类定义了调用运算符，则该类的对象被称作函数对象（function object），函数对象常常作为泛型算法的实参。
+
+```c++
+for_each(vs.begin(), vs.end(), PrintString(cerr, '\n'));
+```
+
+### lambda是函数对象
+
+编写一个`lambda`后，编译器会将该表达式转换成一个未命名类的未命名对象，类中含有一个重载的函数调用运算符。
+
+```c++
+// sort words by size, but maintain alphabetical order for words of the same size
+stable_sort(words.begin(), words.end(),
+    [](const string &a, const string &b) { return a.size() < b.size(); });
+
+// acts like an unnamed object of a class that would look something like
+class ShorterString
+{
+public:
+    bool operator()(const string &s1, const string &s2) const
+    {
+        return s1.size() < s2.size();
+    }
+};
+```
+
+`lambda`默认不能改变它捕获的变量。因此在默认情况下，由`lambda`产生的类中的函数调用运算符是一个`const`成员函数。如果`lambda`被声明为可变的，则调用运算符就不再是`const`函数了。
+
+`lambda`通过引用捕获变量时，由程序负责确保`lambda`执行时该引用所绑定的对象确实存在。因此编译器可以直接使用该引用而无须在`lambda`产生的类中将其存储为数据成员。相反，通过值捕获的变量被拷贝到`lambda`中，此时`lambda`产生的类必须为每个值捕获的变量建立对应的数据成员，并创建构造函数，用捕获变量的值来初始化数据成员。
+
+```c++
+// get an iterator to the first element whose size() is >= sz
+auto wc = find_if(words.begin(), words.end(),
+            [sz](const string &a) { return a.size() >= sz; });
+
+// would generate a class that looks something like
+class SizeComp
+{
+public:
+    SizeComp(size_t n): sz(n) { }   // parameter for each captured variable
+    // call operator with the same return type, parameters, and body as the lambda
+    bool operator()(const string &s) const
+    {
+        return s.size() >= sz;
+    }
+
+private:
+    size_t sz;   // a data member for each variable captured by value
+};
+```
+
+`lambda`产生的类不包含默认构造函数、赋值运算符和默认析构函数，它是否包含默认拷贝/移动构造函数则通常要视捕获的变量类型而定。
+
+**标准库定义的函数对象**
+
+标准库在头文件*functional*中定义了一组表示算术运算符、关系运算符和逻辑运算符的类，每个类分别定义了一个执行命名操作的调用运算符。这些类都被定义为模板的形式，可以为其指定具体的应用类型（即调用运算符的形参类型）。
+
+![14-2](assets/C-plus-plus/14-2.png)
+
+关系运算符的函数对象类通常被用来替换算法中的默认运算符，这些类对于指针同样适用。
+
+```c++
+vector<string *> nameTable;    // vector of pointers
+// error: the pointers in nameTable are unrelated, so < is undefined
+sort(nameTable.begin(), nameTable.end(),
+        [](string *a, string *b) { return a < b; });
+// ok: library guarantees that less on pointer types is well defined
+sort(nameTable.begin(), nameTable.end(), less<string*>());
+```
+
+### 可调用对象与function
+
+调用形式指明了调用返回的类型以及传递给调用的实参类型。不同的可调用对象可能具有相同的调用形式。
+
+标准库`function`类型是一个模板，定义在头文件*functional*中，用来表示对象的调用形式。
+
+![14-3](assets/C-plus-plus/14-3.png)
+
+创建一个具体的`function`类型时必须提供其所表示的对象的调用形式。
+
+```c++
+// ordinary function
+int add(int i, int j) { return i + j; }
+// function-object class
+struct div
+{
+    int operator()(int denominator, int divisor)
+    {
+        return denominator / divisor;
+    }
+};
+
+function<int(int, int)> f1 = add;      // function pointer
+function<int(int, int)> f2 = div();    // object of a function-object class
+function<int(int, int)> f3 = [](int i, int j) { return i * j; };  // lambda
+                                   
+cout << f1(4,2) << endl;   // prints 6
+cout << f2(4,2) << endl;   // prints 2
+cout << f3(4,2) << endl;   // prints 8
+```
+
+不能直接将重载函数的名字存入`function`类型的对象中，这样做会产生二义性错误。消除二义性的方法是使用`lambda`或者存储函数指针而非函数名字。
+
+C++11新标准库中的`function`类与旧版本中的`unary_function`和`binary_function`没有关系，后两个类已经被`bind`函数代替。
 

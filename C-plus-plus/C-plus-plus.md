@@ -3399,12 +3399,151 @@ enable_shared_from_this 函数原型
  `enable_shared_from_this`的子类需要返回自身的`std::shared_ptr`指针，那么就需要继承这个类。 
 
 成员变量为什么是`weak_ptr`类型  
+
 因为如果是`std::shared_ptr`类型，那么就永远无法析构对象自身。   
 
   这个`_M_weak_this`不是这个类中初始化，而是在`shared_ptr`中初始化，初始化的值就是`this`。因此如果智能指针类型是`std::shared_ptr`，那么这个类对象一旦创建，引用计数就是1，那么永远也无法析构。
 
 为什么不直接传回`this`  
+
 `std::shared_ptr`的引用计数增加是需要用`operator=`实现的。
+
+### 基于引用计数的智能指针实现
+
+源码在[./sources/mine/SmartPtr.cpp](./sources/mine/SmartPtr.cpp)
+
+```C++
+#include <iostream>
+
+#define showfunc std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+template <class T>
+class SmartPtr
+{
+private:
+    T *mPtr;
+    size_t *mRef;
+
+public:
+    SmartPtr(T *p = 0);
+    SmartPtr(const SmartPtr &src); // 加上 explicit 可以拒绝隐式拷贝构造
+    SmartPtr &operator=(const SmartPtr &rhs);
+    T *operator->() const;
+    T &operator*() const;
+    ~SmartPtr();
+
+private:
+    void decRef(); //只会被其它成员函数所调用
+
+public: // for debug
+    int get_ref_count() const;
+};
+
+template <class T>
+SmartPtr<T>::SmartPtr(T *p)
+    : mPtr(p),            // mPtr 指向 p 所指向的内存
+      mRef(new size_t(1)) // 引用计数初始化为 1
+{
+    showfunc;
+}
+
+template <class T>
+SmartPtr<T>::SmartPtr(const SmartPtr &src)
+{
+    showfunc;
+    mPtr = src.mPtr;
+    mRef = src.mRef;
+    ++*mRef;
+}
+
+template <class T>
+SmartPtr<T> &SmartPtr<T>::operator=(const SmartPtr<T> &rhs)
+{
+    showfunc;
+    ++*rhs.mRef;
+    decRef();
+    mPtr = rhs.mPtr;
+    mRef = rhs.mRef;
+    return *this;
+}
+
+template <class T>
+T *SmartPtr<T>::operator->() const
+{
+    showfunc;
+    if (mPtr)
+    {
+        return mPtr;
+    }
+    throw std::runtime_error("dereference of nullptr pointer");
+}
+
+template <class T>
+T &SmartPtr<T>::operator*() const
+{
+    showfunc;
+    if (mPtr)
+    {
+        return *mPtr;
+    }
+    throw std::runtime_error("dereference of nullptr pointer");
+}
+
+template <class T>
+SmartPtr<T>::~SmartPtr()
+{
+    showfunc;
+    decRef();
+}
+
+template <class T>
+void SmartPtr<T>::decRef() //只会被其它成员函数所调用
+{
+    std::cout << "after call decRef(): *mPtr = " << *mPtr << ", *mRef = " << *mRef - 1 << std::endl;
+    if (0 == --*mRef) // 引用计数先自减，为 0 后，释放内存
+    {
+        delete mPtr;
+        delete mRef;
+        std::cout << "real delete" << std::endl;
+    }
+}
+
+template <class T>
+int SmartPtr<T>::get_ref_count() const
+{
+    return *mRef;
+}
+
+int main()
+{
+    SmartPtr<int> p1(new int(999));
+    SmartPtr<int> p2(new int(888));
+    SmartPtr<int> p3(p1);
+    p2 = p3;               // 拷贝赋值运算符
+    SmartPtr<int> p4 = p2; // 隐式拷贝构造
+}
+
+/*
+SmartPtr<T>::SmartPtr(T*) [with T = int]
+SmartPtr<T>::SmartPtr(T*) [with T = int]
+SmartPtr<T>::SmartPtr(const SmartPtr<T>&) [with T = int]
+SmartPtr<T>& SmartPtr<T>::operator=(const SmartPtr<T>&) [with T = int]
+after call decRef(): *mPtr = 888, *mRef = 0
+real delete
+SmartPtr<T>::SmartPtr(const SmartPtr<T>&) [with T = int]
+SmartPtr<T>::~SmartPtr() [with T = int]
+after call decRef(): *mPtr = 999, *mRef = 3
+SmartPtr<T>::~SmartPtr() [with T = int]
+after call decRef(): *mPtr = 999, *mRef = 2
+SmartPtr<T>::~SmartPtr() [with T = int]
+after call decRef(): *mPtr = 999, *mRef = 1
+SmartPtr<T>::~SmartPtr() [with T = int]
+after call decRef(): *mPtr = 999, *mRef = 0
+real delete
+*/
+```
+
+
 
 ## 基于范围的 for 循环
 

@@ -342,7 +342,7 @@ vector<int> *pv = &vec;  // 合法
 cout << vec[1] << endl;  // 注意与数组的差别
 ```
 
-new 与 vector 定义多维变长数组并初始化
+new 与 vector 定义多维变长数组并初始化，查看[code](./sources/mine/initOfMultidimensionalVector.cpp)
 
 ```C++
 #include <iostream>
@@ -404,8 +404,6 @@ int main()
 	free(pmalloc);
 }
 ```
-
-
 
 ### 逗号表达式
 
@@ -3447,7 +3445,9 @@ for (auto row : ia)
 
 ## std::bind
 
-std::bind可以绑定普通函数，但不能区分重载，也可以绑定类内成员函数。也可以通过占位符方便更换形参。
+`std::bind`可以绑定普通函数，但不能区分重载，也可以绑定类内成员函数。也可以通过占位符方便更换形参。
+
+`std::bind`在默认情况下，是依靠值传递，使用了`std::ref`来包裹传入参数才是使用引用传递。
 
 ```C++
 #include <functional>

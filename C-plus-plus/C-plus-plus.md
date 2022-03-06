@@ -2737,11 +2737,13 @@ double undiscounted = baseP->Quote::net_price(42);
 
 【PRIMER 539】
 
-#### 虚函数是怎么实现的
+#### 虚函数原理
 
 虚函数是通过虚函数表实现的。如果一个类中有一个虚函数，则系统会为这个类分配一个指针成员指向一张虚函数表（vtbl），表中每一项指向一个虚函数地址，虚函数表实际上就是一个函数指针数组。  
 
 [C++虚函数原理](https://blog.csdn.net/weixin_40673608/article/details/88551020)
+
+[C++中的虚函数表实现机制以及用C语言对其进行的模拟实现](https://blog.twofei.com/496/)
 
 #### [虚函数是否可以内联](https://www.yuque.com/huihut/interview/readme#ikirca)
 
@@ -3851,4 +3853,65 @@ cout << f3(4,2) << endl;   // prints 8
 不能直接将重载函数的名字存入`function`类型的对象中，这样做会产生二义性错误。消除二义性的方法是使用`lambda`或者存储函数指针而非函数名字。
 
 C++11新标准库中的`function`类与旧版本中的`unary_function`和`binary_function`没有关系，后两个类已经被`bind`函数代替。
+
+# C++14 新特性
+
+## 函数返回值可以使用`auto`推导
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+auto func(int i) {
+    return i;
+}
+
+int main() {
+    cout << func(4) << endl;
+    return 0;
+}
+```
+
+【注】
+
+- 函数内如果有多个return语句，它们必须返回相同的类型，否则编译失败。
+- 如果return语句返回初始化列表，返回值类型推导也会失败
+- 如果函数是虚函数，不能使用返回值类型推导
+
+## std::make_unique
+
+C++11中有std::make_shared，却没有std::make_unique，在C++14已经改善
+
+```C++
+struct A {};
+std::unique_ptr<A> ptr = std::make_unique<A>();
+```
+
+## std::shared_timed_mutex与std::shared_lock
+
+C++14 通过`std::shared_timed_mutex`和`std::shared_lock`来实现读写锁，保证多个线程可以同时读，但是写线程必须独立运行，写操作不可以同时和读操作一起进行。
+
+例子如下：
+
+```c
+struct ThreadSafe {
+    mutable std::shared_timed_mutex mutex_;
+    int value_;
+
+    ThreadSafe() {
+        value_ = 0;
+    }
+
+    int get() const {
+        std::shared_lock<std::shared_timed_mutex> lock(mutex_);
+        return value_;
+    }
+
+    void increase() {
+        std::unique_lock<std::shared_timed_mutex> lock(mutex_);
+        value_ += 1;
+    }
+};
+```
 

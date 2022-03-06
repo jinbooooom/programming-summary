@@ -1448,7 +1448,7 @@ int main()
 
 ##### 私有继承与组合的不同
 
-- 组合是`has a`关系，如果需要使用一个对象的某些方法，可以用组合，也可以私有继承。选择它们的原则是尽可能使用组合，万不得已才使用继承。继承最大的问题就在于：继承层次过深、继承关系过于复杂会影响到代码的可读性和可维护性（继承了无用或者有害的方法，代码膨胀等，还有，在继承时，基类之间或基类与派生类之间发生成员同名时，将出现对成员访问的不确定性，即同名二义性）。
+- 组合是`has a`关系，如果需要使用一个对象的某些方法，可以用组合，也可以私有继承。**选择它们的原则是尽可能使用组合，万不得已才使用继承。继承最大的问题就在于：继承层次过深、继承关系过于复杂会影响到代码的可读性和可维护性（继承了无用或者有害的方法，代码膨胀等，还有，在继承时，基类之间或基类与派生类之间发生成员同名时，将出现对成员访问的不确定性，即同名二义性）。**
 - 私有继承中派生类能访问基类的protected成员，并且可以重写基类的虚函数，甚至当基类是抽象类的情况。组合不具有这样的功能。
 
 #### **多态**
@@ -1594,11 +1594,11 @@ Person::Person( double name, double age, double job): Name(name), Age(age), Job(
 }
 ```
 
-构造函数不同于类方法，因为它创建新的对象，而其他类对象只是被现有的类调用。这是构造函数不能被继承的原因之一。 继承意味着派生类继承基类的成员函数和成员变量，然而，在构造函数完成其工作之前，对象并不存在。
+**构造函数不同于类方法，因为它创建新的对象，而其他类对象只是被现有的类调用。这是构造函数不能被继承的原因之一。** 继承意味着派生类继承基类的成员函数和成员变量，然而，在构造函数完成其工作之前，对象并不存在。
 
 一定要使用显式析构函数来释放类构造函数使用 new 分配的所有内存，并完成类对象所需的任何特殊的清理工作。对于基类即使它不需要析构函数，也应提供一个虚析构函数。
 
-初始化派生类把基类中所有的成员继承过来，除了构造函数和析构函数。友元函数不属于类，它只是给类开了一个后门，自然不能被继承。子类继承父类，那么默认的，就是继承了父类的成员函数和成员变量。
+**初始化派生类把基类中所有的成员继承过来，除了构造函数和析构函数。友元函数不属于类，它只是给类开了一个后门，自然不能被继承。**子类继承父类，那么默认的，就是继承了父类的成员函数和成员变量。
 
 初始化子类时，会先自动调用父类的构造函数，然后才调用子类的构造函数。
 
@@ -1608,7 +1608,7 @@ Person::Person( double name, double age, double job): Name(name), Age(age), Job(
 
 【PLUS 524，525，527】
 
-不同于其他函数，构造函数不能被声明为`const`。当我们创建类的一个`const`对象时，直到构造函数完成初始化过程，对象才真正取得其常量属性。因此，构造函数在`const`对象的构造过程中可以向其写值。
+**不同于其他函数，构造函数不能被声明为`const`。当我们创建类的一个`const`对象时，直到构造函数完成初始化过程，对象才真正取得其常量属性。因此，构造函数在`const`对象的构造过程中可以向其写值。**
 
 【PRIMER 235】
 
@@ -1661,6 +1661,14 @@ const A* operator&() const;     //取址运算符(const版本)
 （13）operator new
 
 （14）operator delete
+
+#### 不建议重载的运算符
+
+通常情况下，不应该重载逗号、取地址（前面两个已有内置含义）、逻辑与和逻辑或运算符。
+
+即使是重载，也要让它们与内置类型保持一致，否则，它们的行为将异于常态，导致用户无法被适应。
+
+![](assets/C-plus-plus/14-1.png)
 
 #### = default 显示缺省函数
 
@@ -1970,7 +1978,7 @@ destructor, value = 5, this = 0xffb5a520 // c1 析构
 
 （只能使用初始化而不能赋值）【PRIMER 259】
 
-初始化和赋值的区别事关底层效率：前者直接初始化数据成员，后者则先初始化再赋值。
+**初始化和赋值的区别事关底层效率**：前者直接初始化数据成员，后者则先初始化再赋值。
 
 除了效率问题之外，有些时候初始化列表是不可或缺的，以下几种情况时必须使用初始化列表：
 
@@ -1982,7 +1990,7 @@ destructor, value = 5, this = 0xffb5a520 // c1 析构
 
   如果在子类的构造函数中需要初始化父类的 private 成员。直接对其赋值是不行的，只有调用父类的构造函数才能完成对它的初始化。（参考下文代码段例2）
 
-【总结】当类中含有 const 常量、reference 成员变量；基类的构造函数都需要初始化列表。
+【总结】**当类中含有 const 常量、reference 成员变量；基类的构造函数都需要初始化列表。**
 
 ```c++
 // 例1
@@ -2242,7 +2250,7 @@ volatile 关键字是一种类型修饰符，用它声明的类型变量表示�
 
 可以，用const和volatile同时修饰变量，表示这个变量在程序内部是只读的，不能改变的，只在程序外部条件变化下改变，并且编译器不会优化这个变量。每次使用这个变量时，都要小心地去内存读取这个变量的值，而不是去寄存器读取它的备份。
 
-注意：在此一定要注意const的意思，const只是不允许程序中的代码改变某一变量，其在编译期发挥作用，它并没有实际地禁止某段内存的读写特性。
+注意：**在此一定要注意const的意思，const只是不允许程序中的代码改变某一变量，其在编译期发挥作用，它并没有实际地禁止某段内存的读写特性。**
 
 ### explicit
 
@@ -2371,7 +2379,7 @@ int main()
   
 - 修饰函数返回值，说明该返回值不能被修改，且该返回值只能赋值给加 const 修饰的同类型变量
 
-- 修饰类的成员函数，说明在该成员函数内不能修改成员变量。
+- **修饰类的成员函数，说明在该成员函数内不能修改成员变量。**
 
 *默认情况下，`const`对象被设定成仅在文件内有效。当多个文件中出现了同名的`const`变量时，其实等同于在不同文件中分别定义了独立的变量。【PRIMER 54】*
 
@@ -2725,7 +2733,7 @@ double undiscounted = baseP->Quote::net_price(42);
 
 通常情况下，只有成员函数或友元中的代码才需要使用作用域运算符来回避虚函数的动态绑定机制。
 
-如果一个派生类虚函数需要调用它的基类版本，但没有使用作用域运算符，则在运行时该调用会被解析为对派生类版本自身的调用，从而导致无限递归。
+**如果一个派生类虚函数需要调用它的基类版本，但没有使用作用域运算符，则在运行时该调用会被解析为对派生类版本自身的调用，从而导致无限递归。**
 
 【PRIMER 539】
 
@@ -2769,14 +2777,93 @@ delete pe;  // 先调用 ~Singer() 再调用 ~Employee()，
 
 【PLUS 501】
 
+#### 在构造函数和析构函数内调用虚函数
+
+从编程习惯来看，在构造和析构函数中，不要用虚函数。如果必须用，那么分离出一个Init函数和一个close函数，实现相关功能即可。假设在构造函数和析构函数内调用了虚函数，那么：
+
+- 如果有继承，构造函数会先调用父类构造函数，而如果构造函数中有虚函数，此时子类还没有构造，所以此时的对象还是父类的，不会触发多态。更容易记的是基类构造期间，virtual函数不是virtual函数。
+
+- 析构函数也是一样，子类先进行析构，这时，如果有virtual函数的话，子类的内容已经被析构了，执行父类的virtual函数。
+
+- 非构造和析构函数内部，使用父类的指针调用虚函数是调用子类override的实现（前提是子类有重写）。
+
+另一个解释[C++构造函数和析构函数调用虚函数时都不会使用动态联编](https://www.cnblogs.com/bonelee/p/5826196.html)
+
+构造函数和析构函数调用虚函数时都不使用动态联编，如果在构造函数或析构函数中调用虚函数，则运行的是为构造函数或析构函数自身类型定义的版本。
+
+原因分析：
+
+- 不要在构造函数中调用虚函数的原因：因为父类对象会在子类之前进行构造，此时子类部分的数据成员还未初始化， 因此调用子类的虚函数是不安全的，故而C++不会进行动态联编。
+- 不要在析构函数中调用虚函数的原因：析构函数是用来销毁一个对象的，在销毁一个对象时，先调用子类的析构函数，然后再调用基类的析构函数。所以在调用基类的析构函数时，派生类对象的数据成员已经“销毁”，这个时再调用子类的虚函数已经没有意义了。
+
+示例如下：
+
+```C++
+#include <memory>
+#include <iostream>
+
+class A
+{
+
+public:
+    A() { f1(); }
+    virtual ~A() { f2(); }
+
+    virtual void f1() { std::cout << __PRETTY_FUNCTION__ << std::endl; }
+    virtual void f2() { std::cout << __PRETTY_FUNCTION__ << std::endl; }
+
+};
+
+class B : public A
+{
+public:
+    B() : A() { f1(); }
+    virtual ~B() { f2(); };
+
+#if 1  // 【１】
+    virtual void f1() override { std::cout << __PRETTY_FUNCTION__ << std::endl;}
+    virtual void f2() override { std::cout << __PRETTY_FUNCTION__ << std::endl; }
+#endif
+};
+
+int main()
+{
+    A *b = new B(); // 在执行 A 的构造和析构时，是执行 A 自己的虚函数，即使子类 B 已经重写了父类虚函数
+
+    b->f1(); // 多态
+
+    delete b;
+    return 0;
+}
+
+/*
+$ g++ t.cpp -o main 
+$ ./main 
+virtual void A::f1()
+virtual void B::f1()
+virtual void B::f1()
+virtual void B::f2()
+virtual void A::f2()
+
+### 如果关闭【1】处的宏，则只打印父类的虚函数 
+$ g++ t.cpp -o main 
+$ ./main 
+virtual void A::f1()
+virtual void A::f1()
+virtual void A::f1()
+virtual void A::f2()
+virtual void A::f2()
+*/
+```
+
 #### 有关虚函数的注意事项
 
-- 构造函数不能是虚函数。先构造父类对象，然后才能是子类对象，如果构造函数设为虚函数，那么当你在构造父类的构造函数时就不得不显式的调用构造，还有一个原因就是为了防错，试想如果你在子类中一不小心重写了个跟父类构造函数一样的函数，那么你的父类的构造函数将被覆盖，即不能完成父类的构造，就会出错。 
+- **构造函数不能是虚函数。**先构造父类对象，然后才能是子类对象，如果构造函数设为虚函数，那么当你在构造父类的构造函数时就不得不显式的调用构造，还有一个原因就是为了防错，试想如果你在子类中一不小心重写了个跟父类构造函数一样的函数，那么你的父类的构造函数将被覆盖，即不能完成父类的构造，就会出错。 
 - 析构函数应当是虚函数，除非类不用做基类。即使类不用作基类，通常应给基类提供一个虚析构函数
 - 友元不能是虚函数，因为友元不是类成员，只有类成员才能是虚函数
 - 如果派生类没有重新定义函数，将使用该函数的基类版本。如果派生类位于派生链中，则将使用最新的虚函数版本
 - 如果派生类重新定义函数，将隐藏同名基类方法，这不同于重载
-- 模板函数不能是虚函数。因为，类会在`vtbl`中存放类中的所有的虚函数的函数指针，而一个模板函数如果设计为虚函数是无法获悉这个模板函数会被实例化为哪些具体的函数。
+- **模板函数不能是虚函数。**因为，类会在`vtbl`中存放类中的所有的虚函数的函数指针，而一个模板函数如果设计为虚函数是无法获悉这个模板函数会被实例化为哪些具体的函数。
 
 【PLUS 503，504】
 
@@ -2987,8 +3074,6 @@ Person sleep
 3. 任何成员对象的构造按照它们声明的顺序构造，而不是在初始化列表中的顺序；
 4. 类自身的构造函数；
 
-
-
 ### 右值引用
 
 右值引用就是必须绑定到右值的引用。可以通过`&&`来获得右值引用。
@@ -3187,7 +3272,7 @@ int foo = *p;   // undefined; the memory to which p points was freed
 
 ### shared_ptr是否线程安全
 
-`std::shared_ptr`的引用计数本身是安全且无锁的，但对象的读写则不是。也就是说`std::shared_ptr`对象的创建析构是线程安全的，但是多线程读写`std::shared_ptr`对象不是线程安全的。`std::shared_ptr` 内存是由于两个组成部分： 指向管理对象的指针 和 引用计数器。在读/写时，是直接对两个变量操作，不可能是原子类型的。因为 `std::shared_ptr` 有两个数据成员，读写操作不能原子化。使得多线程读写同一个 std::shared_ptr 对象需要加锁。
+`std::shared_ptr`的引用计数本身是安全且无锁的，但对象的读写则不是。也就是说`std::shared_ptr`对象的创建析构是线程安全的，但是多线程读写`std::shared_ptr`对象不是线程安全的。`std::shared_ptr` 内存是由于两个组成部分： 指向管理对象的指针 和 引用计数器。在读/写时，是直接对两个变量操作，不可能是原子类型的。因为 `std::shared_ptr` 有两个数据成员，读写操作不能原子化。**使得多线程读写同一个 std::shared_ptr 对象需要加锁**。
 
 ### unique_ptr
 
@@ -3399,151 +3484,12 @@ enable_shared_from_this 函数原型
  `enable_shared_from_this`的子类需要返回自身的`std::shared_ptr`指针，那么就需要继承这个类。 
 
 成员变量为什么是`weak_ptr`类型  
-
 因为如果是`std::shared_ptr`类型，那么就永远无法析构对象自身。   
 
   这个`_M_weak_this`不是这个类中初始化，而是在`shared_ptr`中初始化，初始化的值就是`this`。因此如果智能指针类型是`std::shared_ptr`，那么这个类对象一旦创建，引用计数就是1，那么永远也无法析构。
 
 为什么不直接传回`this`  
-
 `std::shared_ptr`的引用计数增加是需要用`operator=`实现的。
-
-### 基于引用计数的智能指针实现
-
-源码在[./sources/mine/SmartPtr.cpp](./sources/mine/SmartPtr.cpp)
-
-```C++
-#include <iostream>
-
-#define showfunc std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-template <class T>
-class SmartPtr
-{
-private:
-    T *mPtr;
-    size_t *mRef;
-
-public:
-    SmartPtr(T *p = 0);
-    SmartPtr(const SmartPtr &src); // 加上 explicit 可以拒绝隐式拷贝构造
-    SmartPtr &operator=(const SmartPtr &rhs);
-    T *operator->() const;
-    T &operator*() const;
-    ~SmartPtr();
-
-private:
-    void decRef(); //只会被其它成员函数所调用
-
-public: // for debug
-    int get_ref_count() const;
-};
-
-template <class T>
-SmartPtr<T>::SmartPtr(T *p)
-    : mPtr(p),            // mPtr 指向 p 所指向的内存
-      mRef(new size_t(1)) // 引用计数初始化为 1
-{
-    showfunc;
-}
-
-template <class T>
-SmartPtr<T>::SmartPtr(const SmartPtr &src)
-{
-    showfunc;
-    mPtr = src.mPtr;
-    mRef = src.mRef;
-    ++*mRef;
-}
-
-template <class T>
-SmartPtr<T> &SmartPtr<T>::operator=(const SmartPtr<T> &rhs)
-{
-    showfunc;
-    ++*rhs.mRef;
-    decRef();
-    mPtr = rhs.mPtr;
-    mRef = rhs.mRef;
-    return *this;
-}
-
-template <class T>
-T *SmartPtr<T>::operator->() const
-{
-    showfunc;
-    if (mPtr)
-    {
-        return mPtr;
-    }
-    throw std::runtime_error("dereference of nullptr pointer");
-}
-
-template <class T>
-T &SmartPtr<T>::operator*() const
-{
-    showfunc;
-    if (mPtr)
-    {
-        return *mPtr;
-    }
-    throw std::runtime_error("dereference of nullptr pointer");
-}
-
-template <class T>
-SmartPtr<T>::~SmartPtr()
-{
-    showfunc;
-    decRef();
-}
-
-template <class T>
-void SmartPtr<T>::decRef() //只会被其它成员函数所调用
-{
-    std::cout << "after call decRef(): *mPtr = " << *mPtr << ", *mRef = " << *mRef - 1 << std::endl;
-    if (0 == --*mRef) // 引用计数先自减，为 0 后，释放内存
-    {
-        delete mPtr;
-        delete mRef;
-        std::cout << "real delete" << std::endl;
-    }
-}
-
-template <class T>
-int SmartPtr<T>::get_ref_count() const
-{
-    return *mRef;
-}
-
-int main()
-{
-    SmartPtr<int> p1(new int(999));
-    SmartPtr<int> p2(new int(888));
-    SmartPtr<int> p3(p1);
-    p2 = p3;               // 拷贝赋值运算符
-    SmartPtr<int> p4 = p2; // 隐式拷贝构造
-}
-
-/*
-SmartPtr<T>::SmartPtr(T*) [with T = int]
-SmartPtr<T>::SmartPtr(T*) [with T = int]
-SmartPtr<T>::SmartPtr(const SmartPtr<T>&) [with T = int]
-SmartPtr<T>& SmartPtr<T>::operator=(const SmartPtr<T>&) [with T = int]
-after call decRef(): *mPtr = 888, *mRef = 0
-real delete
-SmartPtr<T>::SmartPtr(const SmartPtr<T>&) [with T = int]
-SmartPtr<T>::~SmartPtr() [with T = int]
-after call decRef(): *mPtr = 999, *mRef = 3
-SmartPtr<T>::~SmartPtr() [with T = int]
-after call decRef(): *mPtr = 999, *mRef = 2
-SmartPtr<T>::~SmartPtr() [with T = int]
-after call decRef(): *mPtr = 999, *mRef = 1
-SmartPtr<T>::~SmartPtr() [with T = int]
-after call decRef(): *mPtr = 999, *mRef = 0
-real delete
-*/
-```
-
-
 
 ## 基于范围的 for 循环
 

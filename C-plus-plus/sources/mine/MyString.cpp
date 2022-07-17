@@ -103,6 +103,7 @@ MyString::~MyString()
     if (mStr)
     {
         free(mStr);
+        mStr = nullptr;
     }
 }
 

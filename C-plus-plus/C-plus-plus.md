@@ -145,7 +145,7 @@ int main(int argc, char* argv[])//这里使用char* argv[]
 int main(int argc, char** argv)//这里使用char **argv
 ```
 
-int argc：表示字符串的数量，操作系统会自动根据第二个参数传入数字，程序员不用管，只需要正确使用即可。若用户输入N个字符串，那么argc= N + 1；因为 argv[0] 为程序的路径。  
+int argc：表示字符串的数量，操作系统会自动根据第二个参数传入数字，程序员不用管，只需要正确使用即可。若用户输入N个参数，那么argc= N + 1；因为 argv[0] 为程序的路径。  
 
 char* argv[]：字符串数组，即多个字符串。为用户输入的一系列字符串，字符串之间以空格间隔，形式为：str1 str2 str3
 在linux下，若存在可执行文件a.out，则运行该程序命令为：
@@ -2636,6 +2636,8 @@ cast-name<type>(expression)
 
   因为类中存在虚函数，说明它可能有子类，这样才有类型转换的情况发生，由于运行时类型检查需要运行时类型信息，而这个信息存储在类的虚函数表中，只有定义了虚函数的类才有虚函数表。 
 
+  [static_cast和dynamic_cast](https://zhuanlan.zhihu.com/p/489998070)
+
 - reinterpret_cast(重解释)
 
   几乎什么都可以转，比如将 int 转指针，可能会出问题，尽量少用； 
@@ -3087,7 +3089,7 @@ int i = 42;			// ok：i 是左值
 int &r = i;         // ok：r 是左值引用
 int &&rr = i;       // error: 不能将一个右值引用绑定到左值上
 int &r2 = i * 42;   // error: i * 42 是右值，而 r2 是左值引用
-const int &r3 = i * 42;    // ok: 可以绑定一个 const 左值引用到右值
+const int &r3 = i * 42;    // ok: 可以绑定一个 const 左值引用到右值，可以见下文的实例函数 void show1(const int &a)
 int &&rr2 = i * 42;        // ok: 将右值引用 rr2 绑定到右值上
 ```
 
@@ -3103,6 +3105,33 @@ int &&rr4 = rr1 * 1;
 rr1 = 5;
 cout << "rr1 =" << rr1 << "   rr3 = " << rr3 << "   rr4 = " << rr4 << endl;
 // 打印: rr1 =5   rr3 = 5   rr4 = 42
+```
+
+```C++
+#include <iostream>
+
+void show1(const int &a)
+{
+    //a = 3; // 不可修改
+    std::cout << a << std::endl;
+}
+
+void show2(int &&a)
+{
+    a = 3; // 可修改，形参必须右值引用
+    std::cout << a << std::endl;
+}
+
+int main()
+{
+    int b = 5;
+    // 下面两次调用都是针对临时值，而不是变量，可以观察到 const 左值引用与右值引用的区别
+    show1(9);
+    show2(9);
+    std::cout << b << std::endl;
+
+    return 0;
+}
 ```
 
 调用`move`函数可以获得绑定在左值上的右值引用，此函数定义在头文件*utility*中。

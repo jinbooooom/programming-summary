@@ -16,7 +16,7 @@
 
 - 关注点分离：将相关的代码放在一起，并将无关的代码分离，使程序易于理解和测试。如带有用户界面的密集处理型应用程序，可以将UI处理与数据处理分离。
 
-- 性能：有两种方式为了 性能使用并发，任务并行和 数据并行。
+- 性能：有两种方式为了 性能使用并发，任务并行和数据并行。
 	- 任务并行：将单个任务分成几部分且各自并行运行，从而降低总运行时间。一个线程执行算法的一部分，另一个线程执行算法的另一部分。
 	- 数据并行：每个线程在不同的数据部分执行同样的操作。一个线程执行数据的一部分，另一个线程执行数据的另一部分。
 
@@ -159,7 +159,7 @@ void f()
         t.join(); // 处理异常前先 join()
         throw;    // 再将异常抛出
     }
-    t.join(); // 之前抛了异常就不会执行到该处
+    t.join(); // catch里再次抛了异常就不会执行到该处
 }
 ```
 
@@ -342,6 +342,7 @@ thread(const thread&) = delete;
 thread& operator=(const thread&) = delete;
 
 // 对于移动赋值运算符，如果之前的对象是 joinable()，就会调用std::terminate()。所以不能转移所有权到 joinable 的线程
+// 可以这样理解：之前的对象是 joinable()，说明是正在运行的，现在又将一个正在运行的线程，强行赋给当前这个正在运行的线程，自然有问题，所以要调用 std::terminate()。
 thread& operator=(thread&& __t)
 {
     if (joinable())
@@ -363,15 +364,15 @@ int main()
 {
     std::thread a{f};
     std::thread b = std::move(a);
-    assert(!a.joinable()); // thread a 不是 joinable
+    assert(!a.joinable()); // 将 a move 到 b，thread a 不是 joinable
     assert(b.joinable());  // thread b 是 joinable
-    a = std::thread{g};
+    a = std::thread{g}; // 
     assert(a.joinable());
     assert(b.joinable());
     // 错误，不能转移所有权到 joinable 的线程,a已经有了一个相关联的线程（运行着g()）），所以会调用std::terminate()来终止程序。
     // a = std::move(b); //【1】 
     a.join();
-    a = std::move(b);
+    a = std::move(b); // 此时 a 运行已结束，它不是 joinable()
     assert(a.joinable());
     assert(!b.joinable());
     a.join();
@@ -465,7 +466,7 @@ int main()
 void g(const int &id) { std::cout << id << std::endl; } // 加了 const
 int a = 3;
 g(a);
-g(std::move(a)); // 如果函数 g() 形参不加 const 就会报错
+g(std::move(a)); // std::move返回的是右值引用，如果函数 g() 形参不加 const 就会报错
 */
 ```
 
@@ -551,7 +552,7 @@ int main() {
 }
 ```
 
-C++17 提供了的 [std::scoped_lock](https://en.cppreference.com/w/cpp/thread/scoped_lock)，**它可以接受任意数量的 mutex，并将这些 mutex 传给 [std::lock](https://en.cppreference.com/w/cpp/thread/lock) 来同时上锁，它会对其中一个 mutex 调用 lock()，对其他调用 try_lock()，若 try_lock() 返回 false 则对已经上锁的 mutex 调用 unlock()，然后重新进行下一轮上锁，**标准未规定下一轮的上锁顺序，可能不一致，重复此过程直到所有 mutex 上锁，从而达到同时上锁的效果。C++17 支持类模板实参推断，可以省略模板参数
+C++17 提供了的 [std::scoped_lock](https://en.cppreference.com/w/cpp/thread/scoped_lock)，**它可以接受任意数量的 mutex，并将这些 mutex 传给 [std::lock](https://en.cppreference.com/w/cpp/thread/lock) 来同时上锁，它会对其中一个 mutex 调用 lock()，对其他调用 try_lock()，若 try_lock() 返回 false 则对已经上锁的 mutex 调用 unlock()，然后重新进行下一轮上锁，**标准未规定下一轮的上锁顺序，可能不一致，重复此过程直到所有 mutex 上锁，**从而达到同时上锁的效果**。C++17 支持类模板实参推断，可以省略模板参数
 
 ```cpp
 #include <iostream>
@@ -644,6 +645,49 @@ s.pop(res);
 * **第三种**方案是返回指向弹出元素的指针，指针可以自由拷贝且不会抛异常，[std::shared_ptr](https://en.cppreference.com/w/cpp/memory/shared_ptr) 是个不错的选择，但这个方案的开销太大，尤其是对于内置类型来说，比如 int 为 4 字节， `shared_ptr<int>` 为 16 字节，开销是原来的 4 倍
 * **第四种**方案是结合方案一二或者一三，比如结合方案一三实现一个线程安全的 stack
 
+### [std::scoped_lock可以预防死锁](https://zhuanlan.zhihu.com/p/461530638)
+
+对单个mutex上锁很简单，但是如何对多个mutex上锁呢？ c++17提供了std::scoped_lock可以对多个不同类型的mutex进行Scoped Locking。
+
+ABBA死锁与std::scoped_lock的预防死锁策略
+
+对多个mutex上锁可能会出现死锁，最常见的例子是**ABBA死锁**。假设存在两个线程（线程1和线程2）和两个锁（锁A和锁B），这两个线程的执行情况如下：
+
+| 线程1       | 线程2       |
+| ----------- | ----------- |
+| 获得锁A     | 获得锁B     |
+| 尝试获得锁B | 尝试获得锁A |
+| 等待获得锁B | 等待获得锁A |
+| ......      | ......      |
+
+线程1在等待线程2持有的锁B，线程2在等待线程1持有的锁A，两个线程都不会释放其获得的锁; 因此，两个锁都不可用，将陷入死锁。
+
+解决死锁最终都要打破资源依赖的循环，一般来说有两种思路：
+
+1. 预防死锁：预防就是想办法不让线程进入死锁
+2. 检测死锁和从死锁中恢复：如果预防死锁的代价比较高，而死锁出现的几率比较小，不如就先让其自由发展，在这个过程中提供一个检测手段来检查是否已经出现死锁，当检查出死锁之后就想办法破坏死锁存在的必要条件，让线程从死锁中恢复过来。
+
+阅读std::scoped_lock源码可以知道，其采用了和std::lock相同的死锁预防算法来对多个mutex上锁。
+
+std::scoped_lock的预防死锁策略很简单，假设要对n个mutex（mutex1, mutex2, ...,  mutexn）上锁，那么每次只尝试对一个mutex上锁，只要上锁失败就立即释放获得的所有锁（方便让其他线程获得锁），然后重新开始上锁，处于一个循环当中，直到对n个mutex都上锁成功。这种策略基本上是有效的，虽然有极小的概率出现“**活锁**”，例如上面的ABBA死锁中，线程1释放锁A的同一时刻时线程2又释放了锁B，然后这两个线程又同时分别获得了锁A和锁B，如此循环。
+
+C++17 最优的同时上锁方法是使用 [std::scoped_lock](https://en.cppreference.com/w/cpp/thread/scoped_lock)
+
+### [unique_lock 与 shared_lock](https://blog.csdn.net/duan19920101/article/details/121436712)
+
+Boost库提供了share_mutex类，结合unique_lock与shared_lock的使用，可以实现[读写锁](https://so.csdn.net/so/search?q=读写锁&spm=1001.2101.3001.7020)
+
+```C++
+typedef boost::shared_lock<boost::shared_mutex> read_lock;
+typedef boost::unique_lock<boost::shared_mutex> write_lock;
+```
+
+shared_lock是read lock。被锁后仍允许其他线程执行同样被shared_lock的代码。这是一般做读操作时的需要。
+
+共享锁，也叫[多线程](https://so.csdn.net/so/search?q=多线程&spm=1001.2101.3001.7020)锁，当data被线程A读取时，仍允许其它线程读取data，但是不能写入。nique_lock是write lock。被锁后不允许其他线程执行被shared_lock或unique_lock的代码。在写操作时，一般用这个，可以同时限制unique_lock的写和share_lock的读。
+
+独占锁，也叫单线程锁，仅允许单个线程访问，该线程访问结束后，其它线程才可以访问，避免输入写入冲突。即，当data被线程A写入时，其它线程既不能读取，也不能写入。
+
 ### safe stack
 
 ```cpp
@@ -729,7 +773,7 @@ std::defer_lock的意思就是并没有给mutex加锁：初始化了一个没有
 
 我们会尝试用mutex的lock()去锁定mutex，但如果没有锁定成功，也会立即返回，并不会阻塞。用try_to_lock()的前提是不能先lock()。
 
-### std::try_lock与std::unique_lock::try_lock()
+### std::try_lock与std::unique_lock
 
 **std::unique_lock里的成员try_lock()**
 
@@ -747,10 +791,20 @@ try_lock 尝试锁定每个给定的[*可锁定* *(Lockable)* ](https://www.apir
 
 成功时为 `-1` ，否则为锁定失败对象的 `0` 底下标值。
 
+这一点与std::scoped_lock很像，预防死锁。但std::try_lock锁定失败了就不会再次调用std::try_lock。std::scoped_lock只要上锁失败就立即释放获得的所有锁（方便让其他线程获得锁），然后重新开始上锁，处于一个循环当中，直到对n个mutex都上锁成功。
+
+C++17 最优的同时上锁方法是使用 [std::scoped_lock](https://en.cppreference.com/w/cpp/thread/scoped_lock)
+
 ## 死锁
 
 * **死锁的四个必要条件：互斥、占有且等待、不可抢占、循环等待**
 * 避免死锁通常建议让两个 mutex 以相同顺序上锁，总是先锁 A 再锁 B，但这并不适用所有情况。[std::lock](https://en.cppreference.com/w/cpp/thread/lock) 可以同时对多个 mutex 上锁，并且没有死锁风险，它可能抛异常，此时就不会上锁，因此**要么都锁住，要么都不锁**
+
+### 活锁与死锁的区别？
+
+活锁指的是 **任务或者执行者没有被阻塞，由于某些条件没有满足，导致一直重复尝试，失败，尝试，失败**。 活锁和死锁的区别在于，处于活锁的实体是在不断的改变状态，所谓的“活”， 而处于死锁的实体表现为等待；**活锁有可能自行解开，死锁则不能**。
+
+活锁应该是一系列进程在轮询地等待某个不可能为真的条件为真。活锁的时候进程是不会blocked，这会导致耗尽CPU资源。
 
 ```cpp
 #include <mutex>
@@ -836,7 +890,7 @@ void process_file_data() {
 
 - 第一个建议是避免锁嵌套，一个线程已经获取一个锁时就不要获取第二个。如果每个线程只有一个锁，锁上就不会产生死锁（但除了互斥锁，其他方面也可能造成死锁，比如即使无锁，线程间相互等待也可能造成死锁）
 
-- 第二个建议是，持有锁时避免调用用户提供的代码。用户提供的代码可能做任何时，包括获取锁，如果持有锁时调用用户代码获取锁，就会违反第一个建议，并造成死锁。但有时调用用户代码是无法避免的
+- 第二个建议是，持有锁时避免调用用户提供的代码。用户提供的代码可能做任何事，包括获取锁，如果持有锁时调用用户代码获取锁，就会违反第一个建议，并造成死锁。但有时调用用户代码是无法避免的。
 - 第三个建议是，按固定顺序获取锁。如果必须获取多个锁且不能用 [std::lock](https://en.cppreference.com/w/cpp/thread/lock) 同时获取，最好在每个线程上用固定顺序获取。上面的例子虽然是按固定顺序获取锁，但如果不同时加锁就会出现死锁，对于这种情况的建议是规定固定的调用顺序
 - 第四个建议是使用层级锁，如果一个锁被低层持有，就不允许在高层再上锁
 
@@ -1083,7 +1137,7 @@ int main() {
 
 ## C++ 多线程中的几种锁
 
-线程之间的锁有：**互斥锁、条件锁、自旋锁、读写锁、递归锁**。一般而言，锁的功能与性能成反比。我们一般不使用递归锁（C++标准库提供了std::recursive_mutex）
+线程之间的锁有：**互斥锁、条件锁(条件变量)、自旋锁、读写锁、递归锁**。一般而言，锁的功能与性能成反比。我们一般不使用递归锁（C++标准库提供了std::recursive_mutex）
 
 前面的锁都有介绍，这里主要介绍自旋锁
 
@@ -1229,7 +1283,7 @@ int main() {
 }  // 打印 122
 ```
 
-static 局部变量在声明后就完成了初始化，这存在潜在的 race condition，如果多线程的控制流同时到达 static 局部变量的声明处，即使变量已在一个线程中初始化，其他线程并不知晓，仍会对其尝试初始化。为此，C++11 规定，如果 static 局部变量正在初始化，线程到达此处时，将等待其完成，从而避免了 race condition。只有一个全局实例时，可以直接用 static 而不需要 [std::call_once](https://en.cppreference.com/w/cpp/thread/call_once)
+static 局部变量在声明后就完成了初始化，这存在潜在的 race condition，如果多线程的控制流同时到达 static 局部变量的声明处，即使变量已在一个线程中初始化，其他线程并不知晓，仍会对其尝试初始化。为此，C++11 规定，如果 static 局部变量正在初始化，线程到达此处时，将等待其完成，从而避免了 race condition。只有一个全局实例时，可以直接用 static 而不需要[std::call_once](https://en.cppreference.com/w/cpp/thread/call_once)
 
 ```cpp
 template <typename T>

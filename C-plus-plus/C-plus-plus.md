@@ -1370,7 +1370,7 @@ catch (exception-declaration)
 } // . . .
 ```
 
-例子参考C语言中文网的[链接](http://c.biancheng.net/cpp/biancheng/view/3026.html)
+例子参考[try_catch.cpp](./sources/mine/try_catch.cpp)或者C语言中文网的[链接](http://c.biancheng.net/cpp/biancheng/view/3026.html)
 
 `try`语句块中的*program-statements*组成程序的正常逻辑，其内部声明的变量在块外无法访问，即使在`catch`子句中也不行。`catch`子句包含关键字`catch`、括号内一个对象的声明（异常声明，exception declaration）和一个块。当选中了某个`catch`子句处理异常后，执行与之对应的块。`catch`一旦完成，程序会跳过剩余的所有`catch`子句，继续执行后面的语句。
 
@@ -3990,3 +3990,10 @@ struct ThreadSafe {
 };
 ```
 
+# 杂项
+
+## std::this_thread::sleep_for和直接使用sleep有什么区别
+
+C函数sleep(),usleep()和Sleep()是平台特定的而不是C++标准库的一部分。
+
+而this_thread::sleep_for是平台无关的，在windows和linux上都可以这么写，具体链接的函数交给STL负责就是。

@@ -96,8 +96,12 @@ vector动态增加大小时，并不是在原空间后增加新的空间，而�
 如果需要空间动态缩小，可以考虑使用deque。如果vector，可以用swap()来帮助你释放内存。
 
 ```C++
- vector(Vec).swap(Vec); //将Vec的内存清除；
- vector().swap(Vec); //清空Vec的内存；
+template <class T>
+void ClearVector(vector<T>& vt) 
+{
+    vector<T> vtTemp;  // 空的vector
+    veTemp.swap(vt); // 将vt 与 空的vector vtTemp交换，就析构了 vt
+}
 ```
 
 ## vector 与 list 区别
@@ -191,7 +195,7 @@ hash_map, hash_set, hash_multimap, and hash_multiset 采用哈希表实现，不
 
 ### STL 关联容器底层实现总结
 
-**有序关联容器**底层实现为红黑树，增删改查时间复杂度O(n)。
+**有序关联容器**底层实现为红黑树，增删改查时间复杂度O(logn)。
 
 set，multiset，map，multimap。
 

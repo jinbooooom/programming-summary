@@ -803,46 +803,106 @@ cout << sizeof(A) << endl;
 
 #### sizeof 计算类对象与结构体、联合体所占空间的大小
 
-在 32 位操作系统上，占用空间 char:1，short:2, int:4，long:4
+[内存对齐 #program pack()](https://blog.csdn.net/sweetfather/article/details/79771288)
+
+在 32 位操作系统上，占用空间 int:4, long:4, long long:8, double:8, float:4
+
+在 64 位操作系统上，占用空间 int:4, long:8, long long:8, double:8, float:4
+
+编译32位程序要加-m32选项
+
+```shell
+g++ t.cpp  -o t -std=c++14  -m32
+```
+
+如果提示如下错误
+
+```shell
+In file included from t.cpp:3:
+/usr/include/stdio.h:27:10: fatal error: bits/libc-header-start.h: 没有那个文件或目录
+ #include <bits/libc-header-start.h>
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+```
+
+则需要安装
+
+```shell
+sudo apt-get install g++-multilib
+sudo apt-get install gcc-multilib
+```
+
+测试程序如下：
 
 ```C++
-class A				// 1
+#include <iostream>
+#include <thread>
+
+// 以下运行皆在 64 位系统上，区别在于设置的内存对齐方式不同
+#pragma pack(4)
+//#pragma pack(8)
+
+class A // 1
 {
 public:
-	char ch;
+    char ch;
 };
 
-class B				// 4 + 2 + 填充2 = 8
+// 4 字节对齐：4 + 8 + 2 + 填充2 = 16
+// 8 字节对齐：4 + 填充4 + 8 + 2 + 填充6 = 24
+class B
 {
 public:
-	int i;
-	short j;
+    int i;
+    long k;
+    short j;
 };
 
-class C				// 4 + 2 + 1 + 1 = 8
+// 4 字节对齐：4 + 2 + 1 + 填充1 = 8
+// 8 字节对齐：4 + 2 + 1 + 填充1 = 8
+class C
 {
 public:
     int i;
     short j;
     char c1;
-    char c2;
 };
 
-class D				// 1 + 填充3 + 4 + 1 + 填充1 + 2 = 12
+// 4 字节对齐：1 + 填充3 + 4 + 1 + 填充1 + 2 + 8 = 20
+// 8 字节对齐：1 + 填充3 + 4 + 1 + 填充1 + 2 + 填充4 + 8 = 24
+class D
 {
 public:
     char c1;
     int i;
     char c2;
     short j;
+    long k;
 };
-// 【注意】类 C，D 的区别在于变量定义的顺序不一样
-D d;
-printf("%x, %x, %x, %x, %x\n", &d, &d.c1, &d.i, &d.c2, &d.j);
-// 输出：12ffed4, 12ffed4, 12ffed8, 12ffedc, 12ffede
+
+// 4 字节对齐：4 + 8 + 1 + 1 + 2 = 16
+// 8 字节对齐：4 + 填充4 + 8 + 1 + 1 + 2 + 填充4 = 24
+class E
+{
+public:
+    int i;
+    long k;
+    char c1;
+    char c2;
+    short j;
+};
+
+int main()
+{
+    // 【注意】类 C，D 的区别在于变量定义的顺序不一样
+    E e;
+    printf("int:%d, long:%d, long long:%d, double:%d, float:%d\n", sizeof(int), sizeof(long), sizeof(long long), sizeof(double), sizeof(float));
+    printf("%d, %d, %d, %d, %d\n", sizeof(A), sizeof(B), sizeof(C), sizeof(D), sizeof(E));
+    printf("%x, %x, %x, %x, %x, %x\n", &e, &e.i, &e.k, &e.c1, &e.c2, &e.j);
+}
 ```
 
 ```C++
+// 内存对齐方式为4
 // 注意 S1 与 S2 也就是成员变量定义时顺序不一样而已
 struct S1			// 4 + 1 + 1 + 填充2 = 8
 {
@@ -864,6 +924,7 @@ printf("%x, %x, %x, %x\n", &s2, &s2.c1, &s2.a1, &s2.c2);
 ```
 
 ```C++
+// 内存对齐方式为4
 union u1			// 8
 {
 	double a;

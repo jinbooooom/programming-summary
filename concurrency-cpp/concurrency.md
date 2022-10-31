@@ -1032,6 +1032,14 @@ int main()
 
 ### 读写锁（reader-writer mutex）
 
+读写锁是写独占，读共享，若有一个线程正在写，占了写锁，其他线程写锁读锁都拿不到。
+ 读写锁高2字节保存读锁，低2字节保存写锁。
+
+1 、如果一个线程用读锁锁定了临界区，那么其他线程也可以用读锁来进入临界区，这样可以有多个线程并行操作。但是一旦加了读锁，写锁就加不了了。而且获取到读锁，还是可以修改被保护的变量的。
+ 2、一个线程先要写操作，获取写锁必须读锁和写锁都未被占用才可以成功加写锁。因此如果读线程很多，一直占用读锁，读锁的计数值很大，写锁很久都获取不到，导致写锁饥饿。
+
+为了解决写锁饥饿，如果要获取写锁（读锁计数不为0，需要等待所有读锁释放 ），为了防止其他线程不断获取读锁，如果要获取写锁阻塞了，那么读锁也获取不到。简而言之就是如果写锁获取不到，读锁也不能获取
+
 * 有时会希望对一个数据上锁时，根据情况，对某些操作相当于不上锁，可以并发访问，对某些操作保持上锁，同时最多只允许一个线程访问。比如对于需要经常访问但很少更新的缓存数据，用 [std::mutex](https://en.cppreference.com/w/cpp/thread/mutex) 加锁会导致同时最多只有一个线程可以读数据，这就需要用上读写锁，读写锁允许多个线程并发读但仅一个线程写
 * C++14 提供了 [std::shared_timed_mutex](https://en.cppreference.com/w/cpp/thread/shared_timed_mutex)，C++17 提供了接口更少性能更高的 [std::shared_mutex](https://en.cppreference.com/w/cpp/thread/shared_mutex)，如果多个线程调用 shared_mutex.lock_shared()，多个线程可以同时读，如果此时有一个写线程调用 shared_mutex.lock()，则读线程均会等待该写线程调用 shared_mutex.unlock()。C++11 没有提供读写锁，可使用 [boost::shared_mutex](https://www.boost.org/doc/libs/1_78_0/doc/html/thread/synchronization.html#thread.synchronization.mutex_types.shared_mutex)
 * C++14 提供了 [std::shared_lock](https://en.cppreference.com/w/cpp/thread/shared_lock)，它在构造时接受一个 mutex，并会调用 mutex.lock_shared()，析构时会调用 mutex.unlock_shared()

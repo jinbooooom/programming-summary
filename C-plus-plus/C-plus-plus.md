@@ -4058,3 +4058,39 @@ struct ThreadSafe {
 C函数sleep(),usleep()和Sleep()是平台特定的而不是C++标准库的一部分。
 
 而this_thread::sleep_for是平台无关的，在windows和linux上都可以这么写，具体链接的函数交给STL负责就是。
+
+## [likely和unlikely](https://zhuanlan.zhihu.com/p/357434227)
+
+在一些明确的场景下，我们应该比CPU和编译器更了解哪个分支条件更有可能被满足。使用`likely`和`unlikely`，可以将这一先验知识告知编译器和CPU, 提高分支预测的准确率，从而减少CPU流水线分支预测错误带来的性能损失。
+
+在Linux内核代码中，这两个宏的应用比比皆是。定义：
+
+```C++
+#define likely(x) __builtin_expect(!!(x), 1) 
+#define unlikely(x) __builtin_expect(!!(x), 0)
+```
+
+`likely`，用于修饰`if/else if`分支，表示该分支的条件更有可能被满足。而`unlikely`与之相反。以下为示例。`unlikely`修饰`nullptr == buf`分支，表示该分支不太可能被满足。
+
+```C++
+#include <cstdio>
+
+#define likely(x)       __builtin_expect(!!(x), 1)
+#define unlikely(x)     __builtin_expect(!!(x), 0)
+
+int process(char *buf, size_t size)
+{
+    if (unlikely(nullptr == buf)) { // buf 为空指针的分支不太可能被满足
+        error_process();
+        return -1;
+    } else
+    {
+        do_process();
+    }
+    return 0;
+}
+```
+
+**likely/unlikely的适用条件**
+
+CPU有自带的分支预测器，在大多数场景下效果不错。因此在分支发生概率严重倾斜、追求极致性能的场景下，使用`likely/unlikely`才具有较大意义。

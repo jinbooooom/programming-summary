@@ -4094,3 +4094,58 @@ int process(char *buf, size_t size)
 **likely/unlikely的适用条件**
 
 CPU有自带的分支预测器，在大多数场景下效果不错。因此在分支发生概率严重倾斜、追求极致性能的场景下，使用`likely/unlikely`才具有较大意义。
+
+## \__attribute__
+
+更多可以参考[\__attribute__ 机制详解](https://blog.csdn.net/weaiken/article/details/88085360)，下面列举一些遇到的
+
+### \__attribute__((unused))
+
+```C
+// 如果定义了一个静态函数，而没有去使用，则会有警告，而使用attribute((unused))可以告诉编译器忽略此告警：
+__attribute__((unused)) static void a(void)
+{
+    printf("a\n");
+}
+```
+
+### \__attribute__ ((__packed__))
+
+不想要字节对齐的时候，可以在结构体声明当中，加上\__attribute__ ((__packed__))关键字，让结构体按照紧凑排列的方式，占用内存。
+
+```C++
+#include <stdio.h>
+#include <iostream>
+ 
+using namespace std;
+ 
+struct test1 {
+    char c;
+    int i;
+};
+ 
+struct __attribute__ ((__packed__)) test2 {
+    char c;
+    int i;
+};
+ 
+int main()
+{
+    cout << "size of test1:" << sizeof(struct test1) << endl;
+    cout << "size of test2:" << sizeof(struct test2) << endl;
+}
+/*
+运行结果：
+size of test1:8
+size of test2:5
+*/
+```
+
+显而易见，test1结构体里面没有加关键字，它采用了4字节对齐的方式，即使是一个char变量，也占用了4字节内存，int占用4字节，共占用了8字节内存，这在64位机器当中将会更大。
+而test2结构体，在加上关键字之后，结构体内的变量采用内存紧凑的方式排列，char类型占用1字节，int占用4字节，总共占用了5个字节的内存。
+
+### [\__**attribute**__((aligned(n)))](https://www.cnblogs.com/kendoziyu/p/16551501.html)
+
+`n`的有效参数为**2的幂值**，32位最大为232,64位为 264，这个时候编译器会将让`n`与默认的对齐字节数进行比较，取较大值为对齐字节数，与`#pragma pack(n)`恰好相反。
+
+它的作用是让整个结构体变量整体进行n字节对齐（注意是结构体变量**整体**n字节对齐，而不是结构体内各数据成员也要n字节对齐。

@@ -10,6 +10,7 @@ tmp
 #src
 *.out
 main
+toc_*.md
 
 
 

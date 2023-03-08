@@ -8,6 +8,19 @@ parser = OptionParser()
 parser.add_option('-f', '--file', type = str, default = './readme.md', help='markdown file path')
 parser.add_option('-p', '--prefix', type = str, default = '', help='link prefix')
 
+def githubUrl(url):
+    # 将空格替换为 "-"
+    url = url.replace(" ", "-")
+
+    # 删除掉 specialChars 中的字符，不对 '-' 做任何操作
+    englishSpecialChars = r'\/"<>@#$%^&*()+,.!:;`='
+    chineseSpecialChars = r'，。、！（）？“”：；|'
+    specialChars = englishSpecialChars + chineseSpecialChars
+    for specialChar in specialChars:
+        url = url.replace(specialChar, '')
+
+    return url
+
 if __name__ == "__main__":
     (options, args) = parser.parse_args()
     (options, args) = parser.parse_args(sys.argv)  
@@ -16,7 +29,8 @@ if __name__ == "__main__":
     filePath, fileName = os.path.split(options.file)
     saveTocName = "toc_" + fileName
     saveTocPath = os.path.join(filePath, saveTocName)
-    # https://github.com/jinbooooom/programming-summary/blob/master/C-plus-plus/C-plus-plus.md#
+    # https://github.com/jinbooooom/programming-summary/blob/master/C-plus-plus/C-plus-plus.md
+    # https://github.com/jinbooooom/programming-summary/blob/master/concurrency-cpp/concurrency.md
     linkPrefix = options.prefix
     
     skip = 0
@@ -41,7 +55,7 @@ if __name__ == "__main__":
                 title_from = level
                 title_end = level
                 # 去掉末尾的换行和回车
-                while readLine[title_end] not in "<\r\n":
+                while readLine[title_end] not in "\r\n":
                     title_end += 1
                 title = readLine[title_from : title_end]
                 # 去掉左右空格
@@ -54,6 +68,7 @@ if __name__ == "__main__":
                 # 将空格替换为%20 
                 #url = title.replace(' ' , '%20')
                 url = title
+                url = githubUrl(url)  
 
                 blank_str = ""
                 sign_str = "#"

@@ -3629,6 +3629,44 @@ enable_shared_from_this 函数原型
 为什么不直接传回`this`  
 `std::shared_ptr`的引用计数增加是需要用`operator=`实现的。
 
+### 使用 std::shared_ptr管理buffer或者数组
+
+```C++
+class O
+{
+  public:
+    O() : mValue(0){};
+    ~O() { printf("call ~O(), mValue = %d\n", mValue); };
+
+    int mValue;
+};
+
+int main()
+{
+    int bufferSize = 10;
+    auto pData     = std::shared_ptr<uint8_t>(new uint8_t[bufferSize], [](uint8_t *ptr) {
+        std::cout << "delete[] buffer pData" << std::endl;
+        delete[] ptr;
+    });
+
+    auto sp = std::shared_ptr<O>(new O[5], [](O *ptr) { delete[] ptr; });
+    O *p    = sp.get();
+    for (int i = 0; i < 5; ++i)
+    {
+        (p + i)->mValue = i;
+    }
+
+}  
+/*
+call ~O(), mValue = 4
+call ~O(), mValue = 3
+call ~O(), mValue = 2
+call ~O(), mValue = 1
+call ~O(), mValue = 0
+delete[] buffer pData
+*/
+```
+
 ## 基于范围的 for 循环
 
 ```C++

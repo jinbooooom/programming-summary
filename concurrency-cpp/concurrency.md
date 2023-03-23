@@ -1495,6 +1495,60 @@ thread 0
 
 所以，线程阻塞在`condition_variable`时，它是等待`notify_one()`或者`notify_all()`来唤醒，而不是等待**锁可以被锁定**来唤醒。
 
+### 超时等待wait_for
+
+```C++
+#include <chrono>              // std::chrono::seconds
+#include <condition_variable>  // std::condition_variable, std::cv_status
+#include <iostream>            // std::cout
+#include <mutex>               // std::mutex, std::unique_lock
+#include <thread>              // std::thread
+
+std::mutex mtx;
+std::condition_variable cv;
+static int count = 0;
+
+void th_notify()
+{
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+    cv.notify_one();
+    std::cout << "end th_notify" << std::endl;
+}
+
+int main()
+{
+    std::thread th{th_notify};
+
+    std::unique_lock<std::mutex> lck(mtx);
+    std::cout << "main thread id = " << std::this_thread::get_id() << std::endl;
+    // wait 最后一个参数是条件，调用 wait_for 的时候，
+    // 首先就会判断这个条件，如果这个条件返回 false，那么会继续等待，
+    // 如果在超时之前，收到了一个notify 那么会再次判断这个条件，条件不满足会继续等待
+    // 到超时的时候再次判断这个条件，如果条件不满足就不会再进行等待
+    cv.wait_for(lck, std::chrono::seconds(10), [] {
+        std::cout << "execute wait_for " << ++count << " times" << std::endl;
+        return false;  // 假设 wait 条件永远达不到
+    });
+    std::cout << "end wait, count = " << count << std::endl;
+
+    if (th.joinable())
+    {
+        th.join();
+    }
+
+    return 0;
+}
+
+/**
+main thread id = 140231054804800
+execute wait_for 1 times
+end th_notify
+execute wait_for 2 times
+execute wait_for 3 times
+end wait, count = 3
+*/
+```
+
 ### [std::condition_variable_any](https://en.cppreference.com/w/cpp/thread/condition_variable_any)
 
 [std::condition_variable](https://en.cppreference.com/w/cpp/thread/condition_variable) 只能与 [std::unique_lock](https://en.cppreference.com/w/cpp/thread/unique_lock) 协作，为此标准库提供了更通用的 [std::condition_variable_any](https://en.cppreference.com/w/cpp/thread/condition_variable_any)

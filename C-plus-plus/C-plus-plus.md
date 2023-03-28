@@ -132,6 +132,8 @@ endl 除了写 '\n' 之外，还调用 flush 函数，刷新缓冲区，把缓�
 
 cout 流速度较慢，如果速度过慢可以用 <stdio.h> 库中的 printf() 格式化输出函数，不需要 `using namespace std;`。但注意 printf() 中不能使用 endl。printf 是函数。cout是ostream对象，和 << 配合使用。如果 printf 碰到不认识的类型就没办法了，而cout可以重载进行扩展。
 
+***cout 不是线程安全的，printf 是线程安全的，所以多线程程序，一般都用 printf。***
+
 #### main函数与命令行参数
 
 一个程序的main()函数可以包括两个参数

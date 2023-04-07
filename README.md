@@ -1,3 +1,7 @@
+[![Stargazers repo roster for @jinbooooom/programming-summary](https://reporoster.com/stars/jinbooooom/programming-summary)](https://github.com/jinbooooom/programming-summary/stargazers)
+
+[![Forkers repo roster for @jinbooooom/programming-summary](https://reporoster.com/forks/jinbooooom/programming-summary)](https://github.com/jinbooooom/programming-summary/network/members)
+
 ## 个人编程语言学习时的笔记整理，主要用来查漏补缺
 
 其实看的书也不少，也做过一些小工具。但没有及时记录下来，然后几个月也不用，很多就忘了。  

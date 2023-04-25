@@ -917,6 +917,61 @@ thread_local 一般用于需要保证线程安全的函数中。
 
 需要注意的一点是，**如果类的成员函数内定义了 thread_local 变量，则对于同一个线程内的该类的多个对象都会共享一个变量实例，并且只会在第一次执行这个成员函数时初始化这个变量实例，这一点是跟类的静态成员变量类似的**。
 
+声明于块作用域且带有`static`或`thread_local`(C++11 起)说明符的变量拥有静态或线程(C++11 起)存储期，但在控制首次经过其声明时才会被初始化（除非其初始化是[零初始化](https://link.zhihu.com/?target=https%3A//zh.cppreference.com/w/cpp/language/zero_initialization)或[常量初始化](https://link.zhihu.com/?target=https%3A//zh.cppreference.com/w/cpp/language/constant_initialization)，这可以在首次进入块前进行）。在其后所有的调用中，声明均被跳过。除了main外，另外四个线程的控制流没有经过这个变量的声明，因此只分配了空间而没有初始化。
+
+```C++
+class O
+{
+public:
+    O(int v = 0) : mValue(v)
+    {
+        printf("call O(), mValue = %d\n", mValue);
+    };
+    ~O()
+    {
+        printf("call ~O(), mValue = %d\n", mValue);
+    };
+
+    int mValue;
+};
+
+int main()
+{
+    const int n = 4;
+    std::vector<std::thread> works(n);
+    thread_local O o(-1);
+    printf("main: %p\n", &o);
+
+    auto work = [&](int v) {
+        o.mValue = v;
+        printf("thread %d: %p\n", o.mValue, &o);
+        sleep(1);
+    };
+
+    for (int i = 0; i < n; ++i) {
+        works[i] = std::move(std::thread{work, i});
+    }
+
+    for (int i = 0; i < n; ++i) {
+        works[i].join();
+    }
+}
+
+/**
+call O(), mValue = -1
+main: 0x7fca46387730
+thread 0: 0x7fca463866f0
+thread 1: 0x7fca45b856f0
+thread 2: 0x7fca453846f0
+thread 3: 0x7fca44b836f0
+call ~O(), mValue = -1
+
+O 被构造一次，但在每个线程中的地址却是不同的
+ */
+```
+
+
+
 ##### 层级锁实现如下
 
 ```cpp

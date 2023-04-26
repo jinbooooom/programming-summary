@@ -128,6 +128,12 @@ void ClearVector(vector<T>& vt)
 - 如果只在容易的首部和尾部插入数据元素，则选择deque. 
 - 如果只需要在读取输入时在容器的中间位置插入元素，然后需要随机访问元素，则可考虑输入时将元素读入到一个list容器，接着对此容器重新排序，使其适合顺序访问，然后将排序后的list容器复制到一个vector容器中。
 
+### [vector 中的 push_back 和 emplace_back 的区别](https://blog.csdn.net/bureau123/article/details/123417471)
+
+两者只有参数得区别，push_back参数为左值引用和右值引用，而emplace_back是一个参数包_Valty&&…，你可以向这个参数包传构造对象的参数，然后emplace_back函数里通过参数来直接构造对象，从而少了一次构造，效率更高。
+
+可以参考这个链接：https://blog.csdn.net/bureau123/article/details/123417471
+
 ## map 与 hash_map 区别
 
 - 底层数据结构不同：map 是红黑树（查找时间复杂度log(n)），hash_map 是哈希表（查找时间复杂度O(1)）

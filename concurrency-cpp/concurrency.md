@@ -519,6 +519,59 @@ void f() {
 }
 ```
 
+std::this_thread::get_id() 的输出与C语言中的函数pthread_self()的输出是相同的，都是进程中分配的线程号
+
+### getpid()、pthread_self()、syscall(SYS_gettid)的区别
+
+`getpid()`得到的是进程的pid，在内核中，每个线程都有自己的pid，要得到线程的pid，必须用`syscall(SYS_gettid)`;
+
+`pthread_self()`函数获取的是线程ID，线程ID在某进程中是唯一的，在不同的进程中创建的线程可能出现ID值相同的情况。
+
+注意：在`main()`函数中，`getpid()`进程号就是`syscall(SYS_gettid)`，线程ID在子线程里就不是`syscall(SYS_gettid)`了。
+
+```C++
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
+void work()
+{
+    printf("%s(), line = %d, getpid() = %d, thread id = %lu, SYS_gettid = %ld\n", __FUNCTION__, __LINE__, getpid(), pthread_self(), syscall(SYS_gettid));
+}
+
+int main()
+{
+    // printf("%lu\n", std::this_thread::get_id()); // 打印的结果与下面的 std::cout 是一样的
+    std::cout << "main() std::this_thread::get_id() = " << std::this_thread::get_id() << ", "
+              << "pthread_self() = " << pthread_self() << std::endl;
+    printf("%s(), line = %d, getpid() = %d, thread id = %lu, SYS_gettid = %ld\n", __FUNCTION__, __LINE__, getpid(), pthread_self(), syscall(SYS_gettid));
+
+    std::vector<std::thread> vecThreads;
+    for (int i = 0; i < 3; ++i)
+    {
+        vecThreads.push_back(std::move(std::thread{work}));
+    }
+
+    for (int i = 0; i < vecThreads.size(); ++i)
+    {
+        vecThreads[i].join();
+    }
+
+    return 0;
+}
+/**
+main() std::this_thread::get_id() = 140486186439616, pthread_self() = 140486186439616
+main(), line = 20, getpid() = 2524, thread id = 140486186439616, SYS_gettid = 2524
+work(), line = 11, getpid() = 2524, thread id = 140486186305088, SYS_gettid = 2525
+work(), line = 11, getpid() = 2524, thread id = 140486177850944, SYS_gettid = 2526
+work(), line = 11, getpid() = 2524, thread id = 140486098486848, SYS_gettid = 2527
+*/
+```
+
 # 在线程间共享数据
 
 ## 线程间共享数据存在的问题
@@ -2299,4 +2352,98 @@ std::list<T> f(std::list<T> v) {
 协程是一种可以被挂起和恢复的函数，C++ 20 规定，具有co_await、co_return、co_yield 3个关键字中的任意一个的函数就是协程。
 
 main 函数不能为协程。
+
+一个简单的例子如下：[链接](/src/coroutine.cpp)
+
+```shell
+#include <stdio.h>
+#include <chrono>
+#include <future>
+#include <coroutine>
+
+using namespace std::chrono_literals;
+
+/**
+ * C++20 中，用户应手动启用 std::future<T> 作为协程类型，不然会报错：
+ * error: unable to find the promise type for this coroutine
+   54 |     auto fut = co_await std::async(foo); // 挂起点
+*/
+template <>
+struct std::coroutine_traits<std::future<int>>
+{
+    struct promise_type : std::promise<int>
+    {
+        std::future<int> get_return_object() { return this->get_future(); }
+        std::suspend_never initial_suspend() noexcept { return {}; }
+        std::suspend_never final_suspend() noexcept { return {}; }
+        void return_value(int value) { this->set_value(value); }
+        void unhandled_exception()
+        {
+            this->set_exception(std::current_exception());
+        }
+    };
+};
+
+auto operator co_await(std::future<int> future)
+{
+    struct awaiter : std::future<int>
+    {
+        bool await_ready() { return false; } // suspend always
+        void await_suspend(std::coroutine_handle<> handle)
+        {
+            std::thread([this, handle]()
+                        {
+        this->wait();
+        handle.resume(); })
+                .detach();
+        }
+        int await_resume() { return this->get(); }
+    };
+    return awaiter{std::move(future)};
+}
+
+int foo()
+{
+    printf("call foo()\n"); // 4
+    std::this_thread::sleep_for(3s);
+    printf("after call foo()\n"); // 6
+    return 42;
+}
+
+std::future<int> bar()
+{
+    printf("call bar()\n");  // 2
+    printf("before foo()\n"); // 3
+    auto fut = co_await std::async(foo); // 挂起点
+    printf("after foo()\n"); // 7
+    co_return fut;
+}
+
+int main()
+{
+    printf("before bar()\n");  // 1
+    auto futfut = bar();
+    printf("after bar()\n"); // 5  (这里，打印 4 和 5 的顺序是可以交换的)
+    futfut.wait();
+    printf("result = %d\n", futfut.get());
+
+    return 0;
+}
+
+/***
+ * 
+jinbo@fang:~/gitme/programming-summary/concurrency-cpp/src$ g++ coroutine.cpp -std=c++2a -pthread
+jinbo@fang:~/gitme/programming-summary/concurrency-cpp/src$ ./a.out 
+before bar()
+call bar()
+before foo()
+call foo()
+after bar()
+after call foo()
+after foo()
+result = 42
+*/
+```
+
+
 

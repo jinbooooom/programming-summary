@@ -4225,6 +4225,48 @@ int main()
 }
 ```
 
+## \#error
+
+`#error` 是一种预编译器指示字，用于生成一个编译错误消息 。
+
+用法：`#error [message]`，message为用户自定义的错误提示信息，可缺省。
+
+`#error` 编译指示字用于自定义程序员特有的编译错误消息。类似的，`#warning` 用于生成编译警告消息。`#error` 可用于提示编译条件是否满足。编译过程中的任何错误意味着无法生成最终的可执行程序。
+
+```C++
+// t.c 注意是以.c作为后缀而不是cpp，不然使用gcc与g++编译都是一个效果。
+// gcc和g++有点区别，后缀名为.c和.cpp的文件，g++都会当成C++，而gcc会把.c的当成c源程序，把.cpp当做cpp源程序
+
+#define SIZE 103
+#if SIZE < 0 || SIZE > 100
+#warning SIZE should be between 1 and 100.
+#endif
+
+#ifndef __cplusplus
+#error Not compiled with g++!
+#endif
+
+int main()
+{
+    return 0;
+}
+
+/*
+$ gcc t.c
+t.c:82:2: warning: #warning SIZE should be between 1 and 100. [-Wcpp]
+   82 | #warning SIZE should be between 1 and 100.
+      |  ^~~~~~~
+t.c:86:2: error: #error Not compiled with g++!
+   86 | #error Not compiled with g++!
+      |  ^~~~~
+
+
+    $ g++ t.c
+t.c:82:2: warning: #warning SIZE should be between 1 and 100. [-Wcpp]
+   82 | #warning SIZE should be between 1 and 100.
+   */
+```
+
 
 
 

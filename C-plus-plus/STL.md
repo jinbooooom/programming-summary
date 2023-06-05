@@ -506,3 +506,36 @@ sort(vec, vec + 9, comp); //使用 comp，按自己的规则降序排列
 - [STL·语雀](https://www.yuque.com/huihut/interview/stl_document)
 - [C++/boost数据结构](https://zhuanlan.zhihu.com/p/73000084)
 
+### 使用std::pair作为std::unordered_map的key
+
+在使用std::unordered_map时，有时需要用pair作为key，但是会报错。std::unordered_map中没有针对pair的hash函数，需要手动传入一个hash函数。在声明std::unordered_map变量时把这个hash函数传进去即可。示例如下：
+
+```C++
+#include <iostream>
+#include <string>
+#include <unordered_map>
+
+struct hash_pair {
+    template <class T1, class T2>
+    size_t operator()(const std::pair<T1, T2> &p) const
+    {
+        auto hash1 = std::hash<T1>{}(p.first);
+        auto hash2 = std::hash<T2>{}(p.second);
+        //printf("hash1: %lx, hash2: %lx \n", hash1, hash2);
+        return hash1 ^ hash2;
+    }
+};
+
+int main()
+{
+    std::unordered_map<std::pair<std::string, std::string>, int, hash_pair> umap;
+    auto k = std::pair<std::string, std::string>("a1", "a2");
+    umap[k] = 1;
+    printf("umap[k] = %d\n", umap[k]);
+
+    return 0;
+}
+```
+
+
+

@@ -1898,6 +1898,20 @@ enum class launch { // names for launch options passed to async
 std::async([] {}); // 等价于 std::async(std::launch::async | std::launch::deferred, [] {})
 ```
 
+对于是异步执行还是同步执行，由第一个参数的执行策略决定：
+
+std::launch::async 传递的可调用对象异步执行；
+
+std::launch::deferred 传递的可调用对象同步执行；
+
+std::launch::async | std::launch::deferred 可以异步或是同步，取决于操作系统，我们无法控制；如果我们不指定策略，则相当于std::launch::async | std::launch::deferred。
+
+对于执行结果：
+
+我们可以使用get、wait、wait_for、wait_until等待执行结束，区别是get可以获得执行的结果。如果选择异步执行策略，调用get时，如果异步执行没有结束，get会阻塞当前调用线程，直到异步执行结束并获得结果，如果异步执行已经结束，不等待获取执行结果；如果选择同步执行策略，只有当调用get函数时，同步调用才真正执行，这也被称为函数调用被延迟。
+
+参考[C++中的std::async()详解](https://zhuanlan.zhihu.com/p/349193932)
+
 ### std::packaged_task
 
 还可以用 [std::packaged_task](https://en.cppreference.com/w/cpp/thread/packaged_task) 封装异步任务，它可以用于在两个线程之间传递任务，比如一个线程将异步任务加入队列，另一个线程不断从队列中取任务执行

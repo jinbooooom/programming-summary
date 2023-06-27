@@ -4091,6 +4091,95 @@ struct ThreadSafe {
 };
 ```
 
+## deprecated
+
+用来表示一个名字或者实体不再推荐使用或者已经弃用，通常已经有了更好的方法来代替这个名字或者实体，只不过为了兼容之前的老代码可能还要保留原来这个名字或者实体。
+
+在C++中deprecated有两种语法格式，一种不需要加字符字面值，一种需要加字符字面值，形式如下：
+```shell
+ [[deprecated]]
+ [[deprecated(字符字面值)]]
+```
+
+指示允许使用声明有此属性的名称或实体，但因故不鼓励使用。编译器通常会对其使用情况发出警告。若指定了 字符字面量，则它通常被包含于警告中。
+
+下列名字或实体的声明中允许使用这个属性：
+
+- [class/struct/union](https://www.apiref.com/cpp-zh/cpp/language/classes.html)：struct [[deprecated]] S;，
+- [typedef 名](https://www.apiref.com/cpp-zh/cpp/language/typedef.html)，也包括[别名声明](https://www.apiref.com/cpp-zh/cpp/language/type_alias.html)：[[deprecated]] typedef S* PS;、using PS [[deprecated]] = S*;，
+- 变量，包括[静态数据成员](https://www.apiref.com/cpp-zh/cpp/language/static.html)：[[deprecated]] int x;，
+- [非静态数据成员](https://www.apiref.com/cpp-zh/cpp/language/data_members.html)：union U { [[deprecated]] int n; };，
+- [函数](https://www.apiref.com/cpp-zh/cpp/language/function.html)：[[deprecated]] void f();，
+- [命名空间](https://www.apiref.com/cpp-zh/cpp/language/namespace.html)：namespace [[deprecated]] NS { int x; }，
+- [枚举](https://www.apiref.com/cpp-zh/cpp/language/enum.html)：enum [[deprecated]] E {};，
+- 枚举项：enum { A [[deprecated]], B [[deprecated]] = 42 };，
+- [模板特化](https://www.apiref.com/cpp-zh/cpp/language/template_specialization.html)：template<> struct [[deprecated]] X<int> {};。
+
+声明时未弃用的名字可被重声明为 `deprecated`。声明为 `deprecated` 的名字不能通过重声明它而不带此属性变为未弃用。
+
+以修饰函数为例，代码如下：
+
+```C++
+[[deprecated("Use fun() instead.")]] void fun1()
+{
+    std::clog << "call fun2()\n";
+}
+
+[[deprecated]] void fun2()
+{
+    std::clog << "call fun1()\n";
+}
+
+void fun()
+{
+    std::clog << "call fun()\n";
+}
+
+int main()
+{
+    fun1();
+    fun2();
+    fun();
+
+    return 0;
+}
+```
+
+编译和输出：
+
+```shell
+$ g++ t.cpp 
+t.cpp: In function ‘int main()’:
+t.cpp:65:10: warning: ‘void fun1()’ is deprecated: Use fun() instead. [-Wdeprecated-declarations]
+   65 |     fun1();
+      |          ^
+t.cpp:48:43: note: declared here
+   48 | [[deprecated("Use fun() instead.")]] void fun1()
+      |                                           ^~~~
+t.cpp:65:10: warning: ‘void fun1()’ is deprecated: Use fun() instead. [-Wdeprecated-declarations]
+   65 |     fun1();
+      |          ^
+t.cpp:48:43: note: declared here
+   48 | [[deprecated("Use fun() instead.")]] void fun1()
+      |                                           ^~~~
+t.cpp:66:10: warning: ‘void fun2()’ is deprecated [-Wdeprecated-declarations]
+   66 |     fun2();
+      |          ^
+t.cpp:53:21: note: declared here
+   53 | [[deprecated]] void fun2()
+      |                     ^~~~
+t.cpp:66:10: warning: ‘void fun2()’ is deprecated [-Wdeprecated-declarations]
+   66 |     fun2();
+      |          ^
+t.cpp:53:21: note: declared here
+   53 | [[deprecated]] void fun2()
+      |                     ^~~~
+$ ./a.out 
+call fun2()
+call fun1()
+call fun()
+```
+
 # 杂项
 
 ## std::this_thread::sleep_for和直接使用sleep有什么区别

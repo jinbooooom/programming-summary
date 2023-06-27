@@ -4030,6 +4030,63 @@ cout << f3(4,2) << endl;   // prints 8
 
 C++11新标准库中的`function`类与旧版本中的`unary_function`和`binary_function`没有关系，后两个类已经被`bind`函数代替。
 
+## 尾置返回类型
+
+用于函数返回类型的自动推导，一般用于**返回类型比较复杂**，或者需要**通过模板参数（亦或其它表达式）来推导返回类型**的情况，通常会结合 **decltype** 一起使用，本质上算是一种语法糖，在函数定义的**参数列表右侧添加 ->ReturnType** 来**代表函数返回类型**，将**通常放置函数返回类型的地方使用 auto 代替**。
+
+语法格式：
+
+```cpp
+auto FuncName(ArgsList) -> ReturnType { }
+```
+
+使用示例：
+
+```cpp
+// 结合decltype，依据模板参数推导返回类型 
+template<typename ArgType1, typename ArgType2>
+auto Func1(ArgType1& a, ArgType2& b) -> decltype(a + b) 
+{ 
+    return (a + b);
+}
+
+// 在C++14中可省略箭头返回值部分，直接将函数返回类型设置为auto 
+template<typename ArgType1, typename ArgType2>
+auto Func2(ArgType1& a, ArgType2& b)
+{ 
+    return (a + b);
+}
+
+// 也可以直接将返回类型定义为 decltype(auto) 
+template<typename ArgType1, typename ArgType2>
+decltype(auto) Func3(ArgType1& a, ArgType2& b)
+{
+    return (a + b);
+}
+```
+
+**特别注意：**对于 Func1、Func2 和 Func3 的**函数定义是等价的**，当它们都是相同函数名时相当于定义了多个相同的重载函数，但是这种等价的定义在**不使用时不会导致编译报错**，而在实际**调用**中，会因为对**重载函数的不明确调用**而导致编译报错。
+
+**补充：**将尾置返回类型放在参数列表后面，是因为C++函数的**返回类型是前置定义**，在前置定义中，此时还未定义参数列表，所以如果要通过参数来推导返回类型就必须将推导的表达式放在参数列表后面，C++14虽然可以省略类型推导表达式，但仍然不能在前置定义的返回类型中依据参数推导返回类型：
+
+```cpp
+// 编译报错，找不到 a 和 b 的定义 
+template<typename ArgType1, typename ArgType2>
+decltype(a + b) Func4(ArgType1& a, ArgType2& b)
+{
+    return (a + b);
+}
+
+// 需要注意的是上述代码不代表 decltype 不能用于函数前置声明，如：
+vector<int> VEC;
+template<typename ArgType1, typename ArgType2>
+decltype(VEC) Func5(ArgType1 a, ArgType2 b)
+{
+    vector<int> arr{a, b};
+    return arr;
+}
+```
+
 # C++14 新特性
 
 ## 函数返回值可以使用`auto`推导

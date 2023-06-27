@@ -4413,7 +4413,7 @@ t.c:82:2: warning: #warning SIZE should be between 1 and 100. [-Wcpp]
    */
 ```
 
+## C/C++ 内置宏
 
-
-
+参考[C/C++ 宏定义 __FILE__、__LINE__、__func__、__TIME__ 等](C/C++ 宏定义 __FILE__、__LINE__、__func__、__TIME__ 等)
 

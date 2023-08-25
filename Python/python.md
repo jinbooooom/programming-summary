@@ -831,6 +831,42 @@ f(4) # 16
 
 不能直接访问\_\_x是因为Python解释器对外把\_\_x变量改成了\_ClassName\_\_x，所以，仍然可以通过\_ClassName\_\_x来访问\_\_x 变量。  
 
+### \_\_repr\_\_()
+
+在Python中，`__repr__()`是一个特殊的内置方法（也称为魔术方法），用于定义类的实例的字符串表示形式。它返回一个字符串，该字符串描述了对象的可打印表示。
+
+当你使用`print()`函数或在交互式环境中直接输入对象时，会调用`__repr__()`方法来获取对象的字符串表示形式。
+
+以下是`__repr__()`方法的基本语法：
+
+```python
+def __repr__(self):
+    return "字符串表示"
+```
+
+在上述示例中，`self`是指当前实例对象的引用。您可以根据需要在方法体中编写适当的代码来生成所需的字符串。
+
+例如，假设我们有一个名为`Person`的类，它具有`name`和`age`属性，并且我们想要自定义它的字符串表示形式。我们可以使用`__repr__()`方法如下定义：
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def __repr__(self):
+        return f"Person(name='{self.name}', age={self.age})"
+```
+
+当我们创建一个`Person`对象并打印它时，`__repr__()`方法将被调用来获取对象的字符串表示形式：
+
+```python
+person = Person("Alice", 25)
+print(person)  # 输出：Person(name='Alice', age=25)
+```
+
+通过定义`__repr__()`方法，我们可以自定义类的实例在打印时的可读性和信息展示。
+
 
 ## 推荐/参考链接
 - python 学习手册第五版
@@ -839,7 +875,6 @@ f(4) # 16
 - [Python工程师面试必备25条Python知识点](https://zhuanlan.zhihu.com/p/32818342)
 - [常见面试题整理--Python概念篇](https://zhuanlan.zhihu.com/p/23526961)
 - [110道Python面试题（真题）](https://zhuanlan.zhihu.com/p/54430650)
-
 
 
 

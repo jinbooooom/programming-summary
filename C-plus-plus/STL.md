@@ -89,6 +89,41 @@ vector动态增加大小时，并不是在原空间后增加新的空间，而�
 
 [C++ STL中vector内存用尽后，为啥每次是两倍的增长，而不是3倍或其他数值？](https://www.zhihu.com/question/36538542/answer/67929747)
 
+## 使用 vector时需要注意的一些坑
+
+### 迭代器失效：扩容、插入以及删除元素都会导致迭代器失效
+
+```C++
+int main()
+{
+    const size_t size = 9;
+    std::vector<int> vec;
+
+    logd("vec.data() = %p, vec.size() = %lu, vec.capacity() = %lu", vec.data(), vec.size(), vec.capacity());
+    for (int i = 0; i < size; ++i)
+    {
+        vec.emplace_back(i);
+        logd("vec.data() = %p, vec.size() = %lu, vec.capacity() = %lu", vec.data(), vec.size(), vec.capacity());
+    }
+
+    return 0;
+}
+/*
+ 15:57:57.180957 D [xiaobai.cpp:main:16] vec.data() = (nil), vec.size() = 0, vec.capacity() = 0 
+ 15:57:57.181225 D [xiaobai.cpp:main:20] vec.data() = 0x7ffff4d4a460, vec.size() = 1, vec.capacity() = 1 
+ 15:57:57.181257 D [xiaobai.cpp:main:20] vec.data() = 0x7ffff4d4a480, vec.size() = 2, vec.capacity() = 2 
+ 15:57:57.181281 D [xiaobai.cpp:main:20] vec.data() = 0x7ffff4d4a460, vec.size() = 3, vec.capacity() = 4 
+ 15:57:57.181301 D [xiaobai.cpp:main:20] vec.data() = 0x7ffff4d4a460, vec.size() = 4, vec.capacity() = 4 
+ 15:57:57.181323 D [xiaobai.cpp:main:20] vec.data() = 0x7ffff4d4a4a0, vec.size() = 5, vec.capacity() = 8 
+ 15:57:57.181345 D [xiaobai.cpp:main:20] vec.data() = 0x7ffff4d4a4a0, vec.size() = 6, vec.capacity() = 8 
+ 15:57:57.181365 D [xiaobai.cpp:main:20] vec.data() = 0x7ffff4d4a4a0, vec.size() = 7, vec.capacity() = 8 
+ 15:57:57.181385 D [xiaobai.cpp:main:20] vec.data() = 0x7ffff4d4a4a0, vec.size() = 8, vec.capacity() = 8 
+ 15:57:57.181406 D [xiaobai.cpp:main:20] vec.data() = 0x7ffff4d4a4d0, vec.size() = 9, vec.capacity() = 16  
+*/
+```
+
+### 带有容器的结构体不要使用 memset 清 0
+
 ## vector如何释放空间
 
 由于vector的内存占用空间只增不减，比如你首先分配了10,000个字节，然后erase掉后面9,999个，留下一个有效元素，但是内存占用仍为10,000个。所有内存空间是在vector析构时候才能被系统回收。empty()用来检测容器是否为空的，clear()可以清空所有元素。但是即使clear()，vector所占用的内存空间依然如故，无法保证内存的回收。

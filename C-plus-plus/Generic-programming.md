@@ -113,3 +113,58 @@ cosnt vector<string> cs_vec;
 vector<string>::cosnt_iterator iter = cs_vec.begin();
 ```
 【ESC 67-75】
+
+### decltype 和 std::declval
+
+`decltype`是C++11中引入的一个关键字，用于获取表达式或变量的类型。它的语法形式为`decltype(expression)`，其中`expression`是一个合法的C++表达式。
+
+`std::declval`是一个模板函数，定义在`<utility>`头文件中，用于产生一种临时的、可以作为右值使用的引用。它的主要用途是在不可复制或不可移动的类型上进行声明类型推导。通常与`decltype`结合使用。
+
+```c++
+#include <iostream>
+#include <utility>
+
+struct Foo {
+    int x;
+    double y;
+};
+
+int main() {
+    decltype(Foo().x) a;  // a的类型为int
+    decltype(std::declval<Foo>().y) b;  // b的类型为double
+
+    std::cout << typeid(a).name() << std::endl;  // 打印int的类型名
+    std::cout << typeid(b).name() << std::endl;  // 打印double的类型名
+
+    return 0;
+}
+
+```
+
+在上述示例中，我们使用了`decltype`来推导变量`a`和`b`的类型。`decltype(Foo().x)`将返回`int`，因为`Foo().x`是一个`int`类型。而`decltype(std::declval<Foo>().y)`将返回`double`，因为`std::declval<Foo>().y`是一个`double`类型。
+
+
+
+对`using ResultType = decltype(std::declval<FunctionType>()());` 的理解：
+
+这行代码用于推导函数类型 `FunctionType` 的返回值类型，并将其定义为 `ResultType`。
+
+让我们逐步解释这行代码的含义：
+
+1. `std::declval<FunctionType>()`：`std::declval` 是一个模板函数，用于产生一个右值引用。在这里，我们使用 `std::declval` 来生成一个类型为 `FunctionType` 的临时对象（右值）。
+2. `decltype(std::declval<FunctionType>())`：`decltype` 关键字会推导并返回括号中表达式的类型。在这里，我们使用 `decltype` 推导 `std::declval<FunctionType>()` 表达式的类型，即函数类型 `FunctionType`。
+3. `decltype(std::declval<FunctionType>()())`：由于 `std::declval<FunctionType>()` 代表一个函数，我们通过加上额外的一对空括号 `()` 来调用该函数，并推导出调用结果的类型。
+4. `using ResultType = decltype(std::declval<FunctionType>()());`：最后，使用 `using` 关键字定义别名 `ResultType` 并将 `decltype` 推导得到的函数调用结果类型赋值给它。
+
+
+
+对`using RetType = decltype(f(args...));` 的理解：
+
+这行代码用于推导函数调用 `f(args...)` 的返回类型，并将其定义为 `RetType`。
+
+让我们逐步解释这行代码的含义：
+
+1. `f(args...)`：这是一个函数调用表达式，其中 `f` 是一个函数名，`args` 是函数调用的参数。
+2. `decltype(f(args...))`：`decltype` 关键字会根据括号中的表达式推导并返回其类型。在这里，我们使用 `decltype` 推导函数调用 `f(args...)` 的结果的返回类型。
+3. `using RetType = decltype(f(args...));`：通过 `using` 关键字，我们定义了别名 `RetType` 并将 `decltype` 推导得到的函数调用结果类型赋值给它。
+

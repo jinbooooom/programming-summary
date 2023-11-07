@@ -3414,6 +3414,130 @@ int foo = *p;   // undefined; the memory to which p points was freed
 
 参考：[C++11提供智能指针shared_ptr是不是线程安全的](https://blog.csdn.net/weixin_41318405/article/details/99076912)
 
+#### **1. 引用计数更新，线程安全**
+
+这里我们讨论对智能指针进行拷贝的情况，由于此操作读写的是引用计数，而引用计数的更新是原子操作，因此这种情况是线程安全的。下面这个例子，两个线程同时对同一个智能指针进行拷贝，引用计数的值总是20001。
+
+```cpp
+    std::shared_ptr<int> p = std::make_shared<int>(0);
+    constexpr int N = 10000;
+    std::vector<std::shared_ptr<int>> sp_arr1(N);
+    std::vector<std::shared_ptr<int>> sp_arr2(N);
+
+    void increment_count(std::vector<std::shared_ptr<int>>& sp_arr) {
+    for (int i = 0; i < N; i++) {
+        sp_arr[i] = p;
+    }
+    }
+
+    std::thread t1(increment_count, std::ref(sp_arr1));
+    std::thread t2(increment_count, std::ref(sp_arr2));
+    t1.join();
+    t2.join();
+    std::cout<< p.use_count() << std::endl; // always 20001
+```
+
+#### **2. 同时修改指向的内存区域，线程不安全**
+
+下面这个例子，两个线程同时对同一个智能指针指向内存的值进行自增操作，最终的结果不是我们期望的20000。因此同时修改智能指针指向的内存区域不是线程安全的。
+
+```cpp
+    std::shared_ptr<int> p = std::make_shared<int>(0);
+    void modify_memory() {
+        for (int i = 0; i < 10000; i++) {
+            (*p)++;
+        }
+    }
+
+    std::thread t1(modify_memory);
+    std::thread t2(modify_memory);
+    t1.join();
+    t2.join();
+    std::cout << "Final value of p: " << *p << std::endl; // possible result: 16171, not 20000
+```
+
+#### **3. 直接修改shared_ptr对象本身的指向，线程不安全。**
+
+下面这个程序示例，两个线程同时修改同一个智能指针对象的指向，程序发生了异常终止。
+
+```cpp
+    std::shared_ptr<int> sp = std::make_shared<int>(1);
+    auto modify_sp_self = [&sp]() {
+        for (int i = 0; i < 1000000; ++i) {
+            sp = std::make_shared<int>(i);
+        }
+    };
+
+    std::vector<std::thread> threads;
+    for (int i = 0; i < 10; ++i) {
+        threads.emplace_back(modify_sp_self);
+    }
+    for (auto& t : threads) {
+        t.join();
+    }
+```
+
+报错为：
+
+```text
+pure virtual method called
+terminate called without an active exception
+```
+
+用gdb查看函数调用栈，发现是在调用`std::shared_ptr<int>::~shared_ptr()`时出错，
+
+```shell
+(gdb) bt
+#0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:50
+#1  0x00007ffff7bc7859 in __GI_abort () at abort.c:79
+#2  0x00007ffff7e73911 in ?? () from /lib/x86_64-linux-gnu/libstdc++.so.6
+#3  0x00007ffff7e7f38c in ?? () from /lib/x86_64-linux-gnu/libstdc++.so.6
+#4  0x00007ffff7e7f3f7 in std::terminate() () from /lib/x86_64-linux-gnu/libstdc++.so.6
+#5  0x00007ffff7e80155 in __cxa_pure_virtual () from /lib/x86_64-linux-gnu/libstdc++.so.6
+#6  0x00005555555576c2 in std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release() ()
+#7  0x00005555555572fd in std::__shared_count<(__gnu_cxx::_Lock_policy)2>::~__shared_count() ()
+#8  0x0000555555557136 in std::__shared_ptr<int, (__gnu_cxx::_Lock_policy)2>::~__shared_ptr() ()
+#9  0x000055555555781c in std::__shared_ptr<int, (__gnu_cxx::_Lock_policy)2>::operator=(std::__shared_ptr<int, (__gnu_cxx::_Lock_policy)2>&&) ()
+#10 0x00005555555573d0 in std::shared_ptr<int>::operator=(std::shared_ptr<int>&&) ()
+#11 0x000055555555639f in main::{lambda()#1}::operator()() const ()
+... 
+```
+
+其原因为：在并发修改指向的情况下，可能对已析构对象再次调用析构函数，导致了此异常。
+
+对程序加锁后，程序可正常运行:
+
+```cpp
+    std::shared_ptr<int> sp = std::make_shared<int>(1);
+    std::mutex m;
+    auto modify = [&sp]() {
+        // make the program thread safe
+        std::lock_guard<std::mutex> lock(m);
+        for (int i = 0; i < 1000000; ++i) {
+            sp = std::make_shared<int>(i);
+        }
+    };
+
+    std::vector<std::thread> threads;
+    for (int i = 0; i < 10; ++i) {
+        threads.emplace_back(modify);
+    }
+    for (auto& t : threads) {
+        t.join();
+    }
+    std::cout << *sp << std::endl;  // running as expected, result: 999999
+```
+
+#### 4.如果多个线程同时读`shared_ptr`指向的内存对象，是线程安全的。
+
+**总结**
+
+- `shared_ptr`本身不是一个线程安全的STL，因此并发读写对应内存区域是不安全的。
+- 由于赋值操作涉及原内存释放、修改指针指向等多个修改操作，其过程不是原子操作，因此对`shared_ptr`进行并发赋值不是线程安全的。
+- 对`shared_ptr`进行并发拷贝，对数据指针和控制块指针仅进行读取并复制，然后对引用计数进行递增，而引用计数增加是原子操作。因此是线程安全的。
+
+参考[C++ :  shared_ptr是线程安全的吗？](https://zhuanlan.zhihu.com/p/664993437)
+
 ### unique_ptr
 
 与`shared_ptr`不同，同一时刻只能有一个`unique_ptr`指向给定的对象。当`unique_ptr`被销毁时，它指向的对象也会被销毁。

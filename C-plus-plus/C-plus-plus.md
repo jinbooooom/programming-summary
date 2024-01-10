@@ -4464,6 +4464,58 @@ size of test2:5
 
 它的作用是让整个结构体变量整体进行n字节对齐（注意是结构体变量**整体**n字节对齐，而不是结构体内各数据成员也要n字节对齐。
 
+### \_\_attribute\_\_((constructor))
+
+`__attribute__((constructor))` 是GCC和Clang编译器提供的一个函数属性（function attribute）。它用于将一个函数标记为在程序启动时自动执行的构造函数（constructor）。
+
+当使用 `__attribute__((constructor))` 标记一个函数时，该函数会在程序运行之前的初始化阶段自动执行。这意味着该函数会在 `main()` 函数之前被调用，而且只会被调用一次。
+
+理解 `__attribute__((constructor))` 可以从以下几个方面来思考：
+
+1. 构造函数的执行时机：通过将函数标记为构造函数，可以确保其在程序启动时自动执行。这对于需要在程序开始之前进行某些初始化操作的场景非常有用。
+
+2. 自动执行特性：使用 `__attribute__((constructor))` 标记函数后，不需要显式地在代码中调用该函数。编译器会负责在合适的时机自动调用它，无需手动干预。
+
+3. 特定编译器的支持：`__attribute__((constructor))` 是GCC和Clang编译器提供的扩展，因此这个特性在使用其他编译器时可能不可用或具有不同的语法。
+
+4. 单例构造函数：可以使用 `__attribute__((constructor))` 来实现单例模式中的构造函数，确保只有一个实例被创建并在程序启动时自动初始化。
+
+综上所述，`__attribute__((constructor))` 是一个编译器提供的函数属性，用于将函数标记为在程序启动时自动执行的构造函数。它可以帮助我们在程序开始之前进行一些必要的初始化操作，并减少手动调用的复杂性。
+
+下面是一个简单的示例，演示了如何使用 `__attribute__((constructor))` 来创建一个在程序启动时自动执行的构造函数：
+
+```c
+#include <stdio.h>
+
+void my_constructor() __attribute__((constructor));
+
+void my_constructor()
+{
+    printf("Constructor called\n");
+}
+
+int main()
+{
+    printf("Main function\n");
+    return 0;
+}
+```
+
+在上述示例中，我们定义了一个名为 `my_constructor` 的函数，并使用 `__attribute__((constructor))` 将其标记为构造函数。当程序启动时，这个构造函数会自动执行。
+
+在 `my_constructor` 函数中，我们简单地输出一条信息 "Constructor called"。然后，在 `main` 函数中，我们再次输出一条信息 "Main function"。
+
+编译并运行上述代码，你将看到以下输出：
+
+```
+Constructor called
+Main function
+```
+
+可以观察到，在 `main` 函数之前，构造函数 `my_constructor` 被自动调用，输出了 "Constructor called"。这证明了 `my_constructor` 是在程序启动时被自动执行的。
+
+请注意，每个带有 `__attribute__((constructor))` 标记的构造函数只会被调用一次，且按照它们在源文件中的定义顺序进行调用。在示例中，只有一个构造函数 `my_constructor`，因此它仅被调用一次。
+
 ## \#\#\_\_VA\_ARGS\_\_
 
 ```C++

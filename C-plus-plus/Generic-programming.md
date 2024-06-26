@@ -168,3 +168,44 @@ int main() {
 2. `decltype(f(args...))`：`decltype` 关键字会根据括号中的表达式推导并返回其类型。在这里，我们使用 `decltype` 推导函数调用 `f(args...)` 的结果的返回类型。
 3. `using RetType = decltype(f(args...));`：通过 `using` 关键字，我们定义了别名 `RetType` 并将 `decltype` 推导得到的函数调用结果类型赋值给它。
 
+### 使用 template \<int type\> 达到和 switch case 同样的效果
+
+当使用 `template <int type>` 进行模板定义时，以下是一个具体的代码示例：
+
+```cpp
+#include <iostream>
+
+template <int type>
+void templateFunction() {
+    if (type == 0) {
+        std::cout << "Type is 0." << std::endl;
+    } else if (type == 1) {
+        std::cout << "Type is 1." << std::endl;
+    } else {
+        std::cout << "Type is not recognized." << std::endl;
+    }
+}
+
+int main() {
+    templateFunction<0>(); // 调用 templateFunction，并传入参数 0
+    templateFunction<1>(); // 调用 templateFunction，并传入参数 1
+    templateFunction<2>(); // 调用 templateFunction，并传入参数 2
+
+    return 0;
+}
+```
+
+在上述示例中，`templateFunction` 是一个模板函数，它的模板参数 `type` 是一个整型。根据传入的 `type` 参数的不同值，函数将执行不同的逻辑。
+
+在 `main` 函数中，通过使用 `<0>`、`<1>` 和 `<2>` 分别实例化了 `templateFunction` 模板函数，从而生成了三个具体的函数实例。每个实例都会根据传入的 `type` 参数值打印相应的消息。
+
+当运行程序时，输出将如下所示：
+
+```
+Type is 0.
+Type is 1.
+Type is not recognized.
+```
+
+这个例子展示了模板函数根据传入的参数值在编译时生成特定的代码实例，并在运行时选择相应的逻辑。通过模板参数，可以达到类似于 `switch` 语句的效果，在不同的情况下执行不同的代码逻辑。
+

@@ -2738,6 +2738,95 @@ cast-name<type>(expression)
 
   C 的强制转换表面上看起来功能强大什么都能转，但是转化不够明确，不能进行错误检查，容易出错。 
 
+### C++转换运算符
+
+转换运算符是C++中一种特殊的成员函数，允许将类对象转换为其他类型。
+
+转换运算符的语法如下：
+
+```cpp
+operator Type() const;
+```
+
+其中：
+
+- 不需要返回类型（隐含返回类型为Type）
+- 通常声明为const，因为转换不应该修改对象
+- 不接受参数
+
+```c++
+#include <iostream>
+
+class Money
+{
+private:
+    double amount;
+
+public:
+    Money(double amount = 0.0) : amount(amount)
+    {
+        std::cout << "构造Money对象: " << amount << std::endl;
+    }
+
+    // 声明double转换
+    operator double() const
+    {
+        std::cout << "执行Money到double的转换" << std::endl;
+        return amount;
+    }
+
+    // 声明int转换
+    operator int() const
+    {
+        std::cout << "执行Money到int的转换" << std::endl;
+        return static_cast<int>(amount);
+    }
+
+    void display() const
+    {
+        std::cout << "Money金额: $" << amount << std::endl;
+    }
+};
+
+int main()
+{
+    Money wallet(42.50);
+    wallet.display();
+
+    // 显式转换
+    double balance = static_cast<double>(wallet);
+    std::cout << "显式转换后的余额: " << balance << std::endl;
+
+    // 隐式转换
+    double amount = wallet;  // 自动调用operator double()
+    std::cout << "隐式转换后的金额: " << amount << std::endl;
+
+    // 显式转换到int
+    int explicit_dollars = static_cast<int>(wallet);
+    std::cout << "显式转换整数部分: $" << explicit_dollars << std::endl;
+
+    // 隐式转换到int
+    int dollars = wallet;
+    std::cout << "整数部分: $" << dollars << std::endl;
+
+    return 0;
+}
+/*
+构造Money对象: 42.5
+Money金额: $42.5
+执行Money到double的转换
+显式转换后的余额: 42.5
+执行Money到double的转换
+隐式转换后的金额: 42.5
+执行Money到int的转换
+显式转换整数部分: $42
+执行Money到int的转换
+整数部分: $42
+*/
+```
+
+
+
 ### this指针
 
 每个非静态成员函数（包含构造函数和析构函数）都有一个`this`指针，`this`指针指向调用对象，`this`是地址，如果要引用调用对象本身，用`*this`。
